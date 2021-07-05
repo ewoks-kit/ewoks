@@ -20,6 +20,12 @@ Tests make use [pytest](https://docs.pytest.org/en/stable/index.html) and can be
 pytest .
 ```
 
+Testing an installed project is done like this
+
+```bash
+pytest --pyargs <project_name>
+```
+
 ## Releasing
 1. Add the [changes](https://changelog.md) to `CHANGELOG.md`
 2. Increment the version number in `<project>/__init__.py`. The number must match the  [regex pattern](https://regex101.com/r/Ly7O1x/3/) provided by the [semantic versioning](https://semver.org) guidelines. For example the lifecycle of a single version could be
