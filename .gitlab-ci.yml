@@ -1,0 +1,20 @@
+image: python:3.6
+
+lint:
+  stage: test
+  script:
+    - flake8
+  only:
+    refs:
+      - main
+      - merge_requests
+
+test:
+  stage: test
+  script:
+  - pip install .[test]
+  - pytest
+  only:
+    refs:
+      - main
+      - merge_requests
