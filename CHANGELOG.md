@@ -4,3 +4,6 @@
 
 Added:
   - `ewokscore` dependency
+  - `ewoksdask` dependency
+  - `ewoksorange` dependency
+  - `ewoksppf` dependency
