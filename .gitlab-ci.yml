@@ -25,3 +25,14 @@ test:
     refs:
       - main
       - merge_requests
+
+black-format:
+  stage: test
+  before_script:
+    - pip install black
+  script:
+    - LC_ALL=C.UTF-8 black --check --safe .
+  only:
+    refs:
+      - main
+      - merge_requests
