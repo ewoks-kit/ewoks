@@ -13,6 +13,10 @@ stages:
   extends: ".base"
   image: "python:3.6"
 
+.doc:
+  extends: ".base"
+  image: "python:3.6"
+
 flake8:
   stage: style
   extends: ".style"
@@ -31,7 +35,7 @@ black:
 
 .sphinx:
   stage: doc
-  extends: ".base"
+  extends: ".doc"
   before_script:
     - pip install .[doc]
   script:
