@@ -1,0 +1,55 @@
+stages:
+  - style
+  - test
+
+.base:
+  only:
+    refs:
+      - main
+      - merge_requests
+
+.style:
+  extends: ".base"
+  image: "python:3.6"
+
+flake8:
+  stage: style
+  extends: ".style"
+  before_script:
+    - pip install flake8
+  script:
+    - flake8
+
+black:
+  stage: style
+  extends: ".style"
+  before_script:
+    - pip install black
+  script:
+    - LC_ALL=C.UTF-8 black --check --safe .
+
+.test:
+  stage: test
+  extends: ".base"
+  before_script:
+    # keep for the extensions
+  script:
+    - pip install pytest-cov
+    - pip install .[test]
+    - pytest --cov=./ .
+
+.test-3.6:
+  extends: ".test"
+  image: "python:3.6"
+
+.test-3.7:
+  extends: ".test"
+  image: "python:3.7"
+
+.test-3.8:
+  extends: ".test"
+  image: "python:3.8"
+
+.test-3.9:
+  extends: ".test"
+  image: "python:3.9"
