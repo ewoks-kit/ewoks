@@ -1,6 +1,7 @@
 stages:
   - style
   - test
+  - doc
 
 .base:
   only:
@@ -27,6 +28,14 @@ black:
     - pip install black
   script:
     - LC_ALL=C.UTF-8 black --check --safe .
+
+.sphinx:
+  stage: doc
+  extends: ".base"
+  before_script:
+    - pip install .[doc]
+  script:
+    - python setup.py build_sphinx
 
 .test:
   stage: test
