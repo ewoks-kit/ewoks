@@ -1,38 +1,9 @@
-image: python:3.6
+include:
+  .gitlab-ci-template.yml
 
-lint:
-  stage: test
-  before_script:
-    - pip install flake8
-  script:
-    - flake8
-  only:
-    refs:
-      - main
-      - merge_requests
-
-test:
-  stage: test
+test-3.6:
+  extends: ".test-3.6"
   before_script:
     # install opengl libraries (needed for PyQt5)
     - apt-get update
     - apt-get -y install libgl1-mesa-glx
-    - pip install pytest-cov
-  script:
-    - pip install .[test]
-    - pytest --cov=./ .
-  only:
-    refs:
-      - main
-      - merge_requests
-
-black-format:
-  stage: test
-  before_script:
-    - pip install black
-  script:
-    - LC_ALL=C.UTF-8 black --check --safe .
-  only:
-    refs:
-      - main
-      - merge_requests
