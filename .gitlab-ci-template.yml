@@ -53,6 +53,10 @@ black:
 
 .test-3.6:
   extends: ".test"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
+
+.test-3.6_glx:
+  extends: ".test"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_glx"
 
 .test-3.7:
