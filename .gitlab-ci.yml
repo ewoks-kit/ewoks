@@ -1,9 +1,2 @@
 include:
   .gitlab-ci-template.yml
-
-test-3.6:
-  extends: ".test-3.6"
-  before_script:
-    # install opengl libraries (needed for PyQt5)
-    - apt-get update
-    - apt-get -y install libgl1-mesa-glx
