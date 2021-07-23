@@ -25,6 +25,14 @@ flake8:
   script:
     - flake8
 
+.flake8_nb:
+  stage: style
+  extends: ".style"
+  before_script:
+    - pip install flake8_nb
+  script:
+    - flake8_nb
+
 black:
   stage: style
   extends: ".style"

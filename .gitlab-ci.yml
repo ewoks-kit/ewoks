@@ -1,2 +1,5 @@
 include:
   .gitlab-ci-template.yml
+
+flake8_nb:
+  extends: ".flake8_nb"
