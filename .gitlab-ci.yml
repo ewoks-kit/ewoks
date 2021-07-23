@@ -3,3 +3,6 @@ include:
 
 flake8_nb:
   extends: ".flake8_nb"
+
+test-3.6:
+  extends: ".test-3.6_glx"
