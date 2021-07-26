@@ -2,6 +2,7 @@ stages:
   - style
   - test
   - doc
+  - deploy
 
 .base:
   only:
