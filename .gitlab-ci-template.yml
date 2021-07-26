@@ -2,6 +2,7 @@ stages:
   - style
   - test
   - doc
+  - deploy
 
 .base:
   only:
@@ -49,6 +50,22 @@ black:
   script:
     - python setup.py build_sphinx
 
+.sphinx_and_artifacts:
+  stage: doc
+  extends: ".sphinx"
+  before_Script:
+    - rm -rf artifacts
+    - mkdir artifacts
+  after_script:
+    - mv build/sphinx/html artifacts/doc
+  artifacts:
+    paths:
+      - artifacts/doc/
+    when: on_success
+    expire_in: 2h
+  only:
+    - master
+
 .test:
   stage: test
   extends: ".base"
@@ -78,3 +95,19 @@ black:
 .test-3.9:
   extends: ".test"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.9"
+
+.deploy:
+  stage: deploy
+  extend: ".base"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
+  script:
+    - rm -rf public
+    - mv artifacts/doc public
+  after_script:
+    - ls -Rl public
+  artifacts:
+    paths:
+      - public
+    expire_in: 2h
+  only:
+    - master
