@@ -53,7 +53,7 @@ black:
 .sphinx_and_artifacts:
   stage: doc
   extends: ".sphinx"
-  before_Script:
+  before_script:
     - rm -rf artifacts
     - mkdir artifacts
   after_script:
