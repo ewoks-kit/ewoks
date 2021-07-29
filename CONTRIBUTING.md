@@ -40,6 +40,6 @@ pytest --pyargs <project_name>
 4. Deploy on [pypitest](https://test.pypi.org) and [pypi](https://pypi.org)
    ```bash
    python setup.py sdist
-   twine upload -r pypitest --sign dist/*
+   twine upload -r testpypi --sign dist/*
    twine upload -r pypi --sign dist/*
    ```
