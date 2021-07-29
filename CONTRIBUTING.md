@@ -37,7 +37,7 @@ pytest --pyargs <project_name>
    git tag v1.2.3 -m "Release version 1.2.3"
    git push && git push --tags
    ```
-4. Deploy on [pypitest](https://test.pypi.org) and [pypi](https://pypi.org)
+4. Deploy on [testpypi](https://test.pypi.org) and [pypi](https://pypi.org)
    ```bash
    python setup.py sdist
    twine upload -r testpypi --sign dist/*
