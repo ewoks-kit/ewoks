@@ -73,7 +73,7 @@ black:
     # keep for the extensions
   script:
     - pip install pytest-cov
-    - pip install .[test]
+    - pip install --pre .[test]
     - pytest --cov=./ .
 
 .test-3.6:
