@@ -42,21 +42,16 @@ black:
   script:
     - LC_ALL=C.UTF-8 black --check --safe .
 
-.sphinx:
+.sphinx_and_artifacts:
   stage: doc
   extends: ".doc"
   before_script:
     - pip install .[doc]
     - pip install Sphinx
-  script:
-    - python setup.py build_sphinx
-
-.sphinx_and_artifacts:
-  stage: doc
-  extends: ".sphinx"
-  before_script:
     - rm -rf artifacts
     - mkdir artifacts
+  script:
+    - python setup.py build_sphinx
   after_script:
     - mv build/sphinx/html artifacts/doc
   artifacts:
