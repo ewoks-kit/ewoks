@@ -98,7 +98,7 @@ black:
 
 .deploy:
   stage: deploy
-  extend: ".base"
+  extends: ".base"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
   script:
     - rm -rf public
