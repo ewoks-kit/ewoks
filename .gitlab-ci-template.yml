@@ -64,7 +64,7 @@ black:
     when: on_success
     expire_in: 2h
   only:
-    - master
+    - main
 
 .test:
   stage: test
@@ -110,4 +110,4 @@ black:
       - public
     expire_in: 2h
   only:
-    - master
+    - main
