@@ -92,7 +92,7 @@ black:
   extends: ".test"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.9"
 
-.deploy:
+.pages:
   stage: deploy
   extends: ".base"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
