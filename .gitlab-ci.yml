@@ -6,3 +6,9 @@ flake8_nb:
 
 test-3.6:
   extends: ".test-3.6_glx"
+
+deploy_docs:
+  extends: ".sphinx_and_artifacts"
+
+pages:
+  extends: ".pages"
