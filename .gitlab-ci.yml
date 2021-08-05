@@ -10,7 +10,8 @@ test-3.6:
 deploy_docs:
   extends: ".sphinx_and_artifacts"
   script: # TODO: image needs pandoc
-    - apt install pandoc
+    - apt-get update
+    - apt-get -y install pandoc
     - python setup.py build_sphinx
 
 pages:
