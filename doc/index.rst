@@ -1,9 +1,9 @@
-ewosk |release|
+ewoks |release|
 ===============
 
-ewosk is a container project that allow installing the core library and optionally bindings for Workflow Management Systems.
+ewoks is a container project that allow installing the core library and optionally bindings for Workflow Management Systems.
 
-ewosk has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
+ewoks has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
 
 The core library is used to represent graphs and the bindings are used to execute them:
 
