@@ -1,8 +1,11 @@
 stages:
   - style
   - test
-  - doc
+  - build
+  - test_build
   - deploy
+
+### Jobs templates for each stage ###
 
 .base:
   only:
@@ -11,56 +14,9 @@ stages:
       - merge_requests
 
 .style:
+  stage: style
   extends: ".base"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
-
-.doc:
-  extends: ".base"
-  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
-
-flake8:
-  stage: style
-  extends: ".style"
-  before_script:
-    - pip install flake8
-  script:
-    - flake8
-
-.flake8_nb:
-  stage: style
-  extends: ".style"
-  before_script:
-    - pip install flake8_nb
-  script:
-    - flake8_nb
-
-black:
-  stage: style
-  extends: ".style"
-  before_script:
-    - pip install black
-  script:
-    - LC_ALL=C.UTF-8 black --check --safe .
-
-.sphinx_and_artifacts:
-  stage: doc
-  extends: ".doc"
-  before_script:
-    - pip install .[doc]
-    - pip install Sphinx
-    - rm -rf artifacts
-    - mkdir artifacts
-  script:
-    - python setup.py build_sphinx
-  after_script:
-    - mv build/sphinx/html artifacts/doc
-  artifacts:
-    paths:
-      - artifacts/doc/
-    when: on_success
-    expire_in: 2h
-  only:
-    - main
 
 .test:
   stage: test
@@ -72,38 +28,139 @@ black:
     - pip install --pre .[test]
     - pytest --cov=./ .
 
+.build:
+  stage: build
+  extends: ".base"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
+  before_script:
+    - rm -rf ${ARTIFACTS_DEST}
+  after_script:
+    - mv ${ARTIFACTS_SOURCE} ${ARTIFACTS_DEST}
+  artifacts:
+    paths:
+      - ${ARTIFACTS_DEST}/
+    when: on_success
+    expire_in: 2h
+  only:
+    - main
+
+.test_build:
+  stage: test_build
+  extends: ".base"
+  only:
+    - main
+
+.deploy:
+  stage: deploy
+  extends: ".base"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
+  only:
+    - main
+
+### Required jobs ###
+
+flake8:
+  extends: ".style"
+  before_script:
+    - pip install flake8
+  script:
+    - flake8
+
+black:
+  extends: ".style"
+  before_script:
+    - pip install black
+  script:
+    - LC_ALL=C.UTF-8 black --check --safe .
+
+### Optional jobs ###
+
+.flake8_nb:
+  extends: ".style"
+  before_script:
+    - pip install flake8_nb
+  script:
+    - flake8_nb
+
+.build_doc:
+  extends: ".build"
+  script:
+    - pip install .[doc]
+    - python setup.py build_sphinx
+  variables:
+    ARTIFACTS_SOURCE: 'build/sphinx/html'
+    ARTIFACTS_DEST: 'html'
+
+.sphinx_and_artifacts:  # DEPRECATED
+  extends: ".build_doc"
+
+.pages:
+  stage: deploy
+  extends: ".deploy"
+  script:
+    - rm -rf public
+    - mv html public
+  after_script:
+    - ls -Rl public
+  artifacts:
+    paths:
+      - public
+    when: on_success
+    expire_in: 2h
+
+.build_sdist:
+  extends: ".build"
+  script:
+    - pip install .[dev]
+    - python setup.py sdist
+  variables:
+    ARTIFACTS_SOURCE: 'dist'
+    ARTIFACTS_DEST: 'sdist'
+
 .test-3.6:
   extends: ".test"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
+
+.test_sdist:
+  extends: ".test_build"
+  before_script:
+    # keep for the extensions
+  script:
+    - pip install --pre sdist/$(ls sdist)[test]
+    - pytest --pyargs ${CI_PROJECT_NAME}.tests
+
+.test_sdist-3.6:
+  extends: ".test_sdist"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
 
 .test-3.6_glx:
   extends: ".test"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_glx"
 
+.test_sdist-3.6_glx:
+  extends: ".test_sdist"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_glx"
+
 .test-3.7:
   extends: ".test"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.7"
+
+.test_sdist-3.7:
+  extends: ".test_sdist"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.7"
 
 .test-3.8:
   extends: ".test"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.8"
 
+.test_sdist-3.8:
+  extends: ".test_sdist"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.8"
+
 .test-3.9:
   extends: ".test"
   image: "docker-registry.esrf.fr/dau/ewoks:python_3.9"
 
-.pages:
-  stage: deploy
-  extends: ".base"
-  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
-  script:
-    - rm -rf public
-    - mv artifacts/doc public
-  after_script:
-    - ls -Rl public
-  artifacts:
-    paths:
-      - public
-    expire_in: 2h
-  only:
-    - main
+.test_sdist-3.9:
+  extends: ".test_sdist"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.9"
