@@ -15,11 +15,6 @@ test_sdist-3.6_glx:
 
 build_doc:
   extends: ".build_doc"
-  script: # TODO: image needs pandoc
-    - apt-get update
-    - apt-get -y install pandoc
-    - pip install .[doc]
-    - python setup.py build_sphinx
 
 pages:
   extends: ".pages"
