@@ -1,6 +1,8 @@
 # Ewoks: ESRF Workflow System
 
-This is a container project that allow installing the core library and optionally bindings for Workflow Management Systems.
+Many [workflow management systems](https://s.apache.org/existing-workflow-systems) exist to deal with data processing problems that can be expressed as a graph of tasks, also referred to as a *computational graph* or *workflow*. The main purpose of a workflow management system is to provide a framework for implementing tasks, creating graphs of tasks and executing these graphs.
+
+The purpose of *ewoks* is to provide an abstraction layer between graph representation and execution. This allows using the same tasks and graphs in different workflow management systems. *ewoks* itself is **not** a workflow management system.
 
 ## Install
 

@@ -1,9 +1,11 @@
 ewoks |release|
 ===============
 
-ewoks is a container project that allow installing the core library and optionally bindings for Workflow Management Systems.
+Many `workflow management systems <https://s.apache.org/existing-workflow-systems>`_ exist to deal with data processing problems that can be expressed as a graph of tasks, also referred to as a *computational graph* or *workflow*. The main purpose of a workflow management system is to provide a framework for implementing tasks, creating graphs of tasks and executing these graphs.
 
-ewoks has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
+The purpose of *ewoks* is to provide an abstraction layer between graph representation and execution. This allows using the same tasks and graphs in different workflow management systems. *ewoks* itself is **not** a workflow management system.
+
+*ewoks* has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
 
 The core library is used to represent graphs and the bindings are used to execute them:
 
