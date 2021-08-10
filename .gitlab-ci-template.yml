@@ -31,7 +31,7 @@ stages:
 .build:
   stage: build
   extends: ".base"
-  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_doc"
   before_script:
     - rm -rf ${ARTIFACTS_DEST}
   after_script:
