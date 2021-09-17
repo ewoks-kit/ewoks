@@ -16,12 +16,33 @@ The core library is used to represent graphs and the bindings are used to execut
 
     result = execute_graph(load_graph("/path/to/graph.json"))
 
+Getting started
+---------------
+
+When installing without any options, only `ewokscore` will be installed
+
+.. code:: bash
+
+    python -m pip install ewoks[orange,dask,ppf,test]
+
+The core project `ewokscore` and the optional bindings can be tested after installation like this
+
+.. code:: bash
+
+    pytest --pyargs ewokscore.tests
+    pytest --pyargs ewoksorange.tests
+    pytest --pyargs ewoksppf.tests
+    pytest --pyargs ewoksdask.tests
+
+A simple :doc:`hello world <tutorials/hello_world>` introduces task implementation, workflow definition and workflow execution.
+
 Tutorials
 ---------
 
 .. toctree::
     :maxdepth: 1
 
+    tutorials/hello_world
     tutorials/running_workflows
 
 Binding documentation:
