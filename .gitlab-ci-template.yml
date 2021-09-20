@@ -26,7 +26,7 @@ stages:
   script:
     - pip install pytest-cov
     - pip install --pre .[test]
-    - pytest --cov=./ .
+    - pytest --cov=./ -v .
 
 .build:
   stage: build
@@ -127,7 +127,7 @@ black:
     # keep for the extensions
   script:
     - pip install --pre sdist/$(ls sdist)[test]
-    - pytest --pyargs ${CI_PROJECT_NAME}.tests
+    - pytest -v --pyargs ${CI_PROJECT_NAME}.tests
 
 .test_sdist-3.6:
   extends: ".test_sdist"
