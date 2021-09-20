@@ -31,7 +31,7 @@ stages:
 .build:
   stage: build
   extends: ".base"
-  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_doc"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_doc"  # pandoc
   before_script:
     - rm -rf ${ARTIFACTS_DEST}
   after_script:
@@ -135,11 +135,11 @@ black:
 
 .test-3.6_glx:
   extends: ".test"
-  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_glx"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_glx"  # libgl1-mesa-glx
 
 .test_sdist-3.6_glx:
   extends: ".test_sdist"
-  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_glx"
+  image: "docker-registry.esrf.fr/dau/ewoks:python_3.6_glx"  # libgl1-mesa-glx
 
 .test-3.7:
   extends: ".test"
