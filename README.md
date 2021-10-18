@@ -18,14 +18,22 @@ pytest --pyargs ewoks.tests
 
 ## Getting started
 
-The core library is used to represent graphs and the bindings are used to execute them:
+Workflows can be loaded and executed from the command line
 
 ```bash
+ewoks execute /path/to/graph.json --scheduler dask
+```
+
+or in a python script
+
+```python
 from ewokscore import load_graph
-from ewoksppf import execute_graph
+from ewoksdask import execute_graph
 
 result = execute_graph(load_graph("/path/to/graph.json"))
 ```
+
+The core library `ewokscore` is used for loading graphs and can also be used for sequential execution.
 
 ## Documentation
 

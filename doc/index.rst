@@ -7,14 +7,22 @@ The purpose of *ewoks* is to provide an abstraction layer between graph represen
 
 *ewoks* has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
 
-The core library is used to represent graphs and the bindings are used to execute them:
+Workflows can be loaded and executed from the command line
 
 .. code:: bash
 
+    ewoks execute /path/to/graph.json --scheduler dask
+
+or in a python script
+
+.. code:: python
+
     from ewokscore import load_graph
-    from ewoksppf import execute_graph
+    from ewoksdask import execute_graph
 
     result = execute_graph(load_graph("/path/to/graph.json"))
+
+The core library `ewokscore` is used for loading graphs and can also be used for sequential execution.
 
 Getting started
 ---------------
