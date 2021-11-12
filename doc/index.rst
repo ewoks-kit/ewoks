@@ -11,16 +11,18 @@ Workflows can be loaded and executed from the command line
 
 .. code:: bash
 
-    ewoks execute /path/to/graph.json --scheduler dask
+    ewoks execute /path/to/graph.json [--scheduler dask]
 
-or in a python script
+or in a python script (using the core library or any of the bindings)
 
 .. code:: python
 
-    from ewokscore import load_graph
-    from ewoksdask import execute_graph
+    from ewokscore import execute_graph
+    # from ewoksppf import execute_graph
+    # from ewoksdask import execute_graph
+    # from ewoksorange import execute_graph
 
-    result = execute_graph(load_graph("/path/to/graph.json"))
+    result = execute_graph("/path/to/graph.json")
 
 The core library `ewokscore` is used for loading graphs and can also be used for sequential execution.
 

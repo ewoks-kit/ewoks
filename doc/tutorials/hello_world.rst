@@ -6,7 +6,7 @@ A short script that defines a task, creates a workflow and executes it.
 .. code:: python
 
     from ewokscore import Task
-    from ewokscore import load_graph
+    from ewokscore import execute_graph
 
     # Implement a workflow task
     class SumTask(
@@ -55,7 +55,6 @@ A short script that defines a task, creates a workflow and executes it.
     workflow = {"nodes": nodes, "links": links}
 
     # Execute a workflow (without task scheduler)
-    graph = load_graph(workflow)
     varinfo = {"root_uri": "/tmp/myresults"}  # optional
-    tasks = graph.execute(varinfo=varinfo)
+    tasks = execute_graph(workflow, varinfo=varinfo)
     print(tasks["task3"].output_values)
