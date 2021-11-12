@@ -38,3 +38,6 @@ htmlcov/
 # VisualStudio IDE
 /.vscode/
 /.history/
+
+# Dask
+dask-worker-space/
