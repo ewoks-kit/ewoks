@@ -7,7 +7,7 @@ flake8_nb:
 test-3.6:
   extends: .test-3.6_glx
   script:
-    - !reference [.test_main, script]
+    - !reference [.test-3.6_glx, script]
     - pytest -v --pyargs ewokscore.tests
     - pytest -v --pyargs ewoksppf.tests
     - pytest -v --pyargs ewoksdask.tests
@@ -19,7 +19,7 @@ build_sdist:
 test_sdist-3.6_glx:
   extends: .test_sdist-3.6_glx
   script:
-    - !reference [.test_sdist_main, script]
+    - !reference [.test_sdist-3.6_glx, script]
     - pytest -v --pyargs ewokscore.tests
     - pytest -v --pyargs ewoksppf.tests
     - pytest -v --pyargs ewoksdask.tests
