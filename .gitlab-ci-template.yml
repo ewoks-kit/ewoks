@@ -18,20 +18,14 @@ stages:
   extends: .base
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6
 
-.test_main:
+.test:
+  stage: test
+  extends: .base
   before_script:
     - pip install pytest-cov
   script:
     - pip install --pre .[test]
     - pytest --cov=./ -v .
-
-.test:
-  stage: test
-  extends: .base
-  before_script:
-    !reference [.test_main, before_script]
-  script:
-    !reference [.test_main, script]
 
 .build:
   stage: build
@@ -126,19 +120,13 @@ black:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6
 
-.test_sdist_main:
+.test_sdist:
+  extends: .test_build
   before_script:
     - echo ""
   script:
     - pip install --pre sdist/$(ls sdist)[test]
     - pytest -v --pyargs ${CI_PROJECT_NAME}.tests
-
-.test_sdist:
-  extends: .test_build
-  before_script:
-    !reference [.test_sdist_main, before_script]
-  script:
-    !reference [.test_sdist_main, script]
 
 .test_sdist-3.6:
   extends: .test_sdist
