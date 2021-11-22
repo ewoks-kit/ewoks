@@ -2,19 +2,31 @@ include:
   .gitlab-ci-template.yml
 
 flake8_nb:
-  extends: ".flake8_nb"
+  extends: .flake8_nb
 
 test-3.6:
-  extends: ".test-3.6_glx"
+  extends: .test-3.6_glx
+  script:
+    - !reference [.test_main, script]
+    - pytest -v --pyargs ewokscore.tests
+    - pytest -v --pyargs ewoksppf.tests
+    - pytest -v --pyargs ewoksdask.tests
+    - pytest -v --pyargs ewoksorange.tests
 
 build_sdist:
-  extends: ".build_sdist"
+  extends: .build_sdist
 
 test_sdist-3.6_glx:
-  extends: ".test_sdist-3.6_glx"
+  extends: .test_sdist-3.6_glx
+  script:
+    - !reference [.test_sdist_main, script]
+    - pytest -v --pyargs ewokscore.tests
+    - pytest -v --pyargs ewoksppf.tests
+    - pytest -v --pyargs ewoksdask.tests
+    - pytest -v --pyargs ewoksorange.tests
 
 build_doc:
-  extends: ".build_doc"
+  extends: .build_doc
 
 pages:
-  extends: ".pages"
+  extends: .pages
