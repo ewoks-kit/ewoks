@@ -39,7 +39,12 @@ pytest --pyargs <project_name>
    ```
 4. Deploy on [testpypi](https://test.pypi.org) and [pypi](https://pypi.org)
    ```bash
+   rm -rf dist
    python setup.py sdist
    twine upload -r testpypi --sign dist/*
    twine upload -r pypi --sign dist/*
+   ```
+   Alternatively you can release the gitlab CI artifacts
+   ```bash
+   ./deploy/deploy.sh ewoks  # accepts any ewoks project name
    ```
