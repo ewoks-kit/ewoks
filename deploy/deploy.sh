@@ -12,26 +12,26 @@ function show_help {
 }
 
 
-function download_sdist {
+function download_assets {
     local gitlab="https://gitlab.esrf.fr"
     local namespace="workflow/ewoks"
     local project="$1"
     local outdir="$2"
     local refs="main"
-    local job="build_sdist"
+    local job="assets"
 
-    local datafile=$outdir/artifacts.zip
+    local datafile=$outdir/assets.zip
     local url="$gitlab/$namespace/$project/-/jobs/artifacts/$refs/download?job=$job"
     rm -rf $outdir
     mkdir -p $outdir
 
     echo ""
-    echo "Download artifacts:"
+    echo "Download assets:"
     echo "$url"
     curl -s -o $datafile -L $url
 
     if [ ! -f $datafile ];then
-        echo "Could not download the artifacts to deploy !!!"
+        echo "Could not download the assets to deploy !!!"
         return
     fi
     unzip $datafile -d $outdir > /dev/null 2>&1
@@ -78,8 +78,8 @@ function deploy {
     echo "Deploy project: $project"
 
     local deployroot="/tmp/deploy/$project"
-    local deploydir="$deployroot/sdist"
-    download_sdist $project $deployroot
+    local deploydir="$deployroot/assets"
+    download_assets $project $deployroot
     if [ ! -d "$deploydir" ];then
         echo "Failed to download the artifacts to deploy"
         return

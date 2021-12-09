@@ -107,6 +107,20 @@ black:
     when: on_success
     expire_in: 2h
 
+.assets:
+  stage: deploy
+  extends: .deploy
+  script:
+    - rm -rf assets
+    - mv sdist/* assets
+  after_script:
+    - ls -Rl assets
+  artifacts:
+    paths:
+      - assets
+    when: on_success
+    expire_in: 2h
+
 .build_sdist:
   extends: .build
   script:
