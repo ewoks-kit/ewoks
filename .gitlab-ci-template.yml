@@ -112,7 +112,7 @@ black:
   extends: .deploy
   script:
     - rm -rf assets
-    - mv sdist/* assets
+    - mv sdist/* assets/
   after_script:
     - ls -Rl assets
   artifacts:
