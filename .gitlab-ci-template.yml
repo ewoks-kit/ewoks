@@ -125,7 +125,6 @@ black:
 .build_sdist:
   extends: .build
   script:
-    - pip install .[dev]
     - python setup.py sdist
   variables:
     ARTIFACTS_SOURCE: dist
