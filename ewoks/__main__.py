@@ -1,5 +1,6 @@
 import sys
 import importlib
+from ewokscore import cliutils
 
 
 def import_binding(binding: str):
@@ -20,7 +21,7 @@ def main(argv=None):
         description="Esrf WOrKflow Sytem CLI", prog="ewoks"
     )
 
-    subparsers = parser.add_subparsers(help="Commands")
+    subparsers = parser.add_subparsers(help="Commands", dest="command")
     execute = subparsers.add_parser("execute", help="Execute a graph")
 
     execute.add_argument(
@@ -49,13 +50,16 @@ def main(argv=None):
         help="Default task result format",
     )
 
+    cliutils.add_log_parameters(parser)
     args, _ = parser.parse_known_args(argv[1:])
+    cliutils.apply_log_parameters(args)
 
-    varinfo = {"root_uri": args.root_uri, "scheme": args.scheme}
+    if args.command == "execute":
+        varinfo = {"root_uri": args.root_uri, "scheme": args.scheme}
+        binding = import_binding(args.scheduler)
+        execute_graph = getattr(binding, "execute_graph")
+        execute_graph(args.graph, varinfo=varinfo)
 
-    binding = import_binding(args.scheduler)
-    execute_graph = getattr(binding, "execute_graph")
-    execute_graph(args.graph, varinfo=varinfo)
     return 0
 
 
