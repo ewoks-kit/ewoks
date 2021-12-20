@@ -2,6 +2,7 @@ import sys
 import logging
 import importlib
 from pprint import pformat
+from typing import Optional
 from ewokscore import cliutils
 
 logger = logging.getLogger(__name__)
@@ -29,7 +30,44 @@ def parse_input(input_item: str):
         return {"name": label, "value": value}  # all input nodes
 
 
-def main(argv=None):
+def execute_workflow(args) -> Optional[dict]:
+    if args.test:
+        from ewokscore.tests.examples.graphs import graph_names, get_graph
+
+        graphs = list(graph_names())
+        if args.workflow not in graphs:
+            logger.error("Test graph '%s' does not exist: %s", args.workflow, graphs)
+            return None
+
+        graph, _ = get_graph(args.workflow)
+    else:
+        graph = args.workflow
+
+    inputs = [parse_input(input_item) for input_item in args.parameters]
+
+    results_of_all_nodes = args.output == "all"
+    outputs = None
+    if args.output == "all_values":
+        outputs = [{"all": True}]
+    elif args.output == "end_values":
+        outputs = [{"all": False}]
+
+    binding = import_binding(args.scheduler)
+    execute_graph = getattr(binding, "execute_graph")
+
+    varinfo = {"root_uri": args.root_uri, "scheme": args.scheme}
+    results = execute_graph(
+        graph,
+        varinfo=varinfo,
+        inputs=inputs,
+        outputs=outputs,
+        results_of_all_nodes=results_of_all_nodes,
+    )
+    logger.info("Results for workflow '%s': \n%s", args.workflow, pformat(results))
+    return results
+
+
+def main(argv=None, shell=True):
     import argparse
 
     if argv is None:
@@ -89,48 +127,26 @@ def main(argv=None):
         help="Log outputs (per task or merged values dictionary)",
     )
 
-    cliutils.add_log_parameters(parser)
+    if shell:
+        cliutils.add_log_parameters(parser)
     args, _ = parser.parse_known_args(argv[1:])
-    cliutils.apply_log_parameters(args)
+    if shell:
+        cliutils.apply_log_parameters(args)
 
     if args.command == "execute":
-        if args.test:
-            from ewokscore.tests.examples.graphs import graph_names, get_graph
-
-            graphs = list(graph_names())
-            if args.workflow not in graphs:
-                logger.error(
-                    "Test graph '%s' does not exist: %s", args.workflow, graphs
-                )
+        results = execute_workflow(args)
+        if shell:
+            if results is None:
                 return 1
-
-            graph, _ = get_graph(args.workflow)
+            else:
+                return 0
         else:
-            graph = args.workflow
+            return results
 
-        inputs = [parse_input(input_item) for input_item in args.parameters]
-
-        results_of_all_nodes = args.output == "all"
-        outputs = None
-        if args.output == "all_values":
-            outputs = [{"all": True}]
-        elif args.output == "end_values":
-            outputs = [{"all": False}]
-
-        binding = import_binding(args.scheduler)
-        execute_graph = getattr(binding, "execute_graph")
-
-        varinfo = {"root_uri": args.root_uri, "scheme": args.scheme}
-        results = execute_graph(
-            graph,
-            varinfo=varinfo,
-            inputs=inputs,
-            outputs=outputs,
-            results_of_all_nodes=results_of_all_nodes,
-        )
-        logger.info("Results for workflow '%s': \n%s", args.workflow, pformat(results))
-
-    return 0
+    if shell:
+        return 0
+    else:
+        return None
 
 
 if __name__ == "__main__":
