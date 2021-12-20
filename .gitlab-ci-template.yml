@@ -181,3 +181,11 @@ black:
 .test_sdist-3.9:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.9
+
+.test-3.10:
+  extends: .test
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.10
+
+.test_sdist-3.10:
+  extends: .test_sdist
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.10
