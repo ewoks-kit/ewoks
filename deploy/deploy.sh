@@ -50,7 +50,7 @@ function latest_pypi_version {
 }
 
 
-function artifact_version {
+function asset_version {
     local deploydir="$1"
     local filename=$(ls $deploydir)
 
@@ -81,7 +81,7 @@ function deploy {
     local deploydir="$deployroot/assets"
     download_assets $project $deployroot
     if [ ! -d "$deploydir" ];then
-        echo "Failed to download the artifacts to deploy"
+        echo "Failed to download the assets to deploy"
         return
     fi
 
@@ -91,7 +91,7 @@ function deploy {
     echo "twine upload -r pypi --sign $deploydir/*"
 
     local v1=$(latest_pypi_version $project)
-    local v2=$(artifact_version $deploydir)
+    local v2=$(asset_version $deploydir)
     echo ""
     echo "Latest version on pypi: $v1"
     echo "Version to deploy: $v2"
