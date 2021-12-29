@@ -1,19 +1,12 @@
 import sys
 import logging
-import importlib
+
 from pprint import pformat
 from typing import Optional
 from ewokscore import cliutils
+from .bindings import execute_graph
 
 logger = logging.getLogger(__name__)
-
-
-def import_binding(binding: str):
-    if binding == "none":
-        binding = "ewokscore"
-    else:
-        binding = "ewoks" + binding
-    return importlib.import_module(binding)
 
 
 def parse_input(input_item: str):
@@ -52,12 +45,10 @@ def execute_workflow(args) -> Optional[dict]:
     elif args.output == "end_values":
         outputs = [{"all": False}]
 
-    binding = import_binding(args.scheduler)
-    execute_graph = getattr(binding, "execute_graph")
-
     varinfo = {"root_uri": args.root_uri, "scheme": args.scheme}
     results = execute_graph(
         graph,
+        binding=args.binding,
         varinfo=varinfo,
         inputs=inputs,
         outputs=outputs,
@@ -86,11 +77,11 @@ def main(argv=None, shell=True):
         help="URI to a workflow (e.g. JSON filename)",
     )
     execute.add_argument(
-        "--scheduler",
+        "--binding",
         type=str,
         choices=["none", "dask", "ppf", "orange"],
         default="none",
-        help="Task scheduler to be used",
+        help="Task binding to be used",
     )
     execute.add_argument(
         "--root_uri",
