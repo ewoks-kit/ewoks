@@ -18,6 +18,7 @@ stages:
     refs:
       - main
       - merge_requests
+  timeout: 10m
 
 .base-win:
   extends: .base
@@ -30,6 +31,7 @@ stages:
     - python -m pip install --upgrade setuptools
   after_script:
     - rmdir build_venv /s /q
+  timeout: 10m
 
 .style:
   stage: style
