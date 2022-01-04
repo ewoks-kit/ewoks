@@ -25,9 +25,10 @@ stages:
     - SET "PATH=C:\\python\\%PYTHON_VER%;C:\\python\\%PYTHON_VER%\\Scripts;%PATH%"
     - python -m venv --clear build_venv
     - call "build_venv\\Scripts\\activate.bat"
-    - !reference [.base, before_script]
+    - python --version
+    - python -m pip install --upgrade pip
+    - python -m pip install --upgrade setuptools
   after_script:
-    - !reference [.base, after_script]
     - rmdir build_venv /s /q
 
 .style:
@@ -40,7 +41,7 @@ stages:
 .test:
   stage: test
   extends: .base
-  before_script:
+  before_script:  # cannot be referenced by extension
     - !reference [.base, before_script]
     - python -m pip install pytest-cov
   script:
@@ -50,7 +51,7 @@ stages:
 .test-win:
   stage: test
   extends: .base-win
-  before_script:
+  before_script:  # cannot be referenced by extension
     - !reference [.base-win, before_script]
     - python -m pip install pytest-cov
   script:
@@ -64,11 +65,9 @@ stages:
   tags:
     - linux
   before_script:
-    - !reference [.base, before_script]
     - rm -rf ${ARTIFACTS_DEST}
   after_script:
     - mv ${ARTIFACTS_SOURCE} ${ARTIFACTS_DEST}
-    - !reference [.base, after_script]
   artifacts:
     paths:
       - ${ARTIFACTS_DEST}/
@@ -135,7 +134,6 @@ stages:
 flake8:
   extends: .style
   before_script:
-    - !reference [.style, before_script]
     - python -m pip install flake8
   script:
     - flake8
@@ -143,7 +141,6 @@ flake8:
 black:
   extends: .style
   before_script:
-    - !reference [.style, before_script]
     - python -m pip install black
   script:
     - LC_ALL=C.UTF-8 black --check --safe .
@@ -153,7 +150,6 @@ black:
 .flake8_nb:
   extends: .style
   before_script:
-    - !reference [.style, before_script]
     - python -m pip install flake8_nb
   script:
     - flake8_nb
@@ -175,7 +171,6 @@ black:
     - mv html public
   after_script:
     - ls -Rl public
-    - !reference [.deploy, after_script]
   artifacts:
     paths:
       - public
@@ -191,14 +186,13 @@ black:
     - mv sdist/* assets/
   after_script:
     - ls -Rl assets
-    - !reference [.deploy, after_script]
   artifacts:
     paths:
       - assets
     when: on_success
     expire_in: 2h
 
-### Optional jobs for different python versions ###
+### Optional jobs for python 3.6 ###
 
 .test-3.6:
   extends: .test
@@ -258,6 +252,8 @@ black:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.6"
 
+### Optional jobs for python 3.7 ###
+
 .test-3.7:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.7
@@ -284,21 +280,10 @@ black:
   variables:
     PYTHON_VER: "3.7"
 
+### Optional jobs for python 3.8 ###
+
 .test-3.8:
   extends: .test
-  image: docker-registry.esrf.fr/dau/ewoks:python_3.8
-  tags:
-    - linux
-
-.test-3.7-win:
-  extends: .test-win
-  tags:
-    - win
-  variables:
-    PYTHON_VER: "3.7"
-
-.test_sdist-3.8:
-  extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8
   tags:
     - linux
@@ -309,6 +294,20 @@ black:
     - win
   variables:
     PYTHON_VER: "3.8"
+
+.test-3.8_glx-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.8"
+
+.test_sdist-3.8:
+  extends: .test_sdist
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.8
+  tags:
+    - linux
 
 .test_sdist-3.8-win:
   extends: .test_sdist-win
@@ -324,6 +323,8 @@ black:
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.8"
+
+### Optional jobs for python 3.9 ###
 
 .test-3.9:
   extends: .test
@@ -350,6 +351,8 @@ black:
     - win
   variables:
     PYTHON_VER: "3.9"
+
+### Optional jobs for python 3.10 ###
 
 .test-3.10:
   extends: .test
