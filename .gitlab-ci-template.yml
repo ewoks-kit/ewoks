@@ -8,67 +8,143 @@ stages:
 ### Jobs templates for each stage ###
 
 .base:
+  before_script:
+    - python --version
+    - python -m pip install --upgrade pip
+    - python -m pip install --upgrade setuptools
+  after_script:
+    - echo 
   only:
     refs:
       - main
       - merge_requests
 
+.base-win:
+  extends: .base
+  before_script:
+    - SET "PATH=C:\\python\\%PYTHON_VER%;C:\\python\\%PYTHON_VER%\\Scripts;%PATH%"
+    - python -m venv --clear build_venv
+    - call "build_venv\\Scripts\\activate.bat"
+    - !reference [.base, before_script]
+  after_script:
+    - !reference [.base, after_script]
+    - rmdir build_venv /s /q
+
 .style:
   stage: style
   extends: .base
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6
+  tags:
+    - linux
 
 .test:
   stage: test
   extends: .base
   before_script:
-    - pip install pytest-cov
+    - !reference [.base, before_script]
+    - python -m pip install pytest-cov
   script:
-    - pip install --pre .[test]
-    - pytest --cov=./ -v .
+    - python -m pip install --pre .[test]
+    - python -m pytest --cov=./ -v .
+
+.test-win:
+  stage: test
+  extends: .base-win
+  before_script:
+    - !reference [.base-win, before_script]
+    - python -m pip install pytest-cov
+  script:
+    - python -m pip install --pre .[test]
+    - python -m pytest --cov=./ -v .
 
 .build:
   stage: build
   extends: .base
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6_doc  # pandoc
+  tags:
+    - linux
   before_script:
+    - !reference [.base, before_script]
     - rm -rf ${ARTIFACTS_DEST}
   after_script:
     - mv ${ARTIFACTS_SOURCE} ${ARTIFACTS_DEST}
+    - !reference [.base, after_script]
   artifacts:
     paths:
       - ${ARTIFACTS_DEST}/
     when: on_success
     expire_in: 2h
   only:
-    - main
+    refs:
+      - main
+
+.build_sdist:
+  extends: .build
+  script:
+    - python setup.py sdist
+  variables:
+    ARTIFACTS_SOURCE: dist
+    ARTIFACTS_DEST: sdist
 
 .test_build:
   stage: test_build
   extends: .base
   only:
-    - main
+    refs:
+      - main
+
+.test_build-win:
+  stage: test_build
+  extends: .base-win
+  only:
+    refs:
+      - main
+
+.test_sdist:
+  extends: .test_build
+  script:
+    - ls sdist
+    - export REQ_SPECIFIER=$(ls sdist/*.tar.gz)[test]
+    - echo REQ_SPECIFIER=${REQ_SPECIFIER}
+    - python -m pip install --pre ${REQ_SPECIFIER}
+    - python -m pytest -v --pyargs ${CI_PROJECT_NAME}.tests
+
+.test_sdist-win:
+  extends: .test_build-win
+  script:
+    - dir sdist
+    - FOR %%F IN (sdist\*.tar.gz) DO (
+        set REQ_SPECIFIER=%%F[test]
+      )
+    - echo REQ_SPECIFIER=%REQ_SPECIFIER%
+    - python -m pip install --pre %REQ_SPECIFIER%
+    - python -m pytest -v --pyargs %CI_PROJECT_NAME%.tests
 
 .deploy:
   stage: deploy
   extends: .base
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6
+  tags:
+    - linux
   only:
-    - main
+    refs:
+      - main
 
 ### Required jobs ###
 
 flake8:
   extends: .style
   before_script:
-    - pip install flake8
+    - !reference [.style, before_script]
+    - python -m pip install flake8
   script:
     - flake8
 
 black:
   extends: .style
   before_script:
-    - pip install black
+    - !reference [.style, before_script]
+    - python -m pip install black
   script:
     - LC_ALL=C.UTF-8 black --check --safe .
 
@@ -77,21 +153,19 @@ black:
 .flake8_nb:
   extends: .style
   before_script:
-    - pip install flake8_nb
+    - !reference [.style, before_script]
+    - python -m pip install flake8_nb
   script:
     - flake8_nb
 
 .build_doc:
   extends: .build
   script:
-    - pip install .[doc]
+    - python -m pip install .[doc]
     - python setup.py build_sphinx
   variables:
     ARTIFACTS_SOURCE: build/sphinx/html
     ARTIFACTS_DEST: html
-
-.sphinx_and_artifacts:  # DEPRECATED
-  extends: .build_doc
 
 .pages:
   stage: deploy
@@ -101,6 +175,7 @@ black:
     - mv html public
   after_script:
     - ls -Rl public
+    - !reference [.deploy, after_script]
   artifacts:
     paths:
       - public
@@ -116,76 +191,188 @@ black:
     - mv sdist/* assets/
   after_script:
     - ls -Rl assets
+    - !reference [.deploy, after_script]
   artifacts:
     paths:
       - assets
     when: on_success
     expire_in: 2h
 
-.build_sdist:
-  extends: .build
-  script:
-    - python setup.py sdist
-  variables:
-    ARTIFACTS_SOURCE: dist
-    ARTIFACTS_DEST: sdist
+### Optional jobs for different python versions ###
 
 .test-3.6:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6
+  tags:
+    - linux
 
-.test_sdist:
-  extends: .test_build
-  before_script:
-    - echo ""
-  script:
-    - pip install --pre sdist/$(ls sdist)[test]
-    - pytest -v --pyargs ${CI_PROJECT_NAME}.tests
+.test-3.6-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.6"
 
 .test_sdist-3.6:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6
+  tags:
+    - linux
+
+.test_sdist-3.6-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.6"
 
 .test-3.6_glx:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6_glx  # libgl1-mesa-glx
+  tags:
+    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
+
+.test-3.6_glx-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.6"
 
 .test_sdist-3.6_glx:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6_glx  # libgl1-mesa-glx
+  tags:
+    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
+
+.test_sdist-3.6_glx-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.6"
 
 .test-3.7:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.7
+  tags:
+    - linux
+
+.test-3.7-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.7"
 
 .test_sdist-3.7:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.7
+  tags:
+    - linux
+
+.test_sdist-3.7-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.7"
 
 .test-3.8:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8
+  tags:
+    - linux
+
+.test-3.7-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.7"
 
 .test_sdist-3.8:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8
+  tags:
+    - linux
+
+.test-3.8-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.8"
+
+.test_sdist-3.8-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.8"
+
+.test_sdist-3.8_glx-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.8"
 
 .test-3.9:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.9
+  tags:
+    - linux
+
+.test-3.9-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.9"
 
 .test_sdist-3.9:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.9
+  tags:
+    - linux
+
+.test_sdist-3.9-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.9"
 
 .test-3.10:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.10
+  tags:
+    - linux
+
+.test-3.10-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.10"
 
 .test_sdist-3.10:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.10
+  tags:
+    - linux
+
+.test_sdist-3.10-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.10"
