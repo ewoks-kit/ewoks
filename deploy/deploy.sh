@@ -14,9 +14,13 @@ function show_help {
 
 function download_assets {
     local gitlab="https://gitlab.esrf.fr"
-    local namespace="workflow/ewoks"
     local project="$1"
     local outdir="$2"
+    if [[ $project == "ewoks"* ]]; then
+        local namespace="workflow/ewoks"
+    else
+        local namespace="workflow"
+    fi
     local refs="main"
     local job="assets"
 
