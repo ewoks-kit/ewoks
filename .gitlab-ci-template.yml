@@ -108,7 +108,8 @@ stages:
     - export REQ_SPECIFIER=$(ls sdist/*.tar.gz)[test]
     - echo REQ_SPECIFIER=${REQ_SPECIFIER}
     - python -m pip install --pre ${REQ_SPECIFIER}
-    - python -m pytest -v --pyargs ${CI_PROJECT_NAME}.tests
+    - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
+    - python -m pytest -v --pyargs ${PROJECT_NAME}.tests
 
 .test_sdist-win:
   extends: .test_build-win
@@ -119,7 +120,8 @@ stages:
       )
     - echo REQ_SPECIFIER=%REQ_SPECIFIER%
     - python -m pip install --pre %REQ_SPECIFIER%
-    - python -m pytest -v --pyargs %CI_PROJECT_NAME%.tests
+    - set PROJECT_NAME=%CI_PROJECT_NAME:-=_%
+    - python -m pytest -v --pyargs %PROJECT_NAME%.tests
 
 .deploy:
   stage: deploy
