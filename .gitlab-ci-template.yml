@@ -196,6 +196,30 @@ black:
     when: on_success
     expire_in: 2h
 
+.doi:
+  stage: deploy
+  extends: .deploy
+  image: docker-registry.esrf.fr/dau/ewoks:doi
+  before_script:
+    - eossr-check-connection-zenodo --token $ZENODO_TOKEN --sandbox False -p $CI_PROJECT_DIR
+  script:
+    - gitlab_prepare_upload_zenodo.sh $CI_PROJECT_NAME $CI_PROJECT_DIR zenodo_build
+    # - eossr-upload-repository -t $ZENODO_TOKEN -s False -i zenodo_build [-id $ZENODO_PROJECT_ID]
+  after_script:
+    - ls -Rl zenodo_build
+  artifacts:
+    paths:
+      - zenodo_build
+    when: on_success
+    expire_in: 2h
+  only:
+    refs: # REMOVE
+      - main
+      - merge_requests
+    variables:
+      - $ZENODO_TOKEN
+
+
 ### Optional jobs for python 3.6 ###
 
 .test-3.6:
