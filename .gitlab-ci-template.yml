@@ -63,7 +63,7 @@ stages:
 .build:
   stage: build
   extends: .base
-  image: docker-registry.esrf.fr/dau/ewoks:python_3.6_doc  # pandoc
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.8_doc  # pandoc
   tags:
     - linux
   before_script:
