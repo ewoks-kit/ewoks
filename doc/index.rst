@@ -10,7 +10,7 @@ The purpose of *ewoks* is to provide an abstraction layer between graph represen
 
 *ewoks* has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
 
-Workflows can be loaded and executed from the command line
+Workflows can be executed from the command line
 
 .. code:: bash
 
