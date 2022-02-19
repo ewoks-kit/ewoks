@@ -18,7 +18,7 @@ pytest --pyargs ewoks.tests
 
 ## Getting started
 
-Workflows can be loaded and executed from the command line
+Workflows can be executed from the command line
 
 ```bash
 ewoks execute /path/to/graph.json [--binding dask]
