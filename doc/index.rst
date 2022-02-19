@@ -22,7 +22,7 @@ or from python
 
     from ewoks import execute_graph
 
-    result = execute_graph("/path/to/graph.json", binding=dask)
+    result = execute_graph("/path/to/graph.json", binding="dask")
 
 When no binding is specified it will use sequential execution from `ewokscore`.
 
