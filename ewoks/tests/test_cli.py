@@ -28,7 +28,7 @@ def test_main_execute(graph_name, scheme, binding, tmpdir):
         "all",
     ]
     if scheme:
-        argv += ["--root_uri", str(tmpdir), "scheme", scheme]
+        argv += ["--data-root-uri", str(tmpdir), "scheme", scheme]
         varinfo = {"root_uri": str(tmpdir), "scheme": scheme}
     else:
         varinfo = None
