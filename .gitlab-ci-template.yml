@@ -284,6 +284,38 @@ black:
   variables:
     PYTHON_VER: "3.7"
 
+.test-3.7_glx:
+  extends: .test
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.7_glx  # libgl1-mesa-glx
+  tags:
+    - linux
+  variables:
+    QT_QPA_PLATFORM: offscreen
+
+.test-3.7_glx-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.7"
+
+.test_sdist-3.7_glx:
+  extends: .test_sdist
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.7_glx  # libgl1-mesa-glx
+  tags:
+    - linux
+  variables:
+    QT_QPA_PLATFORM: offscreen
+
+.test_sdist-3.7_glx-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.7"
+
 ### Optional jobs for python 3.8 ###
 
 .test-3.8:
@@ -299,14 +331,6 @@ black:
   variables:
     PYTHON_VER: "3.8"
 
-.test-3.8_glx-win:
-  extends: .test-win
-  tags:
-    - win
-  variables:
-    QT_QPA_PLATFORM: offscreen
-    PYTHON_VER: "3.8"
-
 .test_sdist-3.8:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8
@@ -319,6 +343,30 @@ black:
     - win
   variables:
     PYTHON_VER: "3.8"
+
+.test-3.8_glx:
+  extends: .test
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.8_glx  # libgl1-mesa-glx
+  tags:
+    - linux
+  variables:
+    QT_QPA_PLATFORM: offscreen
+
+.test-3.8_glx-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.8"
+
+.test_sdist-3.8_glx:
+  extends: .test_sdist
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.8_glx  # libgl1-mesa-glx
+  tags:
+    - linux
+  variables:
+    QT_QPA_PLATFORM: offscreen
 
 .test_sdist-3.8_glx-win:
   extends: .test_sdist-win
@@ -356,6 +404,38 @@ black:
   variables:
     PYTHON_VER: "3.9"
 
+.test-3.9_glx:
+  extends: .test
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.9_glx  # libgl1-mesa-glx
+  tags:
+    - linux
+  variables:
+    QT_QPA_PLATFORM: offscreen
+
+.test-3.9_glx-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.9"
+
+.test_sdist-3.9_glx:
+  extends: .test_sdist
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.9_glx  # libgl1-mesa-glx
+  tags:
+    - linux
+  variables:
+    QT_QPA_PLATFORM: offscreen
+
+.test_sdist-3.9_glx-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.9"
+
 ### Optional jobs for python 3.10 ###
 
 .test-3.10:
@@ -382,4 +462,36 @@ black:
   tags:
     - win
   variables:
+    PYTHON_VER: "3.10"
+
+.test-3.10_glx:
+  extends: .test
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.10_glx  # libgl1-mesa-glx
+  tags:
+    - linux
+  variables:
+    QT_QPA_PLATFORM: offscreen
+
+.test-3.10_glx-win:
+  extends: .test-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
+    PYTHON_VER: "3.10"
+
+.test_sdist-3.10_glx:
+  extends: .test_sdist
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.10_glx  # libgl1-mesa-glx
+  tags:
+    - linux
+  variables:
+    QT_QPA_PLATFORM: offscreen
+
+.test_sdist-3.10_glx-win:
+  extends: .test_sdist-win
+  tags:
+    - win
+  variables:
+    QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.10"
