@@ -1,8 +1,5 @@
-import os
 import importlib
-import tempfile
 from typing import Optional, List
-from contextlib import contextmanager
 
 
 def import_binding(binding: Optional[str]):
@@ -13,15 +10,12 @@ def import_binding(binding: Optional[str]):
     return importlib.import_module(binding)
 
 
-@contextmanager
-def convert_to_ewoks_graph(graph, binding: Optional[str], **load_graph_options):
+def as_ewoks_graph(graph, binding: Optional[str], **load_graph_options):
     if isinstance(graph, str) and graph.endswith(".ows") and binding != "orange":
         mod = importlib.import_module("ewoksorange.bindings")
-        with tempfile.TemporaryDirectory(prefix="ewoks") as tmpdirname:
-            filename = os.path.join(tmpdirname, "ewokstaskgraph.json")
-            yield mod.ows_to_ewoks(graph, filename, **load_graph_options)
+        return mod.ows_to_ewoks(graph, **load_graph_options), True
     else:
-        yield graph
+        return graph, False
 
 
 def execute_graph(
@@ -31,10 +25,11 @@ def execute_graph(
     load_options: Optional[dict] = None,
     **execute_options
 ):
-    with convert_to_ewoks_graph(
-        graph, binding, inputs=inputs, load_options=load_options
-    ) as graph:
-        mod = import_binding(binding)
-        return mod.execute_graph(
-            graph, inputs=inputs, load_options=load_options, **execute_options
-        )
+    if load_options is None:
+        load_options = dict()
+    graph, loaded = as_ewoks_graph(graph, binding, inputs=inputs, **load_options)
+    if not loaded:
+        execute_options["inputs"] = inputs
+        execute_options["load_options"] = load_options
+    mod = import_binding(binding)
+    return mod.execute_graph(graph, **execute_options)
