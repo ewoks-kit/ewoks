@@ -1,5 +1,5 @@
 import importlib
-from typing import Optional, List
+from typing import Any, Optional, List, Tuple
 
 
 def import_binding(binding: Optional[str]):
@@ -10,7 +10,13 @@ def import_binding(binding: Optional[str]):
     return importlib.import_module(binding)
 
 
-def as_ewoks_graph(graph, binding: Optional[str], **load_graph_options):
+def as_ewoks_graph(
+    graph: Any, binding: Optional[str], **load_graph_options
+) -> Tuple[Any, bool]:
+    """Returns a 2-tuple where the first element is a graph and the second a boolean that
+    indicates whether the graph has been loaded (i.e. using the `load_graph_options`)
+    or not (i.e. simply return the `graph` argument).
+    """
     if isinstance(graph, str) and graph.endswith(".ows") and binding != "orange":
         mod = importlib.import_module("ewoksorange.bindings")
         return mod.ows_to_ewoks(graph, **load_graph_options), True
