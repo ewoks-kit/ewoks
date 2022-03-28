@@ -2,13 +2,17 @@
 
 
 function show_help {
-  echo "
-        Deploy projects on pypi from gitlab artifacts
+  echo "usage: ./deploy.sh project [-n NAMESPACE] [-h]
 
-        Usage: ./deploy.sh project [-h]
-        project         Project to be deployed.
-        -h              Help
-       "
+Deploy projects on pypi from gitlab artifacts
+
+positional arguments:
+    project             Project to be deployed.
+
+optional arguments:
+    -n NAMESPACE        Gitlab namespace of the project ('workflow/ewoks' by default)
+    -h, --help          Show this help message and exit
+"
 }
 
 
@@ -16,16 +20,17 @@ function download_assets {
     local gitlab="https://gitlab.esrf.fr"
     local project="$1"
     local outdir="$2"
+    local projectnamespace="$3"
     if [[ $project == "ewoks"* ]]; then
-        local namespace="workflow/ewoks"
-    else
-        local namespace="workflow"
+        local projectnamespace="workflow/ewoks"
+    elif [ -z $projectnamespace ]; then
+        local projectnamespace="workflow"
     fi
     local refs="main"
     local job="assets"
 
     local datafile=$outdir/assets.zip
-    local url="$gitlab/$namespace/$project/-/jobs/artifacts/$refs/download?job=$job"
+    local url="$gitlab/$projectnamespace/$project/-/jobs/artifacts/$refs/download?job=$job"
     rm -rf $outdir
     mkdir -p $outdir
 
@@ -78,12 +83,13 @@ function yesno {
 
 function deploy {
     local project="$1"
+    local projectnamespace="$2"
     echo ""
     echo "Deploy project: $project"
 
     local deployroot="/tmp/deploy/$project"
     local deploydir="$deployroot/assets"
-    download_assets $project $deployroot
+    download_assets $project $deployroot $projectnamespace
     if [ ! -d "$deploydir" ];then
         echo "Failed to download the assets to deploy"
         return
@@ -113,17 +119,33 @@ function deploy {
 
 
 function main {
-    local project
-    for i in "$@"; do
-    case $i in
-        -h|--help)
-        show_help
-        return
-        ;;
-        *)
-        project=$i
-        ;;
-    esac
+    local project=""
+    local projectnamespace=""
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -n|--namespace)
+                projectnamespace="$2"
+                shift # past argument
+                shift # past value
+                ;;
+            -h|--help)
+                show_help
+                return
+                ;;
+            -*|--*)
+                echo "Unknown option $1"
+                exit 1
+                ;;
+            *)
+                if [ $project ]; then
+                    echo "Only one positional argument is allowed"
+                    exit 1
+                fi
+                project="$1" # save positional arg
+                shift # past argument
+                ;;
+        esac
     done
 
     if [ -z $project ];then
@@ -131,7 +153,7 @@ function main {
         return
     fi
 
-    deploy $project
+    deploy $project $projectnamespace
 }
 
 
