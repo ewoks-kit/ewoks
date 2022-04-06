@@ -5,6 +5,7 @@ import logging
 from pprint import pformat
 from ewokscore import cliutils
 from .bindings import execute_graph
+from .bindings import convert_graph
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ def create_argument_parser(shell=False):
 
     subparsers = parser.add_subparsers(help="Commands", dest="command")
     execute = subparsers.add_parser("execute", help="Execute a workflow")
+    convert = subparsers.add_parser("convert", help="Convert a workflow")
 
     execute.add_argument(
         "--binding",
@@ -25,6 +27,7 @@ def create_argument_parser(shell=False):
         help="Task binding to be used",
     )
     cliutils.add_execute_parameters(execute, shell=shell)
+    cliutils.add_convert_parameters(convert, shell=shell)
 
     return parser
 
@@ -40,6 +43,11 @@ def command_execute(args, shell=False):
             return 0
     else:
         return results
+
+
+def command_convert(args, shell=False):
+    cliutils.apply_convert_parameters(args, shell=shell)
+    convert_graph(args.graph, args.destination, **args.convert_options)
 
 
 def command_default(args, shell=False):
@@ -58,6 +66,8 @@ def main(argv=None, shell=True):
 
     if args.command == "execute":
         return command_execute(args, shell=shell)
+    elif args.command == "convert":
+        return command_convert(args, shell=shell)
     else:
         return command_default(args, shell=shell)
 
