@@ -36,4 +36,4 @@ When no binding is specified it will use sequential execution from `ewokscore`.
 
 ## Documentation
 
-https://workflow.gitlab-pages.esrf.fr/ewoks/ewoks
+https://ewoks.readthedocs.io/
