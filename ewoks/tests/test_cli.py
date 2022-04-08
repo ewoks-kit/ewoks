@@ -1,3 +1,4 @@
+import os
 import sys
 import pytest
 
@@ -13,7 +14,7 @@ from ewokscore.tests.test_examples import assert_all_results as assert_core_resu
 @pytest.mark.parametrize("graph_name", graph_names())
 @pytest.mark.parametrize("scheme", (None, "json"))
 @pytest.mark.parametrize("binding", ("none", "dask", "ppf"))
-def test_main_execute(graph_name, scheme, binding, tmpdir):
+def test_execute(graph_name, scheme, binding, tmpdir):
     if scheme == "json":
         pytest.skip("TODO")
     graph, expected = get_graph(graph_name)
@@ -49,3 +50,19 @@ def test_main_execute(graph_name, scheme, binding, tmpdir):
         assert_dask_results(ewoksgraph, result, expected, varinfo)
     else:
         assert_core_results(ewoksgraph, result, expected, varinfo)
+
+
+@pytest.mark.parametrize("graph_name", graph_names())
+def test_convert(graph_name, tmpdir):
+    destination = str(tmpdir / f"{graph_name}.json")
+    argv = [
+        sys.executable,
+        "convert",
+        graph_name,
+        destination,
+        "--test",
+        "-s",
+        "indent=2",
+    ]
+    main(argv=argv, shell=False)
+    assert os.path.exists(destination)
