@@ -59,7 +59,7 @@ Tutorials
 Binding documentation:
 ----------------------
 
- * `ewokscore <https://workflow.gitlab-pages.esrf.fr/ewoks/ewokscore>`_ : create workflows and implement tasks
- * `ewoksorange <https://workflow.gitlab-pages.esrf.fr/ewoks/ewoksorange>`_ : create and execute workflows with a GUI
- * `ewoksppf <https://workflow.gitlab-pages.esrf.fr/ewoks/ewoksppf>`_ : execute cyclic workflows
- * `ewoksdask <https://workflow.gitlab-pages.esrf.fr/ewoks/ewoksdask>`_ : distributed workflow execution
+ * `ewokscore <https://ewokscore.readthedocs.io/>`_ : create workflows and implement tasks
+ * `ewoksorange <https://ewoksorange.readthedocs.io/>`_ : create and execute workflows with a GUI
+ * `ewoksppf <https://ewoksppf.readthedocs.io/>`_ : execute cyclic workflows
+ * `ewoksdask <https://ewoksdask.readthedocs.io/>`_ : distributed workflow execution
