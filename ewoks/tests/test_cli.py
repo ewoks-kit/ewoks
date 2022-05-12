@@ -6,9 +6,7 @@ from ewoks.__main__ import main
 from ewokscore import load_graph
 from ewokscore.tests.examples.graphs import graph_names
 from ewokscore.tests.examples.graphs import get_graph
-from ewoksppf.tests.test_examples import assert_results as assert_ppf_results
-from ewoksdask.tests.test_examples import assert_all_results as assert_dask_results
-from ewokscore.tests.test_examples import assert_all_results as assert_core_results
+from ewokscore.tests.utils.results import assert_execute_graph_default_result
 
 
 @pytest.mark.parametrize("graph_name", graph_names())
@@ -27,6 +25,7 @@ def test_execute(graph_name, scheme, binding, tmpdir):
         binding,
         "--output",
         "all",
+        "--merge-outputs",
     ]
     if scheme:
         argv += ["--data-root-uri", str(tmpdir), "scheme", scheme]
@@ -34,6 +33,7 @@ def test_execute(graph_name, scheme, binding, tmpdir):
     else:
         varinfo = None
 
+    keep = graph
     ewoksgraph = load_graph(graph)
     non_dag = ewoksgraph.is_cyclic or ewoksgraph.has_conditional_links
 
@@ -44,12 +44,8 @@ def test_execute(graph_name, scheme, binding, tmpdir):
 
     result = main(argv=argv, shell=False)
 
-    if binding == "ppf":
-        assert_ppf_results(graph, ewoksgraph, result, expected, varinfo)
-    elif binding == "dask":
-        assert_dask_results(ewoksgraph, result, expected, varinfo)
-    else:
-        assert_core_results(ewoksgraph, result, expected, varinfo)
+    assert_execute_graph_default_result(ewoksgraph, result, expected, varinfo)
+    assert keep == graph
 
 
 @pytest.mark.parametrize("graph_name", graph_names())

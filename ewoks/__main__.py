@@ -1,13 +1,10 @@
 import sys
 import argparse
-import logging
 
 from pprint import pformat
 from ewokscore import cliutils
 from .bindings import execute_graph
 from .bindings import convert_graph
-
-logger = logging.getLogger(__name__)
 
 
 def create_argument_parser(shell=False):
@@ -35,7 +32,8 @@ def create_argument_parser(shell=False):
 def command_execute(args, shell=False):
     cliutils.apply_execute_parameters(args, shell=shell)
     results = execute_graph(args.graph, binding=args.binding, **args.execute_options)
-    logger.info("Results for workflow '%s': \n%s", args.workflow, pformat(results))
+    print("Result of workflow '%s':\n%s" % (args.workflow, pformat(results)))
+
     if shell:
         if results is None:
             return 1
