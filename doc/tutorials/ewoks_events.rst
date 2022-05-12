@@ -13,7 +13,7 @@ To register event handlers from python:
         "job_id": "1234",
         "handlers": [
             {
-                "class": "ewokscore.events.handlers.EwoksSqlite3EventHandler",
+                "class": "ewokscore.events.handlers.Sqlite3EwoksEventHandler",
                 "arguments": [{"name": "uri",
                                "value": "file:/tmp/ewoks_event.db"}],
             }
