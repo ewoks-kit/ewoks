@@ -49,6 +49,7 @@ stages:
   script:
     - python -m pip install --pre .[test]
     - python -m pytest --cov=./ -v .
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
 
 .test-win:
   stage: test
