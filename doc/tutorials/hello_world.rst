@@ -6,7 +6,7 @@ A short script that defines a task, creates a workflow and executes it.
 .. code:: python
 
     from ewokscore import Task
-    from ewokscore import execute_graph
+    from ewoks import execute_graph
 
     # Implement a workflow task
     class SumTask(
@@ -19,7 +19,7 @@ A short script that defines a task, creates a workflow and executes it.
             self.outputs.result = result
 
 
-    # Define a workflow
+    # Define a workflow with default inputs
     nodes = [
         {
             "id": "task1",
@@ -52,9 +52,12 @@ A short script that defines a task, creates a workflow and executes it.
             "data_mapping": [{"target_input": "a", "source_output": "result"}],
         },
     ]
-    workflow = {"nodes": nodes, "links": links}
+    workflow = {"graph": {"id": "testworkflow"}, "nodes": nodes, "links": links}
 
-    # Execute a workflow (without task scheduler)
-    varinfo = {"root_uri": "/tmp/myresults"}  # optional
-    tasks = execute_graph(workflow, varinfo=varinfo)
-    print(tasks["task3"].output_values)
+    # Define task inputs
+    inputs = [{"id": "task1", "name": "a", "value": 10}]
+
+    # Execute a workflow (use a proper Ewoks task scheduler in production)
+    varinfo = {"root_uri": "/tmp/myresults"}  # optionally save all task outputs
+    result = execute_graph(workflow, varinfo=varinfo, inputs=inputs)
+    print(result)
