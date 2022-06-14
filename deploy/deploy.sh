@@ -5,8 +5,9 @@ function show_help {
   echo "
         Deploy projects on pypi from gitlab artifacts
 
-        Usage: ./deploy.sh project [-h]
+        Usage: ./deploy.sh project [-h] [-n|--namespace name]
         project         Project to be deployed.
+        -n|--namespace  Gitlab namespace of the project
         -h              Help
        "
 }
@@ -16,10 +17,13 @@ function download_assets {
     local gitlab="https://gitlab.esrf.fr"
     local project="$1"
     local outdir="$2"
-    if [[ $project == "ewoks"* ]]; then
-        local namespace="workflow/ewoks"
-    else
-        local namespace="workflow"
+    local namespace="$3"
+    if [[ -z $namespace ]]; then
+        if [[ $project == "ewoks"* ]]; then
+            namespace="workflow/ewoks"
+        else
+            namespace="workflow"
+        fi
     fi
     local refs="main"
     local job="assets"
@@ -78,12 +82,13 @@ function yesno {
 
 function deploy {
     local project="$1"
+    local namespace="$2"
     echo ""
     echo "Deploy project: $project"
 
     local deployroot="/tmp/deploy/$project"
     local deploydir="$deployroot/assets"
-    download_assets $project $deployroot
+    download_assets $project $deployroot $namespace
     if [ ! -d "$deploydir" ];then
         echo "Failed to download the assets to deploy"
         return
@@ -114,24 +119,40 @@ function deploy {
 
 function main {
     local project
-    for i in "$@"; do
-    case $i in
+    local namespace
+
+    POSITIONAL_ARGS=()
+
+    while [[ $# -gt 0 ]]; do
+    case $1 in
         -h|--help)
         show_help
         return
         ;;
+        -n|--namespace)
+        namespace="$2"
+        shift # past argument
+        shift # past value
+        ;;
+        -*|--*)
+        echo "Unknown option $1"
+        exit 1
+        ;;
         *)
-        project=$i
+        POSITIONAL_ARGS+=("$1") # save positional arg
+        shift # past argument
         ;;
     esac
     done
+
+    project=${POSITIONAL_ARGS[0]}
 
     if [ -z $project ];then
         show_help
         return
     fi
 
-    deploy $project
+    deploy $project $namespace
 }
 
 
