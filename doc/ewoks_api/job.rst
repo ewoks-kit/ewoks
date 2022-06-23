@@ -17,7 +17,7 @@ Install on the worker side
     python -m pip install ewoksjob[worker,redis,monitor]
 
 The communication between client and worker goes through *Redis*, *RabbitMQ* or *Sqlite3*.
-Depending on which one you need, the `redis` installation option may vary. Both client and
+Depending on which one you choose, the `redis` installation option may vary. Both client and
 worker need access to a configuration that specifies the URL of the database and/or broker.
 For more information see the `ewoksjob documentation <https://ewoksjob.readthedocs.io/>`_.
 
