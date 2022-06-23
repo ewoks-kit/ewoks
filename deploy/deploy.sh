@@ -48,7 +48,7 @@ function download_assets {
 
 function latest_pypi_version {
     local project="$1"
-    local line=$(python -m pip index versions $project --pre)
+    local line=$(python3 -m pip index versions $project --pre)
 
     local regex="$project \(([^\(\)]+)\)"
     if [[ $line =~ $regex ]]

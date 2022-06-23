@@ -1,9 +1,11 @@
 Ewoks events
 ============
 
-Execution events can be emitted by ewoks when event handlers are registered.
+Events can be emitted by *ewoks* during the execution of a workflow to notify
+about progress and potential errors. For this you can specify one or more
+destinations where the events should be send to.
 
-To register event handlers from python:
+To specify event handlers from python:
 
 .. code:: python
 
@@ -21,7 +23,7 @@ To register event handlers from python:
     }
     results = execute_graph("/path/to/file.json", execinfo=execinfo)
 
-To register event handlers from the shell:
+To specify event handlers from the command line:
 
 .. code:: bash
 
