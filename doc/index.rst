@@ -29,7 +29,7 @@ Execute a workflow from the command line
 
     ewoks execute /path/to/graph.json
 
-Ewoks has different interfaces to execute an ewoks workflow
+*Ewoks* has different interfaces to execute a workflow
 
 .. toctree::
     :maxdepth: 1
