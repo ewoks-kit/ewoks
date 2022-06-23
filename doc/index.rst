@@ -60,5 +60,5 @@ Binding documentation:
  * `ewoksppf <https://ewoksppf.readthedocs.io/>`_ : execute cyclic workflows
  * `ewoksdask <https://ewoksdask.readthedocs.io/>`_ : parallelize workflow execution
  * `ewoksjob <https://ewoksjob.readthedocs.io/>`_: distribute workflow execution
- * `ewoksserver <https://ewoksjob.readthedocs.io/>`_: REST server to manage and execute workflows
- * `ewoksweb <https://ewoksjob.readthedocs.io/>`_: web frontend to create, visualize and execute workflows
+ * `ewoksserver <https://ewoksserver.readthedocs.io/>`_: REST server to manage and execute workflows
+ * `ewoksweb <https://ewoksweb.readthedocs.io/>`_: web frontend to create, visualize and execute workflows
