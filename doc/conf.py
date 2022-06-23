@@ -6,10 +6,18 @@ release = "0.1"
 copyright = "2021, ESRF"
 author = "ESRF"
 
-extensions = ["nbsphinx", "nbsphinx_link"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "nbsphinx",
+    "nbsphinx_link",
+]
 templates_path = ["_templates"]
 exclude_patterns = ["build", "**.ipynb_checkpoints"]
+
 pygments_style = "sphinx"
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "all"
 
 html_theme = "alabaster"
 html_static_path = []
