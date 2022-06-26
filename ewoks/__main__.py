@@ -67,6 +67,7 @@ def main(argv=None, shell=True):
     elif args.command == "convert":
         return command_convert(args, shell=shell)
     else:
+        parser.print_help()
         return command_default(args, shell=shell)
 
 
