@@ -87,6 +87,11 @@ stages:
   variables:
     ARTIFACTS_SOURCE: dist
     ARTIFACTS_DEST: sdist
+  artifacts:
+    paths:
+      - sdist/
+    when: on_success
+    expire_in: 2h
 
 .test_build:
   stage: test_build
@@ -167,6 +172,11 @@ black:
   variables:
     ARTIFACTS_SOURCE: build/sphinx/html
     ARTIFACTS_DEST: html
+  artifacts:
+    paths:
+      - html/
+    when: on_success
+    expire_in: 2h
 
 .pages:
   stage: deploy
