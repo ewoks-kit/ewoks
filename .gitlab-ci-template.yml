@@ -54,12 +54,9 @@ stages:
 .test-win:
   stage: test
   extends: .base-win
-  before_script:  # cannot be referenced by extension
-    - !reference [.base-win, before_script]
-    - python -m pip install pytest-cov
   script:
     - python -m pip install --pre .[test]
-    - python -m pytest --cov=./ -v .
+    - python -m pytest -v .
 
 .build:
   stage: build
