@@ -64,7 +64,8 @@ stages:
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8_doc  # pandoc
   tags:
     - linux
-  before_script:
+  before_script:  # cannot be referenced by extension
+    - !reference [.base, before_script]
     - rm -rf ${ARTIFACTS_DEST}
   after_script:
     - mv ${ARTIFACTS_SOURCE} ${ARTIFACTS_DEST}

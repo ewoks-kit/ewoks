@@ -62,3 +62,4 @@ Binding documentation:
  * `ewoksjob <https://ewoksjob.readthedocs.io/>`_: distribute workflow execution
  * `ewoksserver <https://ewoksserver.readthedocs.io/>`_: REST server to manage and execute workflows
  * `ewoksweb <https://ewoksweb.readthedocs.io/>`_: web frontend to create, visualize and execute workflows
+ * `ewoksutils <https://ewoksutils.readthedocs.io/>`_ : developer utilities
