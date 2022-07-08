@@ -113,6 +113,7 @@ stages:
     - echo REQ_SPECIFIER=${REQ_SPECIFIER}
     - python3 -m pip install --pre ${REQ_SPECIFIER}
     - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
+    - cd sdist
     - python3 -m pytest -v --pyargs ${PROJECT_NAME}.tests
 
 .test_sdist-win:
@@ -125,6 +126,7 @@ stages:
     - echo REQ_SPECIFIER=%REQ_SPECIFIER%
     - python -m pip install --pre %REQ_SPECIFIER%
     - set PROJECT_NAME=%CI_PROJECT_NAME:-=_%
+    - cd sdist
     - python -m pytest -v --pyargs %PROJECT_NAME%.tests
 
 .deploy:
