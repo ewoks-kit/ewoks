@@ -24,11 +24,11 @@ stages:
   extends: .base
   before_script:
     - SET "PATH=C:\\python\\%PYTHON_VER%;C:\\python\\%PYTHON_VER%\\Scripts;%PATH%"
-    - python3 -m venv --clear build_venv
+    - python -m venv --clear build_venv
     - call "build_venv\\Scripts\\activate.bat"
-    - python3 --version
-    - python3 -m pip install --upgrade pip
-    - python3 -m pip install --upgrade setuptools
+    - python --version
+    - python -m pip install --upgrade pip
+    - python -m pip install --upgrade setuptools
   after_script:
     - rmdir build_venv /s /q
   timeout: 10m
@@ -55,8 +55,8 @@ stages:
   stage: test
   extends: .base-win
   script:
-    - python3 -m pip install --pre .[test]
-    - python3 -m pytest -v .
+    - python -m pip install --pre .[test]
+    - python -m pytest -v .
 
 .build:
   stage: build
@@ -123,9 +123,9 @@ stages:
         set REQ_SPECIFIER=%%F[test]
       )
     - echo REQ_SPECIFIER=%REQ_SPECIFIER%
-    - python3 -m pip install --pre %REQ_SPECIFIER%
+    - python -m pip install --pre %REQ_SPECIFIER%
     - set PROJECT_NAME=%CI_PROJECT_NAME:-=_%
-    - python3 -m pytest -v --pyargs %PROJECT_NAME%.tests
+    - python -m pytest -v --pyargs %PROJECT_NAME%.tests
 
 .deploy:
   stage: deploy
