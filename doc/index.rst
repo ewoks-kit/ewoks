@@ -21,13 +21,19 @@ Install *ewoks*
 
 .. code:: bash
 
-    python -m pip install ewoks
+    python3 -m pip install ewoks
 
 Execute a workflow from the command line
 
 .. code:: bash
 
     ewoks execute /path/to/graph.json
+
+or for an installation with the system python
+
+.. code:: bash
+
+    python3 -m ewoks execute /path/to/graph.json
 
 *Ewoks* has different interfaces to execute a workflow
 

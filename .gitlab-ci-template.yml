@@ -9,9 +9,9 @@ stages:
 
 .base:
   before_script:
-    - python --version
-    - python -m pip install --upgrade pip
-    - python -m pip install --upgrade setuptools
+    - python3 --version
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install --upgrade setuptools
   after_script:
     - echo 
   only:
@@ -24,11 +24,11 @@ stages:
   extends: .base
   before_script:
     - SET "PATH=C:\\python\\%PYTHON_VER%;C:\\python\\%PYTHON_VER%\\Scripts;%PATH%"
-    - python -m venv --clear build_venv
+    - python3 -m venv --clear build_venv
     - call "build_venv\\Scripts\\activate.bat"
-    - python --version
-    - python -m pip install --upgrade pip
-    - python -m pip install --upgrade setuptools
+    - python3 --version
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install --upgrade setuptools
   after_script:
     - rmdir build_venv /s /q
   timeout: 10m
@@ -45,18 +45,18 @@ stages:
   extends: .base
   before_script:  # cannot be referenced by extension
     - !reference [.base, before_script]
-    - python -m pip install pytest-cov
+    - python3 -m pip install pytest-cov
   script:
-    - python -m pip install --pre .[test]
-    - python -m pytest --cov=./ -v .
+    - python3 -m pip install --pre .[test]
+    - python3 -m pytest --cov=./ -v .
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
 
 .test-win:
   stage: test
   extends: .base-win
   script:
-    - python -m pip install --pre .[test]
-    - python -m pytest -v .
+    - python3 -m pip install --pre .[test]
+    - python3 -m pytest -v .
 
 .build:
   stage: build
@@ -81,7 +81,7 @@ stages:
 .build_sdist:
   extends: .build
   script:
-    - python setup.py sdist
+    - python3 setup.py sdist
   variables:
     ARTIFACTS_SOURCE: dist
     ARTIFACTS_DEST: sdist
@@ -111,9 +111,9 @@ stages:
     - ls sdist
     - export REQ_SPECIFIER=$(ls sdist/*.tar.gz)[test]
     - echo REQ_SPECIFIER=${REQ_SPECIFIER}
-    - python -m pip install --pre ${REQ_SPECIFIER}
+    - python3 -m pip install --pre ${REQ_SPECIFIER}
     - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
-    - python -m pytest -v --pyargs ${PROJECT_NAME}.tests
+    - python3 -m pytest -v --pyargs ${PROJECT_NAME}.tests
 
 .test_sdist-win:
   extends: .test_build-win
@@ -123,9 +123,9 @@ stages:
         set REQ_SPECIFIER=%%F[test]
       )
     - echo REQ_SPECIFIER=%REQ_SPECIFIER%
-    - python -m pip install --pre %REQ_SPECIFIER%
+    - python3 -m pip install --pre %REQ_SPECIFIER%
     - set PROJECT_NAME=%CI_PROJECT_NAME:-=_%
-    - python -m pytest -v --pyargs %PROJECT_NAME%.tests
+    - python3 -m pytest -v --pyargs %PROJECT_NAME%.tests
 
 .deploy:
   stage: deploy
@@ -142,14 +142,14 @@ stages:
 flake8:
   extends: .style
   before_script:
-    - python -m pip install flake8
+    - python3 -m pip install flake8
   script:
     - flake8
 
 black:
   extends: .style
   before_script:
-    - python -m pip install black
+    - python3 -m pip install black
   script:
     - LC_ALL=C.UTF-8 black --check --safe .
 
@@ -158,15 +158,15 @@ black:
 .flake8_nb:
   extends: .style
   before_script:
-    - python -m pip install flake8_nb
+    - python3 -m pip install flake8_nb
   script:
     - flake8_nb
 
 .build_doc:
   extends: .build
   script:
-    - python -m pip install .[doc]
-    - python setup.py build_sphinx
+    - python3 -m pip install .[doc]
+    - python3 setup.py build_sphinx
   variables:
     ARTIFACTS_SOURCE: build/sphinx/html
     ARTIFACTS_DEST: html

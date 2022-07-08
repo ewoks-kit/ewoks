@@ -5,7 +5,7 @@ Install requirements
 
 .. code:: bash
 
-    python -m pip install ewoks
+    python3 -m pip install ewoks
 
 Execute a workflow
 
@@ -30,6 +30,6 @@ Bindings can be installed as follows
 
 .. code:: bash
 
-    python -m pip install ewoks[orange,dask,ppf]
+    python3 -m pip install ewoks[orange,dask,ppf]
 
 For more information see the `ewokscore documentation <https://ewokscore.readthedocs.io/>`_.
