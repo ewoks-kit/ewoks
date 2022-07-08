@@ -7,13 +7,13 @@ The purpose of *ewoks* is to provide an abstraction layer between graph represen
 ## Install
 
 ```bash
-python -m pip install ewoks[orange,dask,ppf,test]
+python3 -m pip install ewoks[orange,dask,ppf,test]
 ```
 
 ## Test
 
 ```bash
-pytest --pyargs ewoks.tests
+python3 -m pytest --pyargs ewoks.tests
 ```
 
 ## Getting started
@@ -24,7 +24,13 @@ Workflows can be executed from the command line
 ewoks execute /path/to/graph.json [--binding dask]
 ```
 
-or from python
+or for an installation with the system python
+
+```bash
+python3 -m ewoks execute /path/to/graph.json [--binding dask]
+```
+
+Workflows can also be executed from python
 
 ```python
 from ewoks import execute_graph

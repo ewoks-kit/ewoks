@@ -17,13 +17,13 @@ Comment lines with `# noqa: E123` to ignore certain linting errors.
 Tests make use [pytest](https://docs.pytest.org/en/stable/index.html) and can be run as follows
 
 ```bash
-pytest .
+python3 -m pytest .
 ```
 
 Testing an installed project is done like this
 
 ```bash
-pytest --pyargs <project_name>
+python3 -m pytest --pyargs <project_name>
 ```
 
 ## Releasing
@@ -40,7 +40,7 @@ pytest --pyargs <project_name>
 4. Deploy on [testpypi](https://test.pypi.org) and [pypi](https://pypi.org)
    ```bash
    rm -rf dist
-   python setup.py sdist
+   python3 setup.py sdist
    twine upload -r testpypi --sign dist/*
    twine upload -r pypi --sign dist/*
    ```
