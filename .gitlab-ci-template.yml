@@ -18,7 +18,10 @@ stages:
   cleanup_python_win:
     - rmdir build_venv /s /q
 
-.base:
+.base:  # Linux, Python 3.6
+  tags:
+    - linux
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.6
   before_script:
     - !reference [.scripts, prepare_python]
   after_script:
@@ -29,23 +32,27 @@ stages:
       - merge_requests
   timeout: 10m
 
-.base-win:
-  extends: .base
+.base-win:  # Linux, Python 3.6
+  tags:
+    - win
+  variables:
+    PYTHON_VER: "3.6"
   before_script:
     - !reference [.scripts, init_python_win]
     - !reference [.scripts, prepare_python]
   after_script:
     - !reference [.scripts, cleanup_python_win]
+  only:
+    refs:
+      - main
+      - merge_requests
   timeout: 10m
 
-.style:
+.style:  # base job for style stage
   stage: style
   extends: .base
-  image: docker-registry.esrf.fr/dau/ewoks:python_3.6
-  tags:
-    - linux
 
-.test:
+.test:  # base job for test stage (Linux)
   stage: test
   extends: .base
   before_script:
@@ -56,19 +63,17 @@ stages:
     - python -m pytest --cov=./ -v .
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
 
-.test-win:
+.test-win:  # base job for test stage (Windows)
   stage: test
   extends: .base-win
   script:
     - python -m pip install --pre .[test]
     - python -m pytest -v .
 
-.build:
+.build:  # base job for build stage (Linux)
   stage: build
   extends: .base
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8_doc  # pandoc
-  tags:
-    - linux
   before_script:
     - !reference [.base, before_script]
     - rm -rf ${ARTIFACTS_DEST}
@@ -83,7 +88,7 @@ stages:
     refs:
       - main
 
-.build_sdist:
+.build_sdist:  # base job for sdist build (Linux)
   extends: .build
   script:
     - python setup.py sdist
@@ -96,21 +101,21 @@ stages:
     when: on_success
     expire_in: 2h
 
-.test_build:
+.test_build:  # base job for test_build stage (Linux)
   stage: test_build
   extends: .base
   only:
     refs:
       - main
 
-.test_build-win:
+.test_build-win:  # base job for test_build stage (Windows)
   stage: test_build
   extends: .base-win
   only:
     refs:
       - main
 
-.test_sdist:
+.test_sdist:  # base job for sdist test (Linux)
   extends: .test_build
   script:
     - cd sdist
@@ -120,7 +125,7 @@ stages:
     - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
     - python -m pytest -v --pyargs ${PROJECT_NAME}.tests
 
-.test_sdist-win:
+.test_sdist-win:  # base job for sdist test (Windows)
   extends: .test_build-win
   script:
     - cd sdist
@@ -132,12 +137,9 @@ stages:
     - set PROJECT_NAME=%CI_PROJECT_NAME:-=_%
     - python -m pytest -v --pyargs %PROJECT_NAME%.tests
 
-.deploy:
+.deploy:  # base job for deploy stage (Linux)
   stage: deploy
   extends: .base
-  image: docker-registry.esrf.fr/dau/ewoks:python_3.6
-  tags:
-    - linux
   only:
     refs:
       - main
@@ -215,41 +217,29 @@ black:
 .test-3.6:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6
-  tags:
-    - linux
 
 .test-3.6-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.6"
 
 .test_sdist-3.6:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6
-  tags:
-    - linux
 
 .test_sdist-3.6-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.6"
 
 .test-3.6_glx:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test-3.6_glx-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.6"
@@ -257,15 +247,11 @@ black:
 .test_sdist-3.6_glx:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.6_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test_sdist-3.6_glx-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.6"
@@ -275,41 +261,29 @@ black:
 .test-3.7:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.7
-  tags:
-    - linux
 
 .test-3.7-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.7"
 
 .test_sdist-3.7:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.7
-  tags:
-    - linux
 
 .test_sdist-3.7-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.7"
 
 .test-3.7_glx:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.7_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test-3.7_glx-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.7"
@@ -317,15 +291,11 @@ black:
 .test_sdist-3.7_glx:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.7_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test_sdist-3.7_glx-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.7"
@@ -335,41 +305,29 @@ black:
 .test-3.8:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8
-  tags:
-    - linux
 
 .test-3.8-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.8"
 
 .test_sdist-3.8:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8
-  tags:
-    - linux
 
 .test_sdist-3.8-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.8"
 
 .test-3.8_glx:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test-3.8_glx-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.8"
@@ -377,15 +335,11 @@ black:
 .test_sdist-3.8_glx:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test_sdist-3.8_glx-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.8"
@@ -395,41 +349,29 @@ black:
 .test-3.9:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.9
-  tags:
-    - linux
 
 .test-3.9-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.9"
 
 .test_sdist-3.9:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.9
-  tags:
-    - linux
 
 .test_sdist-3.9-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.9"
 
 .test-3.9_glx:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.9_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test-3.9_glx-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.9"
@@ -437,15 +379,11 @@ black:
 .test_sdist-3.9_glx:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.9_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test_sdist-3.9_glx-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.9"
@@ -455,41 +393,29 @@ black:
 .test-3.10:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.10
-  tags:
-    - linux
 
 .test-3.10-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.10"
 
 .test_sdist-3.10:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.10
-  tags:
-    - linux
 
 .test_sdist-3.10-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     PYTHON_VER: "3.10"
 
 .test-3.10_glx:
   extends: .test
   image: docker-registry.esrf.fr/dau/ewoks:python_3.10_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test-3.10_glx-win:
   extends: .test-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.10"
@@ -497,15 +423,11 @@ black:
 .test_sdist-3.10_glx:
   extends: .test_sdist
   image: docker-registry.esrf.fr/dau/ewoks:python_3.10_glx  # libgl1-mesa-glx
-  tags:
-    - linux
   variables:
     QT_QPA_PLATFORM: offscreen
 
 .test_sdist-3.10_glx-win:
   extends: .test_sdist-win
-  tags:
-    - win
   variables:
     QT_QPA_PLATFORM: offscreen
     PYTHON_VER: "3.10"
