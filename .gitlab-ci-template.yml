@@ -7,11 +7,20 @@ stages:
 
 ### Jobs templates for each stage ###
 
+.scripts:
+  prepare_python:
+    - python --version
+    - python -m pip install --upgrade pip setuptools
+  init_python_win:
+    - SET "PATH=C:\\python\\%PYTHON_VER%;C:\\python\\%PYTHON_VER%\\Scripts;%PATH%"
+    - python -m venv --clear build_venv
+    - call "build_venv\\Scripts\\activate.bat"
+  cleanup_python_win:
+    - rmdir build_venv /s /q
+
 .base:
   before_script:
-    - python3 --version
-    - python3 -m pip install --upgrade pip
-    - python3 -m pip install --upgrade setuptools
+    - !reference [.scripts, prepare_python]
   after_script:
     - echo 
   only:
@@ -23,14 +32,10 @@ stages:
 .base-win:
   extends: .base
   before_script:
-    - SET "PATH=C:\\python\\%PYTHON_VER%;C:\\python\\%PYTHON_VER%\\Scripts;%PATH%"
-    - python -m venv --clear build_venv
-    - call "build_venv\\Scripts\\activate.bat"
-    - python --version
-    - python -m pip install --upgrade pip
-    - python -m pip install --upgrade setuptools
+    - !reference [.scripts, init_python_win]
+    - !reference [.scripts, prepare_python]
   after_script:
-    - rmdir build_venv /s /q
+    - !reference [.scripts, cleanup_python_win]
   timeout: 10m
 
 .style:
@@ -43,12 +48,12 @@ stages:
 .test:
   stage: test
   extends: .base
-  before_script:  # cannot be referenced by extension
+  before_script:
     - !reference [.base, before_script]
-    - python3 -m pip install pytest-cov
+    - python -m pip install pytest-cov
   script:
-    - python3 -m pip install --pre .[test]
-    - python3 -m pytest --cov=./ -v .
+    - python -m pip install --pre .[test]
+    - python -m pytest --cov=./ -v .
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
 
 .test-win:
@@ -64,7 +69,7 @@ stages:
   image: docker-registry.esrf.fr/dau/ewoks:python_3.8_doc  # pandoc
   tags:
     - linux
-  before_script:  # cannot be referenced by extension
+  before_script:
     - !reference [.base, before_script]
     - rm -rf ${ARTIFACTS_DEST}
   after_script:
@@ -81,7 +86,7 @@ stages:
 .build_sdist:
   extends: .build
   script:
-    - python3 setup.py sdist
+    - python setup.py sdist
   variables:
     ARTIFACTS_SOURCE: dist
     ARTIFACTS_DEST: sdist
@@ -108,25 +113,23 @@ stages:
 .test_sdist:
   extends: .test_build
   script:
-    - ls sdist
-    - export REQ_SPECIFIER=$(ls sdist/*.tar.gz)[test]
-    - echo REQ_SPECIFIER=${REQ_SPECIFIER}
-    - python3 -m pip install --pre ${REQ_SPECIFIER}
-    - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
     - cd sdist
-    - python3 -m pytest -v --pyargs ${PROJECT_NAME}.tests
+    - export REQ_SPECIFIER=$(ls *.tar.gz)[test]
+    - echo REQ_SPECIFIER=${REQ_SPECIFIER}
+    - python -m pip install --pre ${REQ_SPECIFIER}
+    - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
+    - python -m pytest -v --pyargs ${PROJECT_NAME}.tests
 
 .test_sdist-win:
   extends: .test_build-win
   script:
-    - dir sdist
-    - FOR %%F IN (sdist\*.tar.gz) DO (
+    - cd sdist
+    - FOR %%F IN (*.tar.gz) DO (
         set REQ_SPECIFIER=%%F[test]
       )
     - echo REQ_SPECIFIER=%REQ_SPECIFIER%
     - python -m pip install --pre %REQ_SPECIFIER%
     - set PROJECT_NAME=%CI_PROJECT_NAME:-=_%
-    - cd sdist
     - python -m pytest -v --pyargs %PROJECT_NAME%.tests
 
 .deploy:
@@ -144,14 +147,14 @@ stages:
 flake8:
   extends: .style
   before_script:
-    - python3 -m pip install flake8
+    - python -m pip install flake8
   script:
     - flake8
 
 black:
   extends: .style
   before_script:
-    - python3 -m pip install black
+    - python -m pip install black
   script:
     - LC_ALL=C.UTF-8 black --check --safe .
 
@@ -160,15 +163,15 @@ black:
 .flake8_nb:
   extends: .style
   before_script:
-    - python3 -m pip install flake8_nb
+    - python -m pip install flake8_nb
   script:
     - flake8_nb
 
 .build_doc:
   extends: .build
   script:
-    - python3 -m pip install .[doc]
-    - python3 setup.py build_sphinx
+    - python -m pip install .[doc]
+    - python setup.py build_sphinx
   variables:
     ARTIFACTS_SOURCE: build/sphinx/html
     ARTIFACTS_DEST: html
