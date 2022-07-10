@@ -21,7 +21,7 @@ stages:
     - ls -Rl sdist
     - |
       for filename in sdist/*.tar.gz; do
-        python -m pip install $filename[test]
+        python -m pip install --pre $filename[test]
       done
   install_sdist_win:
     - dir sdist
