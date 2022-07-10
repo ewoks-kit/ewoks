@@ -93,9 +93,9 @@ stages:
   extends: .build
   script:
     - python setup.py sdist
-  variables:
-    ARTIFACTS_SOURCE: dist
-    ARTIFACTS_DEST: sdist
+    - mv dist sdist
+  after_script:
+    - ls -Rl sdist
   artifacts:
     paths:
       - sdist/
