@@ -17,46 +17,58 @@ stages:
     - call "build_venv\\Scripts\\activate.bat"
   cleanup_python_win:
     - rmdir build_venv /s /q
+  install_sdist:
+    - ls -Rl sdist
+    - |
+      for filename in sdist/*.tar.gz; do
+        python -m pip install $filename[test]
+      done
+  install_sdist_win:
+    - dir sdist
+    - |
+      FOR %%F IN (sdist\*.tar.gz) DO (
+        echo %%F
+        python -m pip install %%F[test]
+      )
 
-.base:  # Linux, Python 3.6
-  tags:
-    - linux
-  image: docker-registry.esrf.fr/dau/ewoks:python_3.6
-  before_script:
-    - !reference [.scripts, prepare_python]
-  after_script:
-    - echo 
+.base:
   only:
     refs:
       - main
       - merge_requests
   timeout: 10m
 
-.base-win:  # Linux, Python 3.6
+.base-lin:  # Linux, Python 3.7
+  extends: .base
+  tags:
+    - linux
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.7
+  before_script:
+    - !reference [.scripts, prepare_python]
+  after_script:
+    - echo 
+
+.base-win:  # Windows, Python 3.7
+  extends: .base
   tags:
     - win
   variables:
-    PYTHON_VER: "3.6"
+    PYTHON_VER: "3.7"
   before_script:
     - !reference [.scripts, init_python_win]
     - !reference [.scripts, prepare_python]
   after_script:
     - !reference [.scripts, cleanup_python_win]
-  only:
-    refs:
-      - main
-      - merge_requests
-  timeout: 10m
 
 .style:  # base job for style stage
   stage: style
-  extends: .base
+  extends: .base-lin
 
 .test:  # base job for test stage (Linux)
   stage: test
-  extends: .base
+  extends: .base-lin
   before_script:
-    - !reference [.base, before_script]
+    - !reference [.base-lin, before_script]
     - python -m pip install pytest-cov
   script:
     - python -m pip install --pre .[test]
@@ -72,18 +84,7 @@ stages:
 
 .build:  # base job for build stage (Linux)
   stage: build
-  extends: .base
-  image: docker-registry.esrf.fr/dau/ewoks:python_3.8_doc  # pandoc
-  before_script:
-    - !reference [.base, before_script]
-    - rm -rf ${ARTIFACTS_DEST}
-  after_script:
-    - mv ${ARTIFACTS_SOURCE} ${ARTIFACTS_DEST}
-  artifacts:
-    paths:
-      - ${ARTIFACTS_DEST}/
-    when: on_success
-    expire_in: 2h
+  extends: .base-lin
   only:
     refs:
       - main
@@ -103,7 +104,7 @@ stages:
 
 .test_build:  # base job for test_build stage (Linux)
   stage: test_build
-  extends: .base
+  extends: .base-lin
   only:
     refs:
       - main
@@ -118,28 +119,22 @@ stages:
 .test_sdist:  # base job for sdist test (Linux)
   extends: .test_build
   script:
+    - !reference [.scripts, install_sdist]
     - cd sdist
-    - export REQ_SPECIFIER=$(ls *.tar.gz)[test]
-    - echo REQ_SPECIFIER=${REQ_SPECIFIER}
-    - python -m pip install --pre ${REQ_SPECIFIER}
     - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
     - python -m pytest -v --pyargs ${PROJECT_NAME}.tests
 
 .test_sdist-win:  # base job for sdist test (Windows)
   extends: .test_build-win
   script:
+    - !reference [.scripts, install_sdist_win]
     - cd sdist
-    - FOR %%F IN (*.tar.gz) DO (
-        set REQ_SPECIFIER=%%F[test]
-      )
-    - echo REQ_SPECIFIER=%REQ_SPECIFIER%
-    - python -m pip install --pre %REQ_SPECIFIER%
     - set PROJECT_NAME=%CI_PROJECT_NAME:-=_%
     - python -m pytest -v --pyargs %PROJECT_NAME%.tests
 
 .deploy:  # base job for deploy stage (Linux)
   stage: deploy
-  extends: .base
+  extends: .base-lin
   only:
     refs:
       - main
@@ -171,12 +166,13 @@ black:
 
 .build_doc:
   extends: .build
+  image: docker-registry.esrf.fr/dau/ewoks:python_3.8_doc   # pandoc
   script:
     - python -m pip install .[doc]
     - python setup.py build_sphinx
-  variables:
-    ARTIFACTS_SOURCE: build/sphinx/html
-    ARTIFACTS_DEST: html
+    - mv build/sphinx/html html
+  after_script:
+    - ls -Rl html
   artifacts:
     paths:
       - html/
@@ -184,10 +180,8 @@ black:
     expire_in: 2h
 
 .pages:
-  stage: deploy
   extends: .deploy
   script:
-    - rm -rf public
     - mv html public
   after_script:
     - ls -Rl public
@@ -198,12 +192,9 @@ black:
     expire_in: 2h
 
 .assets:
-  stage: deploy
   extends: .deploy
   script:
-    - rm -rf assets
-    - mkdir assets
-    - mv sdist/* assets/
+    - mv sdist assets
   after_script:
     - ls -Rl assets
   artifacts:
