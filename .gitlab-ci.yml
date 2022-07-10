@@ -29,6 +29,12 @@ test_sdist-3.8_glx-win:
     - python -m pytest -v --pyargs ewokscore.tests ewoksppf.tests ewoksdask.tests
     # - python -m pytest -v --pyargs ewoksorange.tests
 
+test_sdist-3.9_glx:
+  extends: .test_sdist-3.9_glx
+  script:
+    - !reference [.test_sdist-3.9_glx, script]
+    - python -m pytest -v --pyargs ewokscore.tests ewoksppf.tests ewoksdask.tests ewoksorange.tests
+
 build_doc:
   extends: .build_doc
 
