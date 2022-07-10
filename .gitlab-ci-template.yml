@@ -5,7 +5,7 @@ stages:
   - test_build
   - deploy
 
-### Jobs templates for each stage ###
+### Jobs templates ###
 
 .scripts:
   prepare_python:
@@ -28,7 +28,7 @@ stages:
     - |
       FOR %%F IN (sdist\*.tar.gz) DO (
         echo %%F
-        python -m pip install %%F[test]
+        python -m pip install --pre %%F[test]
       )
 
 .base:
