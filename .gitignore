@@ -1,7 +1,3 @@
-# Files ignored for the project.
-# You also can exclude a file locally - i.e. only on the current computer
-# by editing the file $GIT_DIR/info/exclude
-
 # Hidden files
 .*
 
@@ -16,28 +12,6 @@ __pycache__/
 *.egg-info/
 .eggs/
 /doc/_generated
-
-# Unittest / coverage
-*.py,cover
-.coverage.*
-htmlcov/
-.cache/
-.pytest_cache/
-
-# Backup from text editor
-*~
-*.bck
-*.swp
-\#*\#
-
-# Eclipse IDE
-/.settings/
-/.project
-/.pydevproject
-
-# VisualStudio IDE
-/.vscode/
-/.history/
 
 # Dask
 dask-worker-space/
