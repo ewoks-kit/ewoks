@@ -123,6 +123,8 @@ stages:
     - cd sdist
     - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
     - python -m pytest -v --pyargs ${PROJECT_NAME}.tests
+  variables:
+    CI_DEBUG_TRACE: "true"
 
 .test_sdist-win:  # base job for sdist test (Windows)
   extends: .test_build-win
@@ -178,6 +180,8 @@ black:
       - html/
     when: on_success
     expire_in: 2h
+  variables:
+    CI_DEBUG_TRACE: "true"
 
 .pages:
   extends: .deploy
