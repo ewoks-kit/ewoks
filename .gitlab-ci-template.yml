@@ -119,6 +119,7 @@ stages:
 .test_sdist:  # base job for sdist test (Linux)
   extends: .test_build
   script:
+    - echo "CI_JOB_TOKEN=$CI_JOB_TOKEN"
     - !reference [.scripts, install_sdist]
     - cd sdist
     - export PROJECT_NAME=${CI_PROJECT_NAME//[-]/_}
@@ -175,6 +176,7 @@ black:
     - mv build/sphinx/html html
   after_script:
     - ls -Rl html
+    - echo "CI_JOB_TOKEN=$CI_JOB_TOKEN"
   artifacts:
     paths:
       - html/
