@@ -60,7 +60,7 @@ def main(argv=None, shell=True):
 
     if argv is None:
         argv = sys.argv
-    args, _ = parser.parse_known_args(argv[1:])
+    args = parser.parse_args(argv[1:])
 
     if args.command == "execute":
         return command_execute(args, shell=shell)
