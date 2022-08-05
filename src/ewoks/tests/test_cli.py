@@ -11,24 +11,22 @@ from ewokscore.tests.utils.results import assert_execute_graph_default_result
 
 @pytest.mark.parametrize("graph_name", graph_names())
 @pytest.mark.parametrize("scheme", (None, "json"))
-@pytest.mark.parametrize("binding", ("none", "dask", "ppf"))
+@pytest.mark.parametrize("binding", (None, "dask", "ppf"))
 def test_execute(graph_name, scheme, binding, tmpdir):
-    if scheme == "json":
-        pytest.skip("TODO")
     graph, expected = get_graph(graph_name)
     argv = [
         sys.executable,
         "execute",
         graph_name,
         "--test",
-        "--binding",
-        binding,
         "--output",
         "all",
         "--merge-outputs",
     ]
+    if binding:
+        argv += ["--binding", binding]
     if scheme:
-        argv += ["--data-root-uri", str(tmpdir), "scheme", scheme]
+        argv += ["--data-root-uri", str(tmpdir), "--data-scheme", scheme]
         varinfo = {"root_uri": str(tmpdir), "scheme": scheme}
     else:
         varinfo = None
