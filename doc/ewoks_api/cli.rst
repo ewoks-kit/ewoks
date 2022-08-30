@@ -25,6 +25,12 @@ The *ewoks* command line interface can be used for other things like converting 
 
     ewoks execute /path/to/graph.ows /path/to/graph.json -s indent=2
 
+*Ewoks* jobs can be submitted as follows
+
+.. code:: bash
+
+    ewoks submit /path/to/graph.json
+
 For more information
 
 .. code:: bash

@@ -2,8 +2,13 @@ import importlib
 from typing import Any, Optional, List, Union
 from ewokscore.graph import TaskGraph
 
+try:
+    from ewoksjob.client import submit
+except ImportError:
+    submit = None
 
-__all__ = ["execute_graph", "load_graph", "save_graph", "convert_graph"]
+
+__all__ = ["execute_graph", "load_graph", "save_graph", "convert_graph", "submit_graph"]
 
 
 def import_binding(binding: Optional[str]):
@@ -26,6 +31,12 @@ def execute_graph(
     graph = load_graph(graph, inputs=inputs, **load_options)
     mod = import_binding(binding)
     return mod.execute_graph(graph, **execute_options)
+
+
+def submit_graph(graph, **options):
+    if submit is None:
+        raise RuntimeError("requires the 'ewoksjob' package")
+    return submit(args=(graph,), kwargs=options)
 
 
 def load_graph(
