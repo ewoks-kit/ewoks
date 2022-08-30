@@ -2,9 +2,10 @@ import sys
 import argparse
 
 from pprint import pformat
-from ewokscore import cliutils
+from . import cliutils
 from .bindings import execute_graph
 from .bindings import convert_graph
+from .bindings import submit_graph
 
 
 def create_argument_parser(shell=False):
@@ -14,18 +15,11 @@ def create_argument_parser(shell=False):
 
     subparsers = parser.add_subparsers(help="Commands", dest="command")
     execute = subparsers.add_parser("execute", help="Execute a workflow")
+    submit = subparsers.add_parser("submit", help="Schedule a workflow execution")
     convert = subparsers.add_parser("convert", help="Convert a workflow")
-
-    execute.add_argument(
-        "--binding",
-        type=str,
-        choices=["none", "dask", "ppf", "orange"],
-        default="none",
-        help="Task binding to be used",
-    )
     cliutils.add_execute_parameters(execute, shell=shell)
+    cliutils.add_submit_parameters(submit, shell=shell)
     cliutils.add_convert_parameters(convert, shell=shell)
-
     return parser
 
 
@@ -41,6 +35,14 @@ def command_execute(args, shell=False):
             return 0
     else:
         return results
+
+
+def command_submit(args, shell=False):
+    cliutils.apply_submit_parameters(args, shell=shell)
+    future = submit_graph(args.graph, binding=args.binding, **args.execute_options)
+    print(f"Job submitted (ID: {future.task_id})")
+    if args.wait >= 0:
+        print(future.get(timeout=args.wait))
 
 
 def command_convert(args, shell=False):
@@ -64,6 +66,8 @@ def main(argv=None, shell=True):
 
     if args.command == "execute":
         return command_execute(args, shell=shell)
+    elif args.command == "submit":
+        return command_submit(args, shell=shell)
     elif args.command == "convert":
         return command_convert(args, shell=shell)
     else:
