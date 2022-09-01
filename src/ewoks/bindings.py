@@ -1,6 +1,8 @@
 import importlib
 from typing import Any, Optional, List, Union
 from ewokscore.graph import TaskGraph
+from ewokscore.events.contexts import job_context, RawExecInfoType
+
 
 try:
     from ewoksjob.client import submit
@@ -24,13 +26,15 @@ def execute_graph(
     binding: Optional[str] = None,
     inputs: Optional[List[dict]] = None,
     load_options: Optional[dict] = None,
+    execinfo: RawExecInfoType = None,
     **execute_options
 ):
-    if load_options is None:
-        load_options = dict()
-    graph = load_graph(graph, inputs=inputs, **load_options)
-    mod = import_binding(binding)
-    return mod.execute_graph(graph, **execute_options)
+    with job_context(execinfo, binding=binding) as execinfo:
+        if load_options is None:
+            load_options = dict()
+        graph = load_graph(graph, inputs=inputs, **load_options)
+        mod = import_binding(binding)
+        return mod.execute_graph(graph, execinfo=execinfo, **execute_options)
 
 
 def submit_graph(graph, **options):
