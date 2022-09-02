@@ -32,12 +32,7 @@ python3 -m pytest --pyargs <project_name>
    ```
    1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-beta < 1.0.0-beta.1 < 1.0.0-rc.1 < 1.0.0
    ```
-3. Create a git tag and write release notes in the `Tags` page of the gitlab repository
-   ```bash
-   git tag v1.2.3 -m "Release version 1.2.3"
-   git push && git push --tags
-   ```
-4. Deploy on [testpypi](https://test.pypi.org) and [pypi](https://pypi.org)
+3. Deploy on [testpypi](https://test.pypi.org) and [pypi](https://pypi.org)
    ```bash
    rm -rf dist
    python3 setup.py sdist
@@ -48,3 +43,9 @@ python3 -m pytest --pyargs <project_name>
    ```bash
    ./deploy/deploy.sh ewoks  # accepts any ewoks project name
    ```
+4. Create a git tag and write release notes in the `Tags` page of the gitlab repository
+   ```bash
+   git tag v1.2.3 -m "Release version 1.2.3"
+   git push && git push --tags
+   ```
+5. Activate the tag on https://readthedocs.org when it is a stable version
