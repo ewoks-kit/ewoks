@@ -1,3 +1,4 @@
+import os
 import importlib
 from typing import Any, Optional, List, Union
 from ewokscore.graph import TaskGraph
@@ -27,11 +28,15 @@ def execute_graph(
     inputs: Optional[List[dict]] = None,
     load_options: Optional[dict] = None,
     execinfo: RawExecInfoType = None,
+    environment: Optional[dict] = None,
     **execute_options
 ):
     with job_context(execinfo, binding=binding) as execinfo:
         if load_options is None:
             load_options = dict()
+        if environment:
+            environment = {k: str(v) for k, v in environment.items()}
+            os.environ.update(environment)
         graph = load_graph(graph, inputs=inputs, **load_options)
         mod = import_binding(binding)
         return mod.execute_graph(graph, execinfo=execinfo, **execute_options)
