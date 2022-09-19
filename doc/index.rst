@@ -21,21 +21,45 @@ Install *ewoks*
 
 .. code:: bash
 
-    python3 -m pip install ewoks
+	pip install ewoks
 
-Execute a workflow from the command line
-
-.. code:: bash
-
-    ewoks execute /path/to/graph.json
-
-or for an installation with the system python
+Create a test workflow in JSON format (“acyclic1” is an test workflow that ships with ewoks)
 
 .. code:: bash
 
-    python3 -m ewoks execute /path/to/graph.json
+	ewoks convert acyclic1 --test test.json -s indent=2
 
-*Ewoks* has different interfaces to execute a workflow
+Execute the test workflow and print the output of all tasks
+
+.. code:: bash
+
+	ewoks execute test.json --output all
+
+For a desktop GUI, install *ewoks* with the orange binding
+
+.. code:: bash
+
+	pip install ewoks[orange]
+
+Open the test workflow in the GUI
+
+.. code:: bash
+
+	ewoks execute test.json --binding orange
+
+For a web GUI, install *ewoks* for web
+
+.. code:: bash
+
+	pip install ewoksserver[frontend]
+
+Start the *ewoks* web server
+
+.. code:: bash
+
+	ewoks-server
+
+*Ewoks* has different interfaces to create and/or execute a workflow
 
 .. toctree::
     :maxdepth: 1
