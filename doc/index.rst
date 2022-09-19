@@ -47,7 +47,7 @@ Open the test workflow in the GUI
 
 	ewoks execute test.json --binding orange
 
-For a web GUI, install *ewoks* for web
+For a web GUI, install *ewoksserver* with the frontend
 
 .. code:: bash
 
