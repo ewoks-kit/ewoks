@@ -85,11 +85,11 @@ Documentation
 Binding documentation:
 ----------------------
 
- * `ewokscore <https://ewokscore.readthedocs.io/>`_ : create workflows and implement tasks
- * `ewoksorange <https://ewoksorange.readthedocs.io/>`_ : create and execute workflows with a desktop GUI
- * `ewoksppf <https://ewoksppf.readthedocs.io/>`_ : execute cyclic workflows
- * `ewoksdask <https://ewoksdask.readthedocs.io/>`_ : parallelize workflow execution
- * `ewoksjob <https://ewoksjob.readthedocs.io/>`_: distribute workflow execution
- * `ewoksserver <https://ewoksserver.readthedocs.io/>`_: REST server to manage and execute workflows
- * `ewoksweb <https://ewoksweb.readthedocs.io/>`_: web frontend to create, visualize and execute workflows
- * `ewoksutils <https://ewoksutils.readthedocs.io/>`_ : developer utilities
+* `ewokscore <https://ewokscore.readthedocs.io/>`_ : create workflows and implement tasks
+* `ewoksorange <https://ewoksorange.readthedocs.io/>`_ : create and execute workflows with a desktop GUI
+* `ewoksppf <https://ewoksppf.readthedocs.io/>`_ : execute cyclic workflows
+* `ewoksdask <https://ewoksdask.readthedocs.io/>`_ : parallelize workflow execution
+* `ewoksjob <https://ewoksjob.readthedocs.io/>`_: distribute workflow execution
+* `ewoksserver <https://ewoksserver.readthedocs.io/>`_: REST server to manage and execute workflows
+* `ewoksweb <https://ewoksweb.readthedocs.io/>`_: web frontend to create, visualize and execute workflows
+* `ewoksutils <https://ewoksutils.readthedocs.io/>`_ : developer utilities
