@@ -10,15 +10,14 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
+    "sphinx_autodoc_typehints",
     "nbsphinx",
     "nbsphinx_link",
 ]
 templates_path = ["_templates"]
 exclude_patterns = ["build", "**.ipynb_checkpoints"]
 
-pygments_style = "sphinx"
-autodoc_typehints = "description"
-autodoc_typehints_description_target = "all"
+always_document_param_types = True
 
 html_theme = "classic"
 html_static_path = []
