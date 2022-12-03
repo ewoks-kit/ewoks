@@ -1,5 +1,6 @@
 include:
-  - remote: https://gitlab.esrf.fr/workflow/ewoks/ewoksci/raw/main/.gitlab-ci-template.yml
+  - project: workflow/ewoks/ewoksci
+    file: .gitlab-ci-template.yml
 
 flake8_nb:
   extends: .flake8_nb
@@ -8,10 +9,11 @@ test-3.6:
   extends: .test-3.6_glx
   script:
     - !reference [.test-3.6_glx, script]
-    - pytest -v --pyargs ewokscore.tests
-    - pytest -v --pyargs ewoksppf.tests
-    - pytest -v --pyargs ewoksdask.tests
-    - pytest -v --pyargs ewoksorange.tests
+    - python -m pytest -v --pyargs ewokscore.tests
+    - python -m pytest -v --pyargs ewoksppf.tests
+    - python -m pytest -v --pyargs ewoksdask.tests
+    - python -m pytest -v --pyargs ewoksorange.tests
+  timeout: 20m
 
 build_sdist:
   extends: .build_sdist
@@ -20,20 +22,31 @@ test_sdist-3.7_glx:
   extends: .test_sdist-3.7_glx
   script:
     - !reference [.test_sdist-3.7_glx, script]
-    - python -m pytest -v --pyargs ewokscore.tests ewoksppf.tests ewoksdask.tests ewoksorange.tests
+    - python -m pytest -v --pyargs ewokscore.tests
+    - python -m pytest -v --pyargs ewoksppf.tests
+    - python -m pytest -v --pyargs ewoksdask.tests
+    - python -m pytest -v --pyargs ewoksorange.tests
+  timeout: 20m
 
 test_sdist-3.8_glx-win:
   extends: .test_sdist-3.8_glx-win
   script:
     - !reference [.test_sdist-3.8_glx-win, script]
-    - python -m pytest -v --pyargs ewokscore.tests ewoksppf.tests ewoksdask.tests
-    # - python -m pytest -v --pyargs ewoksorange.tests
+    - python -m pytest -v --pyargs ewokscore.tests
+    - python -m pytest -v --pyargs ewoksppf.tests
+    - python -m pytest -v --pyargs ewoksdask.tests
+    #- python -m pytest -v --pyargs ewoksorange.tests
+  timeout: 20m
 
 test_sdist-3.9_glx:
   extends: .test_sdist-3.9_glx
   script:
     - !reference [.test_sdist-3.9_glx, script]
-    - python -m pytest -v --pyargs ewokscore.tests ewoksppf.tests ewoksdask.tests ewoksorange.tests
+    - python -m pytest -v --pyargs ewokscore.tests
+    - python -m pytest -v --pyargs ewoksppf.tests
+    - python -m pytest -v --pyargs ewoksdask.tests
+    - python -m pytest -v --pyargs ewoksorange.tests
+  timeout: 20m
 
 build_doc:
   extends: .build_doc
