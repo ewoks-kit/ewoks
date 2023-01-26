@@ -1,1 +1,1 @@
-<a href="https://gitlab.esrf.fr/workflow/ewoks/ewoksci/-/blob/main/CONTRIBUTING.md" target="_blank">CONTRIBUTING.md</a>
+<a href="https://gitlab.esrf.fr/workflow/ewoksadmin/ewoksci/-/blob/main/CONTRIBUTING.md" target="_blank">CONTRIBUTING.md</a>
