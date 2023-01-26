@@ -1,5 +1,8 @@
 # Hidden files
 .*
+!.gitignore
+!.gitlab-ci.yml
+!.readthedocs.yaml
 
 # Byte / compiled / optimized
 *.py[cod]

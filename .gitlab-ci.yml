@@ -1,5 +1,5 @@
 include:
-  - project: workflow/ewoks/ewoksci
+  - project: workflow/ewoksadmin/ewoksci
     file: .gitlab-ci-template.yml
 
 flake8_nb:
