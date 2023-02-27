@@ -5,8 +5,8 @@ include:
 flake8_nb:
   extends: .flake8_nb
 
-test-3.6:
-  extends: .test-3.6_glx
+test-3.7:
+  extends: .test-3.7_glx
 
 build_sdist:
   extends: .build_sdist
