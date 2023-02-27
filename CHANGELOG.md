@@ -4,7 +4,7 @@
 
 ## 0.1.0
 
-Added:
+New features:
   - `ewokscore` dependency
   - `ewoksdask` dependency
   - `ewoksorange` dependency
