@@ -10,7 +10,7 @@ purpose of a workflow management system is to provide a framework for implementi
 executing these graphs.
 
 The purpose of *ewoks* is to provide an abstraction layer between graph representation and execution. This allows using
-the same tasks and graphs in different workflow management systems. *ewoks* itself is **not** a workflow management system.
+the same tasks and graphs in different workflow management systems.
 
 *ewoks* has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
 
