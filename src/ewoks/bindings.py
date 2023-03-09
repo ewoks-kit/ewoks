@@ -18,7 +18,13 @@ __all__ = ["execute_graph", "load_graph", "save_graph", "convert_graph", "submit
 def import_binding(engine: Optional[str]):
     if not engine or engine.lower() == "none":
         binding = "ewokscore"
-    elif not engine.startswith("ewoks"):
+    elif engine.startswith("ewoks"):
+        warn(
+            f"engine = '{engine}' is deprecated in favor of '{engine[5:]}'",
+            FutureWarning,
+        )
+        binding = engine
+    else:
         binding = "ewoks" + engine
     return importlib.import_module(binding)
 
