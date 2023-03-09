@@ -21,13 +21,13 @@ python3 -m pytest --pyargs ewoks.tests
 Workflows can be executed from the command line
 
 ```bash
-ewoks execute /path/to/graph.json [--binding dask]
+ewoks execute /path/to/graph.json [--engine dask]
 ```
 
 or for an installation with the system python
 
 ```bash
-python3 -m ewoks execute /path/to/graph.json [--binding dask]
+python3 -m ewoks execute /path/to/graph.json [--engine dask]
 ```
 
 Workflows can also be executed from python
@@ -35,10 +35,10 @@ Workflows can also be executed from python
 ```python
 from ewoks import execute_graph
 
-result = execute_graph("/path/to/graph.json", binding="dask")
+result = execute_graph("/path/to/graph.json", engine="dask")
 ```
 
-When no binding is specified it will use sequential execution from `ewokscore`.
+When no engine is specified it will use sequential execution from `ewokscore`.
 
 ## Documentation
 

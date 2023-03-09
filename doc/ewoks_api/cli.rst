@@ -11,13 +11,13 @@ Execute a workflow
 
 .. code:: bash
 
-    ewoks execute /path/to/graph.json [--binding dask]
+    ewoks execute /path/to/graph.json [--engine dask]
 
 or for an installation with the system python
 
 .. code:: bash
 
-    python3 -m ewoks execute /path/to/graph.json [--binding dask]
+    python3 -m ewoks execute /path/to/graph.json [--engine dask]
 
 The *ewoks* command line interface can be used for other things like converting a workflow format
 

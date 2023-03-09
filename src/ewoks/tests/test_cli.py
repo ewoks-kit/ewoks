@@ -11,8 +11,8 @@ from ewokscore.tests.utils.results import assert_execute_graph_default_result
 
 @pytest.mark.parametrize("graph_name", graph_names())
 @pytest.mark.parametrize("scheme", (None, "json"))
-@pytest.mark.parametrize("binding", (None, "dask", "ppf"))
-def test_execute(graph_name, scheme, binding, tmpdir):
+@pytest.mark.parametrize("engine", (None, "dask", "ppf"))
+def test_execute(graph_name, scheme, engine, tmpdir):
     graph, expected = get_graph(graph_name)
     argv = [
         sys.executable,
@@ -23,8 +23,8 @@ def test_execute(graph_name, scheme, binding, tmpdir):
         "all",
         "--merge-outputs",
     ]
-    if binding:
-        argv += ["--binding", binding]
+    if engine:
+        argv += ["--engine", engine]
     if scheme:
         argv += ["--data-root-uri", str(tmpdir), "--data-scheme", scheme]
         varinfo = {"root_uri": str(tmpdir), "scheme": scheme}
@@ -35,7 +35,7 @@ def test_execute(graph_name, scheme, binding, tmpdir):
     ewoksgraph = load_graph(graph)
     non_dag = ewoksgraph.is_cyclic or ewoksgraph.has_conditional_links
 
-    if non_dag and binding != "ppf":
+    if non_dag and engine != "ppf":
         with pytest.raises(RuntimeError):
             main(argv=argv, shell=False)
         return

@@ -25,7 +25,7 @@ def create_argument_parser(shell=False):
 
 def command_execute(args, shell=False):
     cliutils.apply_execute_parameters(args, shell=shell)
-    results = execute_graph(args.graph, binding=args.binding, **args.execute_options)
+    results = execute_graph(args.graph, engine=args.engine, **args.execute_options)
     print("Result of workflow '%s':\n%s" % (args.workflow, pformat(results)))
 
     if shell:
@@ -39,7 +39,7 @@ def command_execute(args, shell=False):
 
 def command_submit(args, shell=False):
     cliutils.apply_submit_parameters(args, shell=shell)
-    future = submit_graph(args.graph, binding=args.binding, **args.execute_options)
+    future = submit_graph(args.graph, engine=args.engine, **args.execute_options)
     print(f"Job submitted (ID: {future.task_id})")
     if args.wait >= 0:
         print(future.get(timeout=args.wait))
