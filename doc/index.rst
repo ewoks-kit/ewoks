@@ -27,7 +27,7 @@ Create a test workflow in JSON format (“acyclic1” is an test workflow that s
 
 .. code:: bash
 
-	ewoks convert acyclic1 --test test.json -s indent=2
+	ewoks convert acyclic1 --test test.json
 
 Execute the test workflow and print the output of all tasks
 
