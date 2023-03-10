@@ -4,7 +4,7 @@ from warnings import warn
 from typing import Any, Optional, List, Union
 from ewokscore.graph import TaskGraph
 from ewokscore.events.contexts import job_context, RawExecInfoType
-
+from . import graph_cache
 
 try:
     from ewoksjob.client import submit
@@ -61,6 +61,7 @@ def submit_graph(graph, **options):
     return submit(args=(graph,), kwargs=options)
 
 
+@graph_cache.cache
 def load_graph(
     graph: Any, inputs: Optional[List[dict]] = None, **load_options
 ) -> TaskGraph:
