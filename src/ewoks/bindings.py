@@ -65,6 +65,10 @@ def submit_graph(graph, **options):
 def load_graph(
     graph: Any, inputs: Optional[List[dict]] = None, **load_options
 ) -> TaskGraph:
+    """When load option `graph_cache_max_size > 0` is provided, the graph will cached in memory.
+    When the graph comes from external storage (for example a file) any changes
+    to the external graph will require flushing the cache with `graph_cache_max_size = 0`.
+    """
     engine = _get_engine_for_format(graph, options=load_options)
     mod = import_binding(engine)
     return mod.load_graph(graph, inputs=inputs, **load_options)
