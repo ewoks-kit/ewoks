@@ -5,7 +5,7 @@ Install requirements
 
 .. code:: bash
 
-    python3 -m pip install ewoksserver
+    pip install ewoksserver
 
 Start the REST server
 

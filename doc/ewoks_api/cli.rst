@@ -5,7 +5,7 @@ Install requirements
 
 .. code:: bash
 
-    python3 -m pip install ewoks
+    pip install ewoks
 
 Execute a workflow
 

@@ -53,7 +53,7 @@ For a web GUI, install *ewoksserver* with the frontend
 
 	pip install ewoksserver[frontend]
 
-Start the *ewoks* web server, open the link a web browser and manually load the `test.json` file
+Start the *ewoks* web server, open the link in a web browser and load the `test.json` file
 
 .. code:: bash
 

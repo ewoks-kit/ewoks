@@ -5,7 +5,7 @@ Install requirements
 
 .. code:: bash
 
-    python3 -m pip install ewoksserver[frontend]
+    pip install ewoksserver[frontend]
 
 Start the server that serves the frontend
 
