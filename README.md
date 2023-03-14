@@ -7,13 +7,13 @@ The purpose of *ewoks* is to provide an abstraction layer between graph represen
 ## Install
 
 ```bash
-python3 -m pip install ewoks[orange,dask,ppf,test]
+pip install ewoks[orange,dask,ppf,test]
 ```
 
 ## Test
 
 ```bash
-python3 -m pytest --pyargs ewoks.tests
+pytest --pyargs ewoks.tests
 ```
 
 ## Getting started
