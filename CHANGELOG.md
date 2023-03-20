@@ -2,6 +2,14 @@
 
 ## 0.2.0 (unreleased)
 
+## 0.1.3
+
+New features:
+  - workflow caching when loading
+
+Bug fixes:
+  - CLI binding argument no longer exists for `ewoks submit`
+
 ## 0.1.2
 
 Deprecations:
