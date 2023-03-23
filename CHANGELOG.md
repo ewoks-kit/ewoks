@@ -2,6 +2,11 @@
 
 ## 0.2.0 (unreleased)
 
+## 0.1.4
+
+New features:
+  - add saving and uploading to graph execution
+
 ## 0.1.3
 
 New features:

@@ -3,4 +3,4 @@ from .bindings import save_graph  # noqa: F401
 from .bindings import convert_graph  # noqa: F401
 from .bindings import execute_graph  # noqa: F401
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
