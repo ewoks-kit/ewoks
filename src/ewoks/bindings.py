@@ -1,4 +1,5 @@
 import os
+import logging
 import importlib
 from warnings import warn
 from typing import Any, Optional, List, Union
@@ -11,8 +12,17 @@ try:
 except ImportError:
     submit = None
 
+try:
+    from pyicat_plus.client.main import IcatClient
+    from pyicat_plus.client import defaults as icat_defaults
+except ImportError:
+    IcatClient = None
+    icat_defaults = None
+
 
 __all__ = ["execute_graph", "load_graph", "save_graph", "convert_graph", "submit_graph"]
+
+logger = logging.getLogger(__name__)
 
 
 def import_binding(engine: Optional[str]):
@@ -37,6 +47,9 @@ def execute_graph(
     load_options: Optional[dict] = None,
     execinfo: RawExecInfoType = None,
     environment: Optional[dict] = None,
+    convert_destination: Optional[Any] = None,
+    save_options: Optional[dict] = None,
+    upload_parameters: Optional[dict] = None,
     **execute_options,
 ):
     if binding:
@@ -45,14 +58,44 @@ def execute_graph(
         engine = binding
         warn("'binding' is deprecated in favor of 'engine'", FutureWarning)
     with job_context(execinfo, engine=engine) as execinfo:
-        if load_options is None:
-            load_options = dict()
         if environment:
             environment = {k: str(v) for k, v in environment.items()}
             os.environ.update(environment)
+
+        # Load the graph
+        if load_options is None:
+            load_options = dict()
         graph = load_graph(graph, inputs=inputs, **load_options)
+
+        # Save the graph (with inputs)
+        if convert_destination is not None:
+            if save_options is None:
+                save_options = dict()
+            save_graph(graph, convert_destination, **save_options)
+
+        # Execute the graph
         mod = import_binding(engine)
-        return mod.execute_graph(graph, execinfo=execinfo, **execute_options)
+        result = mod.execute_graph(graph, execinfo=execinfo, **execute_options)
+
+        # Upload results
+        if upload_parameters:
+            _upload_result(upload_parameters)
+        return result
+
+
+def _upload_result(upload_parameters):
+    if IcatClient is None:
+        raise RuntimeError("requires pyicat-plus")
+    metadata_urls = upload_parameters.pop(
+        "metadata_urls", icat_defaults.METADATA_BROKERS
+    )
+    client = IcatClient(metadata_urls=metadata_urls)
+    logger.info(
+        "Sending processed dataset '%s' to ICAT: %s",
+        upload_parameters.get("dataset"),
+        upload_parameters.get("path"),
+    )
+    client.store_processed_data(**upload_parameters)
 
 
 def submit_graph(graph, **options):
