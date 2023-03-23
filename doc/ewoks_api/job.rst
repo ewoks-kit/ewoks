@@ -31,7 +31,7 @@ Start a worker that can execute *ewoks* graphs
 
 .. code:: bash
 
-    celery -A ewoksjob.apps.ewoks worker
+    ewoksjob worker
 
 Start a workflow from python, possible from another machine
 
@@ -56,7 +56,7 @@ In the context of *Bliss*
 
 .. code:: bash
 
-    BEACON_HOST=hostname:25000 CELERY_LOADER=ewoksjob.config.EwoksLoader celery -A ewoksjob.apps.ewoks worker
+    BEACON_HOST=hostname:25000 ewoksjob worker
 
 Submit a workflow as usual
 
