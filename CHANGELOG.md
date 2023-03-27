@@ -1,6 +1,14 @@
 # CHANGELOG.md
 
+## 0.3.0 (unreleased)
+
 ## 0.2.0 (unreleased)
+
+Breaking Changes:
+  - CLI: rename --output to --outputs
+
+Changes:
+  - add celery options to `submit_graph` and `ewoks submit`
 
 ## 0.1.5
 
