@@ -98,10 +98,12 @@ def _upload_result(upload_parameters):
     client.store_processed_data(**upload_parameters)
 
 
-def submit_graph(graph, **options):
+def submit_graph(graph, _celery_options=None, **options):
     if submit is None:
         raise RuntimeError("requires the 'ewoksjob' package")
-    return submit(args=(graph,), kwargs=options)
+    if _celery_options is None:
+        _celery_options = dict()
+    return submit(args=(graph,), kwargs=options, **_celery_options)
 
 
 @graph_cache.cache

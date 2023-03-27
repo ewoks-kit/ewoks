@@ -39,7 +39,12 @@ def command_execute(args, shell=False):
 
 def command_submit(args, shell=False):
     cliutils.apply_submit_parameters(args, shell=shell)
-    future = submit_graph(args.graph, engine=args.engine, **args.execute_options)
+    future = submit_graph(
+        args.graph,
+        engine=args.engine,
+        **args.execute_options,
+        _celery_options=args.cparameters,
+    )
     print(f"Job submitted (ID: {future.task_id})")
     if args.wait >= 0:
         print(future.get(timeout=args.wait))
