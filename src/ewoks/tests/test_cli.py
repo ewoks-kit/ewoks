@@ -19,7 +19,7 @@ def test_execute(graph_name, scheme, engine, tmpdir):
         "execute",
         graph_name,
         "--test",
-        "--output",
+        "--outputs",
         "all",
         "--merge-outputs",
     ]

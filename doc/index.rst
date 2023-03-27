@@ -33,7 +33,7 @@ Execute the test workflow and print the output of all tasks
 
 .. code:: bash
 
-	ewoks execute test.json --output all
+	ewoks execute test.json --outputs all
 
 For a desktop GUI, install *ewoks* with the orange binding
 
