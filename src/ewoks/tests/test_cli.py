@@ -14,17 +14,13 @@ from ewokscore.tests.utils.results import assert_execute_graph_default_result
 @pytest.mark.parametrize("engine", (None, "dask", "ppf"))
 def test_execute(graph_name, scheme, engine, tmpdir):
     graph, expected = get_graph(graph_name)
-    argv = [
-        sys.executable,
-        "execute",
-        graph_name,
-        "--test",
-        "--outputs",
-        "all",
-        "--merge-outputs",
-    ]
+    argv = [sys.executable, "execute", graph_name, "--test", "--merge-outputs"]
     if engine:
         argv += ["--engine", engine]
+    if engine == "ppf":
+        argv += ["--outputs", "end"]
+    else:
+        argv += ["--outputs", "all"]
     if scheme:
         argv += ["--data-root-uri", str(tmpdir), "--data-scheme", scheme]
         varinfo = {"root_uri": str(tmpdir), "scheme": scheme}
