@@ -31,7 +31,7 @@ def import_binding(engine: Optional[str]):
     elif engine.startswith("ewoks"):
         warn(
             f"engine = '{engine}' is deprecated in favor of '{engine[5:]}'",
-            FutureWarning,
+            DeprecationWarning,
         )
         binding = engine
     else:
@@ -56,7 +56,7 @@ def execute_graph(
         if engine:
             raise ValueError("'binding' and 'engine' cannot be used together")
         engine = binding
-        warn("'binding' is deprecated in favor of 'engine'", FutureWarning)
+        warn("'binding' is deprecated in favor of 'engine'", DeprecationWarning)
     with job_context(execinfo, engine=engine) as execinfo:
         if environment:
             environment = {k: str(v) for k, v in environment.items()}
