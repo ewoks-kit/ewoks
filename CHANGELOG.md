@@ -1,8 +1,13 @@
 # CHANGELOG.md
 
-## 0.3.0 (unreleased)
+## 0.4.0 (unreleased)
 
-## 0.2.0 (unreleased)
+## 0.3.0
+
+Changes:
+  - update dependency bounds
+
+## 0.2.0
 
 Breaking Changes:
   - CLI: rename --output to --outputs
