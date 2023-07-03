@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
-## 0.4.0 (unreleased)
+## 0.5.0 (unreleased)
+
+## 0.4.0
+
+New features:
+  - add support for jupyter notebooks as workflow tasks
 
 ## 0.3.0
 
