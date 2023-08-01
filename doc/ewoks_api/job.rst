@@ -73,4 +73,4 @@ Start a web server for monitoring jobs
 
 .. code:: bash
 
-    flower
+    ewoksjob monitor
