@@ -10,7 +10,7 @@ from .bindings import submit_graph
 
 def create_argument_parser(shell=False):
     parser = argparse.ArgumentParser(
-        description="Esrf WOrKflow Sytem CLI", prog="ewoks"
+        description="Esrf WOrKflow System CLI", prog="ewoks"
     )
 
     subparsers = parser.add_subparsers(help="Commands", dest="command")

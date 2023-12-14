@@ -1,5 +1,5 @@
-Desktop Graphical Interface
-===========================
+How to use the Desktop Graphical Interface
+==========================================
 
 Install requirements
 
@@ -7,7 +7,7 @@ Install requirements
 
     pip install ewoksorange[orange]
 
-Launch to graphical interface
+Launch the graphical interface
 
 .. code:: bash
 
