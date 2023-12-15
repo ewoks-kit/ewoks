@@ -8,7 +8,7 @@ flake8_nb:
 test-3.7_glx:
   extends: .test-3.7_glx
   variables:
-    PIP_INSTALL_OPTIONS: "--pre git+https://github.com/woutdenolf/papermill.git@fix_hanging_execute"
+    PIP_INSTALL_OPTIONS: '--pre git+https://github.com/woutdenolf/papermill.git@fix_hanging_execute'
 
 build_sdist:
   extends: .build_sdist
@@ -23,7 +23,8 @@ test_sdist-3.7_glx:
     - python -m pytest -v --pyargs ewoksdask.tests
     - python -m pytest -v --pyargs ewoksorange.tests
   variables:
-    PIP_INSTALL_OPTIONS: "--pre git+https://github.com/woutdenolf/papermill.git@fix_hanging_execute"
+    PIP_INSTALL_OPTIONS: '--pre git+https://github.com/woutdenolf/papermill.git@fix_hanging_execute'
+  timeout: 15m
 
 test_sdist-3.8_glx-win:
   extends: .test_sdist-3.8_glx-win
@@ -34,6 +35,7 @@ test_sdist-3.8_glx-win:
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
     #- python -m pytest -v --pyargs ewoksorange.tests
+  timeout: 15m
 
 test_sdist-3.9_glx:
   extends: .test_sdist-3.9_glx
@@ -44,6 +46,7 @@ test_sdist-3.9_glx:
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
     - python -m pytest -v --pyargs ewoksorange.tests
+  timeout: 15m
 
 test_sdist-3.10_glx:
   extends: .test_sdist-3.10_glx
@@ -54,6 +57,7 @@ test_sdist-3.10_glx:
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
     - python -m pytest -v --pyargs ewoksorange.tests
+  timeout: 15m
 
 test_sdist-3.11_glx:
   extends: .test_sdist-3.11_glx
@@ -64,6 +68,7 @@ test_sdist-3.11_glx:
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
     - python -m pytest -v --pyargs ewoksorange.tests
+  timeout: 15m
 
 build_doc:
   extends: .build_doc
