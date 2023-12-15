@@ -2,6 +2,14 @@
 
 ## 0.5.0 (unreleased)
 
+## 0.4.1
+
+New features:
+  - Improved documentation
+
+Bug fixes:
+  - Fix test dependencies
+
 ## 0.4.0
 
 New features:
