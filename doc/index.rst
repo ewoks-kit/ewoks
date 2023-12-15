@@ -59,29 +59,15 @@ Start the *ewoks* web server, open the link in a web browser and load the `test.
 
 	ewoks-server
 
-*Ewoks* has different interfaces to create and/or execute a workflow
 
 .. toctree::
-    :maxdepth: 1
-
-    ewoks_api/python
-    ewoks_api/cli
-    ewoks_api/job
-    ewoks_api/rest
-    ewoks_api/qt
-    ewoks_api/web
-
-Documentation
--------------
-
-.. toctree::
-    :maxdepth: 1
-
-    tutorials/hello_world
-    tutorials/ewoks_events
-    tutorials/running_workflows
-    tutorials/benchmark
+    :hidden:
+    
+    tutorials
+    howtoguides
     api
+
+
 
 Binding documentation:
 ----------------------

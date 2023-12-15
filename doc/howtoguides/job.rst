@@ -1,5 +1,5 @@
-Job scheduling
-==============
+How to submit a job to a worker
+===============================
 
 The client may want to start a workflow execution remotely and wait for the result
 while doing other work.

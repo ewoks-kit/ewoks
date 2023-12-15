@@ -1,5 +1,5 @@
-Python
-======
+How to execute a workflow from Python
+=====================================
 
 Install requirements
 
