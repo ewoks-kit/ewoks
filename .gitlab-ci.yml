@@ -30,7 +30,7 @@ test_sdist-3.8_glx-win:
   extends: .test_sdist-3.8_glx-win
   script:
     - !reference [.test_sdist-3.8_glx-win, script]
-    - python -m pip install ewokscore[test]
+    - python -m pip install ewokscore[test] "pytest==7.4.4"
     - python -m pytest -v --pyargs ewokscore.tests
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
