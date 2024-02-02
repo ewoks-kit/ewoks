@@ -26,7 +26,8 @@ def create_argument_parser(shell=False):
 def command_execute(args, shell=False):
     cliutils.apply_execute_parameters(args, shell=shell)
     results = execute_graph(args.graph, engine=args.engine, **args.execute_options)
-    print("Result of workflow '%s':\n%s" % (args.workflow, pformat(results)))
+    if args.outputs != "none":
+        print("Result of workflow '%s':\n%s" % (args.workflow, pformat(results)))
 
     if shell:
         if results is None:
