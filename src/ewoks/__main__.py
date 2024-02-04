@@ -10,13 +10,27 @@ from .bindings import submit_graph
 
 def create_argument_parser(shell=False):
     parser = argparse.ArgumentParser(
-        description="Esrf WOrKflow System CLI", prog="ewoks"
+        description="Esrf WOrKflow System CLI",
+        prog="ewoks",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     subparsers = parser.add_subparsers(help="Commands", dest="command")
-    execute = subparsers.add_parser("execute", help="Execute a workflow")
-    submit = subparsers.add_parser("submit", help="Schedule a workflow execution")
-    convert = subparsers.add_parser("convert", help="Convert a workflow")
+    execute = subparsers.add_parser(
+        "execute",
+        help="Execute a workflow",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    submit = subparsers.add_parser(
+        "submit",
+        help="Schedule a workflow execution",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    convert = subparsers.add_parser(
+        "convert",
+        help="Convert a workflow",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     cliutils.add_execute_parameters(execute, shell=shell)
     cliutils.add_submit_parameters(submit, shell=shell)
     cliutils.add_convert_parameters(convert, shell=shell)
