@@ -6,9 +6,10 @@ _REPRESENTATIONS = [str(s).split(".")[-1] for s in GraphRepresentation]
 
 def add_execute_parameters(parser):
     parser.add_argument(
-        "workflow",
+        "workflows",
         type=str,
         help="Workflow to execute (e.g. JSON filename)",
+        nargs="+",
     )
     parser.add_argument(
         "--workflow-dir",
@@ -128,7 +129,7 @@ def add_execute_parameters(parser):
 
 
 def apply_execute_parameters(args):
-    args.graph = utils.parse_workflow(args)
+    args.workflows, args.graphs = utils.parse_workflows(args)
 
     execute_options = dict(utils.parse_option(item) for item in args.options)
 

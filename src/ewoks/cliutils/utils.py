@@ -1,3 +1,4 @@
+import os
 import json
 from typing import Tuple, Any
 
@@ -48,4 +49,46 @@ def parse_workflow(args):
         graph, _ = get_graph(args.workflow)
     else:
         graph = args.workflow
-    return graph
+    return [args.workflow], [graph]
+
+
+def parse_workflows(args):
+    if args.test:
+        from ewokscore.tests.examples.graphs import graph_names, get_graph
+
+        test_graphs = list(graph_names())
+        for workflow in args.workflows:
+            if workflow not in test_graphs:
+                raise RuntimeError(
+                    f"Test graph '{workflow}' does not exist: {test_graphs}"
+                )
+
+        graphs = [get_graph(workflow)[0] for workflow in args.workflows]
+    else:
+        graphs = args.workflows
+    return args.workflows, graphs
+
+
+def parse_destinations(args):
+    dest_dirname = os.path.dirname(args.destination)
+    basename = os.path.basename(args.destination)
+    dest_basename, dest_ext = os.path.splitext(basename)
+    if not dest_ext:
+        dest_ext = dest_basename
+        dest_basename = ""
+        if dest_ext[0] != ".":
+            dest_ext = f".{dest_ext}"
+
+    destinations = list()
+    only_one = len(args.workflows) == 1
+    for workflow in args.workflows:
+        basename, _ = os.path.splitext(os.path.basename(workflow))
+        if only_one and dest_basename:
+            destination = os.path.join(dest_dirname, f"{dest_basename}{dest_ext}")
+        else:
+            destination = os.path.join(
+                dest_dirname, f"{dest_basename}{basename}{dest_ext}"
+            )
+        destinations.append(destination)
+
+    return destinations

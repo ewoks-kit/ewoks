@@ -80,7 +80,8 @@ def add_convert_parameters(parser):
 
 
 def apply_convert_parameters(args):
-    args.graph = utils.parse_workflow(args)
+    args.workflows, args.graphs = utils.parse_workflow(args)
+    args.destinations = utils.parse_destinations(args)
 
     inputs = [
         utils.parse_parameter(input_item, "id", False) for input_item in args.parameters

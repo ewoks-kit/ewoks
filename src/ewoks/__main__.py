@@ -40,8 +40,10 @@ def create_argument_parser(shell=False):
 
 def command_execute(args, shell=False):
     cliutils.apply_execute_parameters(args, shell=shell)
-    results = execute_graph(args.graph, engine=args.engine, **args.execute_options)
-    _print_results(args, results)
+    for workflow, graph in zip(args.workflows, args.graphs):
+        results = execute_graph(graph, engine=args.engine, **args.execute_options)
+        if args.outputs != "none":
+            print(f"Result of workflow '{workflow}':\n{pformat(results)}")
 
     if shell:
         if results is None:
@@ -52,15 +54,21 @@ def command_execute(args, shell=False):
 
 def command_submit(args, shell=False):
     cliutils.apply_submit_parameters(args, shell=shell)
-    future = submit_graph(
-        args.graph,
-        engine=args.engine,
-        **args.execute_options,
-        _celery_options=args.cparameters,
-    )
-    print(f"Job submitted (ID: {future.task_id})")
-    if args.wait >= 0:
-        print("Waiting for results ...")
+    futures = list()
+    for graph in args.graphs:
+        future = submit_graph(
+            graph,
+            engine=args.engine,
+            **args.execute_options,
+            _celery_options=args.cparameters,
+        )
+        print(f"Job submitted (ID: {future.task_id})")
+        futures.append(future)
+    if args.wait < 0:
+        return
+
+    print("Waiting for results ...")
+    for workflow, future in zip(args.workflows, futures):
         try:
             results = future.get(timeout=args.wait)
         except Exception as e:
@@ -71,13 +79,9 @@ def command_submit(args, shell=False):
             if args.outputs == "none":
                 print("Workflow finished")
             else:
-                _print_results(args, results)
-
-
-def _print_results(args, results):
-    if args.outputs == "none":
-        return
-    print(f"Result of workflow '{args.workflow}':\n{pformat(results)}")
+                print(
+                    f"Result of workflow '{workflow}' (ID: {future.task_id}):\n{pformat(results)}"
+                )
 
 
 def _is_timeout(exception: Optional[Exception]) -> bool:
@@ -94,7 +98,8 @@ def _is_timeout(exception: Optional[Exception]) -> bool:
 
 def command_convert(args, shell=False):
     cliutils.apply_convert_parameters(args, shell=shell)
-    convert_graph(args.graph, args.destination, **args.convert_options)
+    for graph, destination in zip(args.graphs, args.destinations):
+        convert_graph(graph, destination, **args.convert_options)
 
 
 def command_default(args, shell=False):
