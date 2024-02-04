@@ -1,5 +1,6 @@
 import sys
 import argparse
+from typing import Optional
 
 from pprint import pformat
 from . import cliutils
@@ -40,16 +41,13 @@ def create_argument_parser(shell=False):
 def command_execute(args, shell=False):
     cliutils.apply_execute_parameters(args, shell=shell)
     results = execute_graph(args.graph, engine=args.engine, **args.execute_options)
-    if args.outputs != "none":
-        print("Result of workflow '%s':\n%s" % (args.workflow, pformat(results)))
+    _print_results(args, results)
 
     if shell:
         if results is None:
             return 1
-        else:
-            return 0
-    else:
-        return results
+        return 0
+    return results
 
 
 def command_submit(args, shell=False):
@@ -62,7 +60,36 @@ def command_submit(args, shell=False):
     )
     print(f"Job submitted (ID: {future.task_id})")
     if args.wait >= 0:
-        print(future.get(timeout=args.wait))
+        print("Waiting for results ...")
+        try:
+            results = future.get(timeout=args.wait)
+        except Exception as e:
+            if not _is_timeout(e):
+                raise
+            print(f"Workflow not finished after {args.wait}s")
+        else:
+            if args.outputs == "none":
+                print("Workflow finished")
+            else:
+                _print_results(args, results)
+
+
+def _print_results(args, results):
+    if args.outputs == "none":
+        return
+    print(f"Result of workflow '{args.workflow}':\n{pformat(results)}")
+
+
+def _is_timeout(exception: Optional[Exception]) -> bool:
+    if exception is None:
+        return False
+    if isinstance(exception, TimeoutError):
+        return True
+    if _is_timeout(exception.__cause__):
+        return True
+    if _is_timeout(exception.__context__):
+        return True
+    return False
 
 
 def command_convert(args, shell=False):
@@ -73,8 +100,7 @@ def command_convert(args, shell=False):
 def command_default(args, shell=False):
     if shell:
         return 0
-    else:
-        return None
+    return None
 
 
 def main(argv=None, shell=True):
