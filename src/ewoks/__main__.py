@@ -1,8 +1,9 @@
 import sys
 import argparse
+import traceback
 from typing import Optional
 
-from pprint import pformat
+from pprint import pprint
 from . import cliutils
 from .bindings import execute_graph
 from .bindings import convert_graph
@@ -40,48 +41,101 @@ def create_argument_parser(shell=False):
 
 def command_execute(args, shell=False):
     cliutils.apply_execute_parameters(args, shell=shell)
+
+    return_code = 0
+    keep_results = []
     for workflow, graph in zip(args.workflows, args.graphs):
-        results = execute_graph(graph, engine=args.engine, **args.execute_options)
-        if args.outputs != "none":
-            print(f"Result of workflow '{workflow}':\n{pformat(results)}")
+        print("###################################")
+        print(f"# Execute workflow '{workflow}'")
+        print("###################################")
+        try:
+            results = execute_graph(graph, engine=args.engine, **args.execute_options)
+        except Exception as ex:
+            traceback.print_exc()
+            print("FAILED")
+            results = ex
+            return_code = 1
+        else:
+            if args.outputs == "none":
+                if results is None:
+                    print("FAILED")
+                else:
+                    print("FINISHED")
+            else:
+                pprint(results)
+                print("FINISHED")
+            if results is None:
+                return_code = 1
+        finally:
+            print()
+        if not shell:
+            keep_results.append(results)
 
     if shell:
-        if results is None:
-            return 1
-        return 0
-    return results
+        return return_code
+    return keep_results
 
 
 def command_submit(args, shell=False):
     cliutils.apply_submit_parameters(args, shell=shell)
+
+    return_code = 0
+    keep_results = []
+
     futures = list()
-    for graph in args.graphs:
+    for workflow, graph in zip(args.workflows, args.graphs):
         future = submit_graph(
             graph,
             engine=args.engine,
             **args.execute_options,
             _celery_options=args.cparameters,
         )
-        print(f"Job submitted (ID: {future.task_id})")
+        print(f"Workflow '{workflow}' submitted (ID: {future.task_id})")
         futures.append(future)
     if args.wait < 0:
-        return
+        if shell:
+            return return_code
+        return keep_results
 
     print("Waiting for results ...")
+    print()
     for workflow, future in zip(args.workflows, futures):
+        print(
+            "###########################################################################"
+        )
+        print(f"# Result of workflow '{workflow}' (ID: {future.task_id})")
+        print(
+            "###########################################################################"
+        )
         try:
             results = future.get(timeout=args.wait)
-        except Exception as e:
-            if not _is_timeout(e):
-                raise
-            print(f"Workflow not finished after {args.wait}s")
+        except Exception as ex:
+            if _is_timeout(ex):
+                print(f"Not finished after {args.wait}s")
+            else:
+                traceback.print_exc()
+                print("FAILED")
+            results = ex
+            return_code = 1
         else:
             if args.outputs == "none":
-                print("Workflow finished")
+                if results is None:
+                    print("FAILED")
+                else:
+                    print("FINISHED")
             else:
-                print(
-                    f"Result of workflow '{workflow}' (ID: {future.task_id}):\n{pformat(results)}"
-                )
+                pprint(results)
+                print("FINISHED")
+            if results is None:
+                return_code = 1
+        finally:
+            print()
+        if not shell:
+            keep_results.append(results)
+
+    if shell:
+        return return_code
+    return keep_results
 
 
 def _is_timeout(exception: Optional[Exception]) -> bool:
@@ -98,8 +152,11 @@ def _is_timeout(exception: Optional[Exception]) -> bool:
 
 def command_convert(args, shell=False):
     cliutils.apply_convert_parameters(args, shell=shell)
-    for graph, destination in zip(args.graphs, args.destinations):
+    for workflow, graph, destination in zip(
+        args.workflows, args.graphs, args.destinations
+    ):
         convert_graph(graph, destination, **args.convert_options)
+        print(f"Converted {workflow} -> {destination}")
 
 
 def command_default(args, shell=False):

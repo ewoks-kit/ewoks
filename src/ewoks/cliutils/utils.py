@@ -1,5 +1,7 @@
 import os
 import json
+from glob import glob
+from fnmatch import fnmatch
 from typing import Tuple, Any
 
 
@@ -40,33 +42,50 @@ def parse_option(option: str) -> Tuple[str, Any]:
 
 def parse_workflow(args):
     if args.test:
-        from ewokscore.tests.examples.graphs import graph_names, get_graph
-
-        graphs = list(graph_names())
-        if args.workflow not in graphs:
-            raise RuntimeError(f"Test graph '{args.workflow}' does not exist: {graphs}")
-
-        graph, _ = get_graph(args.workflow)
-    else:
-        graph = args.workflow
-    return [args.workflow], [graph]
+        return _parse_test_workflows([args.workflow], args.search)
+    return _parse_workflows([args.workflow], args.search)
 
 
 def parse_workflows(args):
     if args.test:
-        from ewokscore.tests.examples.graphs import graph_names, get_graph
+        return _parse_test_workflows(args.workflows, args.search)
+    return _parse_workflows(args.workflows, args.search)
 
-        test_graphs = list(graph_names())
-        for workflow in args.workflows:
-            if workflow not in test_graphs:
-                raise RuntimeError(
-                    f"Test graph '{workflow}' does not exist: {test_graphs}"
-                )
 
-        graphs = [get_graph(workflow)[0] for workflow in args.workflows]
+def _parse_workflows(workflows, search: bool):
+    if search:
+        parsed_workflows = list()
+        for workflow in workflows:
+            for filename in glob(workflow):
+                if filename not in parsed_workflows:
+                    parsed_workflows.append(filename)
     else:
-        graphs = args.workflows
-    return args.workflows, graphs
+        parsed_workflows = workflows
+
+    graphs = parsed_workflows
+    return parsed_workflows, graphs
+
+
+def _parse_test_workflows(workflows, search: bool):
+    from ewokscore.tests.examples.graphs import graph_names, get_graph
+
+    test_workflows = list(graph_names())
+    if search:
+        parsed_workflows = list()
+        for workflow in workflows:
+            for test_graph in test_workflows:
+                if fnmatch(test_graph, workflow) and test_graph not in parsed_workflows:
+                    parsed_workflows.append(test_graph)
+    else:
+        for workflow in workflows:
+            if workflow not in test_workflows:
+                raise RuntimeError(
+                    f"Test graph '{workflow}' does not exist: {test_workflows}"
+                )
+        parsed_workflows = workflows
+
+    graphs = [get_graph(workflow)[0] for workflow in parsed_workflows]
+    return parsed_workflows, graphs
 
 
 def parse_destinations(args):
@@ -87,7 +106,7 @@ def parse_destinations(args):
             destination = os.path.join(dest_dirname, f"{dest_basename}{dest_ext}")
         else:
             destination = os.path.join(
-                dest_dirname, f"{dest_basename}{basename}{dest_ext}"
+                dest_dirname, f"{basename}{dest_basename}{dest_ext}"
             )
         destinations.append(destination)
 

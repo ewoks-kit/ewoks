@@ -126,6 +126,11 @@ def add_execute_parameters(parser):
         default="none",
         help="Execution engine to be used",
     )
+    parser.add_argument(
+        "--search",
+        action="store_true",
+        help="The 'workflow' argument is a pattern to be search",
+    )
 
 
 def apply_execute_parameters(args):

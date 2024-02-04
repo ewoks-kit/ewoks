@@ -77,6 +77,11 @@ def add_convert_parameters(parser):
         action="store_true",
         help="The 'workflow' argument refers to the name of a test graph",
     )
+    parser.add_argument(
+        "--search",
+        action="store_true",
+        help="The 'workflow' argument is a pattern to be search",
+    )
 
 
 def apply_convert_parameters(args):
