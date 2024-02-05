@@ -31,15 +31,14 @@ def test_execute(graph_name, scheme, engine, tmpdir):
     ewoksgraph = load_graph(graph)
     non_dag = ewoksgraph.is_cyclic or ewoksgraph.has_conditional_links
 
+    results = main(argv=argv, shell=False)
+    assert len(results) == 1
+
     if non_dag and engine != "ppf":
-        with pytest.raises(RuntimeError):
-            main(argv=argv, shell=False)
-        return
-
-    result = main(argv=argv, shell=False)
-
-    assert_execute_graph_default_result(ewoksgraph, result, expected, varinfo)
-    assert keep == graph
+        assert isinstance(results[0], RuntimeError)
+    else:
+        assert_execute_graph_default_result(ewoksgraph, results[0], expected, varinfo)
+        assert keep == graph
 
 
 @pytest.mark.parametrize("graph_name", graph_names())
