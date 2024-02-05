@@ -2,13 +2,14 @@ import os
 import json
 from glob import glob
 from fnmatch import fnmatch
-from typing import Tuple, Any
+from typing import Tuple, Any, List
+from json.decoder import JSONDecodeError
 
 
 def parse_value(value: str) -> Any:
     try:
         return json.loads(value)
-    except Exception:
+    except JSONDecodeError:
         return value
 
 
