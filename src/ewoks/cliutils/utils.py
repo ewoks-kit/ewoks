@@ -110,16 +110,13 @@ def parse_destinations(args):
         if not dest_ext.startswith("."):
             dest_ext = f".{dest_ext}"
 
+    if len(args.workflows) == 1 and dest_basename:
+        return [os.path.join(dest_dirname, f"{dest_basename}{dest_ext}")]
+
     destinations = list()
-    only_one = len(args.workflows) == 1
     for workflow in args.workflows:
         basename, _ = os.path.splitext(os.path.basename(workflow))
-        if only_one and dest_basename:
-            destination = os.path.join(dest_dirname, f"{dest_basename}{dest_ext}")
-        else:
-            destination = os.path.join(
-                dest_dirname, f"{basename}{dest_basename}{dest_ext}"
-            )
+        destination = os.path.join(dest_dirname, f"{basename}{dest_basename}{dest_ext}")
         destinations.append(destination)
 
     return destinations
