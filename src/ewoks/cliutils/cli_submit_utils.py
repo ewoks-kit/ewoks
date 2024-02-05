@@ -1,9 +1,9 @@
-from . import cliexecuteutils
+from . import cli_execute_utils
 from . import utils
 
 
 def add_submit_parameters(parser):
-    cliexecuteutils.add_execute_parameters(parser)
+    cli_execute_utils.add_execute_parameters(parser)
     parser.add_argument(
         "--wait",
         type=float,
@@ -22,5 +22,5 @@ def add_submit_parameters(parser):
 
 
 def apply_submit_parameters(args):
-    cliexecuteutils.apply_execute_parameters(args)
+    cli_execute_utils.apply_execute_parameters(args)
     args.cparameters = dict(utils.parse_option(item) for item in args.cparameters)
