@@ -41,33 +41,44 @@ def parse_option(option: str) -> Tuple[str, Any]:
     return option, parse_value(value)
 
 
-def parse_workflow(args):
+def parse_workflow(args) -> Tuple[List[str], List[str]]:
+    """
+    :returns: workflows (possibly expanded due the search), graphs (execute graph arguments)
+    """
     if args.test:
         return _parse_test_workflows([args.workflow], args.search)
     return _parse_workflows([args.workflow], args.search)
 
 
-def parse_workflows(args):
+def parse_workflows(args) -> Tuple[List[str], List[str]]:
+    """
+    :returns: workflows (possibly expanded due the search), graphs (execute graph arguments)
+    """
     if args.test:
         return _parse_test_workflows(args.workflows, args.search)
     return _parse_workflows(args.workflows, args.search)
 
 
-def _parse_workflows(workflows, search: bool):
-    if search:
-        parsed_workflows = list()
-        for workflow in workflows:
-            for filename in glob(workflow):
-                if filename not in parsed_workflows:
-                    parsed_workflows.append(filename)
-    else:
-        parsed_workflows = workflows
+def _parse_workflows(workflows: List[str], search: bool) -> Tuple[List[str], List[str]]:
+    """
+    :returns: workflows (possibly expanded due the search), graphs (execute graph arguments)
+    """
+    if not search:
+        return workflows, workflows
+    parsed_workflows = list()
+    for workflow in workflows:
+        for filename in glob(workflow):
+            if filename not in parsed_workflows:
+                parsed_workflows.append(filename)
+    return parsed_workflows, parsed_workflows
 
-    graphs = parsed_workflows
-    return parsed_workflows, graphs
 
-
-def _parse_test_workflows(workflows, search: bool):
+def _parse_test_workflows(
+    workflows: List[str], search: bool
+) -> Tuple[List[str], List[dict]]:
+    """
+    :returns: workflows (possibly expanded due the search), graphs (execute graph arguments)
+    """
     from ewokscore.tests.examples.graphs import graph_names, get_graph
 
     test_workflows = list(graph_names())
