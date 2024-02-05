@@ -95,7 +95,7 @@ def parse_destinations(args):
     if not dest_ext:
         dest_ext = dest_basename
         dest_basename = ""
-        if dest_ext[0] != ".":
+        if not dest_ext.startswith("."):
             dest_ext = f".{dest_ext}"
 
     destinations = list()
