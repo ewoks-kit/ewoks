@@ -2,6 +2,11 @@
 
 ## 0.5.0 (unreleased)
 
+## 0.4.2
+
+New features:
+  - CLI support for multiple workflows (explicit or with search pattern)
+
 ## 0.4.1
 
 New features:
