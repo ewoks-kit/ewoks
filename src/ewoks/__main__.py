@@ -62,7 +62,10 @@ def command_execute(args, shell=False):
                 else:
                     print("FINISHED")
             else:
+                print("")
+                print("RESULTS:")
                 pprint(results)
+                print("")
                 print("FINISHED")
             if results is None:
                 return_code = 1

@@ -6,9 +6,10 @@ _REPRESENTATIONS = [str(s).split(".")[-1] for s in GraphRepresentation]
 
 def add_convert_parameters(parser):
     parser.add_argument(
-        "workflow",
+        "workflows",
         type=str,
         help="Workflow to convert (e.g. JSON filename)",
+        nargs="+",
     )
     parser.add_argument(
         "destination",
@@ -85,7 +86,7 @@ def add_convert_parameters(parser):
 
 
 def apply_convert_parameters(args):
-    args.workflows, args.graphs = utils.parse_workflow(args)
+    args.workflows, args.graphs = utils.parse_workflows(args)
     args.destinations = utils.parse_destinations(args)
 
     inputs = [
