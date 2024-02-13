@@ -2,6 +2,12 @@
 
 ## 0.5.0 (unreleased)
 
+## 0.4.3
+
+Changes:
+  - ewoks CLI workflow search: sort by creation date
+  - ewoks CLI convert: support multiple workflow arguments
+
 ## 0.4.2
 
 New features:
