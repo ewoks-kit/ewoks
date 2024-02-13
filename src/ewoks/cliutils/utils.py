@@ -41,15 +41,6 @@ def parse_option(option: str) -> Tuple[str, Any]:
     return option, parse_value(value)
 
 
-def parse_workflow(args) -> Tuple[List[str], List[str]]:
-    """
-    :returns: workflows (possibly expanded due the search), graphs (execute graph arguments)
-    """
-    if args.test:
-        return _parse_test_workflows([args.workflow], args.search)
-    return _parse_workflows([args.workflow], args.search)
-
-
 def parse_workflows(args) -> Tuple[List[str], List[str]]:
     """
     :returns: workflows (possibly expanded due the search), graphs (execute graph arguments)
@@ -66,10 +57,10 @@ def _parse_workflows(workflows: List[str], search: bool) -> Tuple[List[str], Lis
     if not search:
         return workflows, workflows
     parsed_workflows = list()
-    for workflow in workflows:
-        for filename in glob(workflow):
-            if filename not in parsed_workflows:
-                parsed_workflows.append(filename)
+    files = (filename for workflow in workflows for filename in glob(workflow))
+    for filename in sorted(files, key=os.path.getmtime):
+        if filename not in parsed_workflows:
+            parsed_workflows.append(filename)
     return parsed_workflows, parsed_workflows
 
 
