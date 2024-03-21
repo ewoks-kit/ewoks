@@ -2,13 +2,19 @@ include:
   - project: workflow/ewoksadmin/ewoksci
     file: .gitlab-ci-template.yml
 
+variables:
+  WARNING1: "ignore::DeprecationWarning:jupyter_client.session"
+  IGNORE_WARNINGS: "-W ${WARNING1}"
+
 flake8_nb:
   extends: .flake8_nb
 
-test-3.7_glx:
-  extends: .test-3.7_glx
+test-3.8_glx:
+  extends: .test-3.8_glx
   variables:
     PIP_INSTALL_OPTIONS: '--pre git+https://github.com/woutdenolf/papermill.git@fix_hanging_execute'
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
 
 build_sdist:
   extends: .build_sdist
@@ -24,6 +30,8 @@ test_sdist-3.7_glx:
     - python -m pytest -v --pyargs ewoksorange.tests
   variables:
     PIP_INSTALL_OPTIONS: '--pre git+https://github.com/woutdenolf/papermill.git@fix_hanging_execute'
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
   timeout: 15m
 
 test_sdist-3.8_glx-win:
@@ -35,6 +43,9 @@ test_sdist-3.8_glx-win:
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
     #- python -m pytest -v --pyargs ewoksorange.tests
+  variables:
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
   timeout: 15m
 
 test_sdist-3.9_glx:
@@ -46,6 +57,9 @@ test_sdist-3.9_glx:
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
     - python -m pytest -v --pyargs ewoksorange.tests
+  variables:
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
   timeout: 15m
 
 test_sdist-3.10_glx:
@@ -57,6 +71,9 @@ test_sdist-3.10_glx:
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
     - python -m pytest -v --pyargs ewoksorange.tests
+  variables:
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
   timeout: 15m
 
 test_sdist-3.11_glx:
@@ -68,6 +85,9 @@ test_sdist-3.11_glx:
     - python -m pytest -v --pyargs ewoksppf.tests
     - python -m pytest -v --pyargs ewoksdask.tests
     - python -m pytest -v --pyargs ewoksorange.tests
+  variables:
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
   timeout: 15m
 
 build_doc:
