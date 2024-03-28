@@ -59,7 +59,7 @@ test_sdist-3.9_glx:
     - python -m pytest -v --pyargs ewoksorange.tests
   variables:
     JUPYTER_PLATFORM_DIRS: 1
-    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS} -W ignore::RuntimeWarning:networkx.utils.backends" # networkx #7372
   timeout: 15m
 
 test_sdist-3.10_glx:
