@@ -1,5 +1,5 @@
 include:
-  - project: workflow/ewoksadmin/ewoksci
+  - project: dau/ci/pyci
     file: .gitlab-ci-template.yml
 
 variables:
