@@ -1,5 +1,6 @@
 from . import utils
 from ewokscore.graph.serialize import GraphRepresentation
+import os
 
 _REPRESENTATIONS = [str(s).split(".")[-1] for s in GraphRepresentation]
 
@@ -14,7 +15,7 @@ def add_execute_parameters(parser):
     parser.add_argument(
         "--workflow-dir",
         type=str,
-        default="",
+        default=os.getcwd(),
         dest="root_dir",
         help="Directory of sub-workflows (current working directory by default)",
     )
