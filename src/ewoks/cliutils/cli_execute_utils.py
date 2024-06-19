@@ -15,7 +15,7 @@ def add_execute_parameters(parser):
     parser.add_argument(
         "--workflow-dir",
         type=str,
-        default=os.getcwd(),
+        default="",
         dest="root_dir",
         help="Directory of sub-workflows (current working directory by default)",
     )

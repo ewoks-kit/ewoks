@@ -2,12 +2,14 @@ import sys
 import argparse
 import traceback
 from typing import Optional
+import os
 
 from pprint import pprint
 from . import cliutils
 from .bindings import execute_graph
 from .bindings import convert_graph
 from .bindings import submit_graph
+from .bindings import load_graph
 
 
 def create_argument_parser(shell=False):
@@ -81,6 +83,13 @@ def command_execute(args, shell=False):
 
 def command_submit(args, shell=False):
     cliutils.apply_submit_parameters(args, shell=shell)
+
+    # Check if the workflow is locally available
+    for ind, graph in enumerate(args.graphs.copy()):
+        local_path = os.path.join(args.root_dir, graph)
+        if os.path.exists(local_path):
+            args.graphs[ind] = load_graph(graph=local_path).dump()
+            args.root_dir = ""
 
     return_code = 0
     keep_results = []
