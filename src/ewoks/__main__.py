@@ -89,7 +89,6 @@ def command_submit(args, shell=False):
         local_path = os.path.join(args.root_dir, graph)
         if os.path.exists(local_path):
             args.graphs[ind] = load_graph(graph=local_path).dump()
-            args.root_dir = ""
 
     return_code = 0
     keep_results = []

@@ -1,6 +1,5 @@
 from . import utils
 from ewokscore.graph.serialize import GraphRepresentation
-import os
 
 _REPRESENTATIONS = [str(s).split(".")[-1] for s in GraphRepresentation]
 
