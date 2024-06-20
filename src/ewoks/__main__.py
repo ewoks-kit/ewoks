@@ -90,6 +90,7 @@ def command_submit(args, shell=False):
         future = submit_graph(
             graph,
             engine=args.engine,
+            resolve_graph_remotely=args.resolve_graph_remotely,
             **args.execute_options,
             _celery_options=args.cparameters,
         )

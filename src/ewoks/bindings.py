@@ -99,19 +99,24 @@ def _upload_result(upload_parameters):
 
 
 def submit_graph(
-    graph, _celery_options=None, load_options: Optional[dict] = None, **options
+    graph,
+    _celery_options=None,
+    resolve_graph_remotely: Optional[bool] = None,
+    load_options: Optional[dict] = None,
+    **options,
 ):
-    """Submit a workflow to be execute remotely. Attempt client-side loading
-    of the workflow and if it fails resort to worker-side loading.
+    """Submit a workflow to be executed remotely. The workflow is
+    resolved on the client-side by default (e.g. load from a file)
+    but can optionally be resolved remotely.
     """
     if submit is None:
         raise RuntimeError("requires the 'ewoksjob' package")
     if _celery_options is None:
         _celery_options = dict()
-    try:
-        graph = convert_graph(graph, None, load_options=load_options)
-    except Exception:
+    if resolve_graph_remotely:
         options["load_options"] = load_options
+    else:
+        graph = convert_graph(graph, None, load_options=load_options)
     return submit(args=(graph,), kwargs=options, **_celery_options)
 
 
