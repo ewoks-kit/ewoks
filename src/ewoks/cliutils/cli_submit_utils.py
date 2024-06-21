@@ -19,6 +19,12 @@ def add_submit_parameters(parser):
         metavar="NAME=VALUE",
         help="Celery parameters",
     )
+    parser.add_argument(
+        "--load-remote",
+        action="store_true",
+        dest="resolve_graph_remotely",
+        help="Load the workflow remotely instead of locally",
+    )
 
 
 def apply_submit_parameters(args):
