@@ -1,77 +1,102 @@
 # CHANGELOG.md
 
-## 0.5.0 (unreleased)
+## (unreleased)
+
+## 0.5.0
+
+Changes:
+
+- client-side graph resolution byt default for submitting workflows
+
+Big fixes:
+
+- the pyyaml 6.0.2rc1 package is broken
 
 ## 0.4.3
 
 Changes:
-  - ewoks CLI workflow search: sort by creation date
-  - ewoks CLI convert: support multiple workflow arguments
+
+- ewoks CLI workflow search: sort by creation date
+- ewoks CLI convert: support multiple workflow arguments
 
 ## 0.4.2
 
 New features:
-  - CLI support for multiple workflows (explicit or with search pattern)
+
+- CLI support for multiple workflows (explicit or with search pattern)
 
 ## 0.4.1
 
 New features:
-  - Improved documentation
+
+- Improved documentation
 
 Bug fixes:
-  - Fix test dependencies
+
+- Fix test dependencies
 
 ## 0.4.0
 
 New features:
-  - add support for jupyter notebooks as workflow tasks
+
+- add support for jupyter notebooks as workflow tasks
 
 ## 0.3.0
 
 Changes:
-  - update dependency bounds
+
+- update dependency bounds
 
 ## 0.2.0
 
 Breaking Changes:
-  - CLI: rename --output to --outputs
+
+- CLI: rename --output to --outputs
 
 Changes:
-  - add celery options to `submit_graph` and `ewoks submit`
+
+- add celery options to `submit_graph` and `ewoks submit`
 
 ## 0.1.5
 
 Changes:
-  - add 'esrf-data-portal' as extra pip requirement
+
+- add 'esrf-data-portal' as extra pip requirement
 
 ## 0.1.4
 
 New features:
-  - add saving and uploading to graph execution
+
+- add saving and uploading to graph execution
 
 ## 0.1.3
 
 New features:
-  - workflow caching when loading
+
+- workflow caching when loading
 
 Bug fixes:
-  - CLI binding argument no longer exists for `ewoks submit`
+
+- CLI binding argument no longer exists for `ewoks submit`
 
 ## 0.1.2
 
 Deprecations:
-   - ewoks event field "binding" is deprecated in favor of "engine"
+
+- ewoks event field "binding" is deprecated in favor of "engine"
 
 ## 0.1.1
 
 Changes:
-  - Pin minor versions of ewoks projects
+
+- Pin minor versions of ewoks projects
 
 ## 0.1.0
 
 New features:
-  - `ewokscore` dependency
-  - `ewoksdask` dependency
-  - `ewoksorange` dependency
-  - `ewoksppf` dependency
-  - command-line interface
+
+- `ewokscore` dependency
+- `ewoksdask` dependency
+- `ewoksorange` dependency
+- `ewoksppf` dependency
+- command-line interface
