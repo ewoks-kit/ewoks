@@ -9,10 +9,21 @@ variables:
 flake8_nb:
   extends: .flake8_nb
 
+test-3.7_glx:
+  extends: .test-3.7_glx
+  variables:
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
+
 test-3.8_glx:
   extends: .test-3.8_glx
   variables:
-    PIP_INSTALL_OPTIONS: '--pre git+https://github.com/woutdenolf/papermill.git@fix_hanging_execute'
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
+
+test-3.11_glx:
+  extends: .test-3.11_glx
+  variables:
     JUPYTER_PLATFORM_DIRS: 1
     PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
 
@@ -29,7 +40,6 @@ test_sdist-3.7_glx:
     - python -m pytest -v --pyargs ewoksdask.tests
     - python -m pytest -v --pyargs ewoksorange.tests
   variables:
-    PIP_INSTALL_OPTIONS: '--pre git+https://github.com/woutdenolf/papermill.git@fix_hanging_execute'
     JUPYTER_PLATFORM_DIRS: 1
     PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
   timeout: 15m
