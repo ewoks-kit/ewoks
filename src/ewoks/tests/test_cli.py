@@ -13,6 +13,11 @@ from ewokscore.tests.utils.results import assert_execute_graph_default_result
 @pytest.mark.parametrize("scheme", (None, "json"))
 @pytest.mark.parametrize("engine", (None, "dask", "ppf"))
 def test_execute(graph_name, scheme, engine, tmpdir):
+    if graph_name == "self_trigger":
+        pytest.skip(
+            "Self-triggering workflow execution is inconsistent: https://gitlab.esrf.fr/workflow/ewoks/ewoksppf/-/issues/16"
+        )
+
     graph, expected = get_graph(graph_name)
     argv = [sys.executable, "execute", graph_name, "--test", "--merge-outputs"]
     if engine:
