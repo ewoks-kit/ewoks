@@ -12,7 +12,7 @@ from .bindings import submit_graph
 
 def create_argument_parser(shell=False):
     parser = argparse.ArgumentParser(
-        description="Esrf WOrKflow System CLI",
+        description="Extensible Workflow System CLI",
         prog="ewoks",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
