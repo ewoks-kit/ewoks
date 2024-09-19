@@ -9,7 +9,7 @@ problems that can be expressed as a graph of tasks, also referred to as a *compu
 purpose of a workflow management system is to provide a framework for implementing tasks, creating graphs of tasks and
 executing these graphs.
 
-The purpose of *ewoks* (ESRF Workflow System) is to provide an abstraction layer between graph representation and execution.
+The purpose of *ewoks* (Extensible Workflow System) is to provide an abstraction layer between graph representation and execution.
 This allows using the same tasks and graphs in different workflow management systems.
 
 *ewoks* has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
