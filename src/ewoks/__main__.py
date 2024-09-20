@@ -1,3 +1,4 @@
+from subprocess import CalledProcessError
 import sys
 import argparse
 import traceback
@@ -5,9 +6,11 @@ from typing import Optional
 
 from pprint import pprint
 from . import cliutils
+from .cliutils.utils import AbortException
 from .bindings import execute_graph
 from .bindings import convert_graph
 from .bindings import submit_graph
+from .bindings import install_graph
 
 
 def create_argument_parser(shell=False):
@@ -33,9 +36,15 @@ def create_argument_parser(shell=False):
         help="Convert a workflow",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    install = subparsers.add_parser(
+        "install",
+        help="Install requirements of a workflow",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     cliutils.add_execute_parameters(execute, shell=shell)
     cliutils.add_submit_parameters(submit, shell=shell)
     cliutils.add_convert_parameters(convert, shell=shell)
+    cliutils.add_install_parameters(install, shell=shell)
     return parser
 
 
@@ -163,6 +172,19 @@ def command_convert(args, shell=False):
         print(f"Converted {workflow} -> {destination}")
 
 
+def command_install(args, shell=False):
+    cliutils.apply_install_parameters(args, shell=shell)
+    for workflow, graph in zip(args.workflows, args.graphs):
+        try:
+            install_graph(graph, args.yes)
+        except (CalledProcessError, ValueError) as e:
+            print(f"Install failed for {workflow}: {e}")
+        except AbortException:
+            print(f"Install aborted for {workflow}")
+        else:
+            print(f"Installed requirements for {workflow}")
+
+
 def command_default(args, shell=False):
     if shell:
         return 0
@@ -182,6 +204,8 @@ def main(argv=None, shell=True):
         return command_submit(args, shell=shell)
     elif args.command == "convert":
         return command_convert(args, shell=shell)
+    elif args.command == "install":
+        return command_install(args, shell=shell)
     else:
         parser.print_help()
         return command_default(args, shell=shell)

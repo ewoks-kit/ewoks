@@ -5,6 +5,8 @@ from warnings import warn
 from typing import Any, Optional, List, Union
 from ewokscore.graph import TaskGraph
 from ewokscore.events.contexts import job_context, RawExecInfoType
+
+from .cliutils.utils import AbortException, pip_install
 from . import graph_cache
 
 try:
@@ -152,6 +154,32 @@ def convert_graph(
         save_options = dict()
     graph = load_graph(source, inputs=inputs, **load_options)
     return save_graph(graph, destination, **save_options)
+
+
+def install_graph(
+    source,
+    skip_prompt: bool = False,
+    load_options: Optional[dict] = None,
+):
+    if load_options is None:
+        load_options = dict()
+    graph = load_graph(source, **load_options)
+
+    requirements = graph.requirements
+    if requirements is None:
+        raise ValueError("No requirements field")
+
+    if skip_prompt:
+        pip_install(requirements)
+        return
+
+    answer = input(
+        f'This will run `pip install {" ".join(requirements)}` in the current env. Do you want to proceed (y/N)?'
+    )
+    if answer.lower() == "y" or answer.lower() == "yes":
+        pip_install(requirements)
+    else:
+        raise AbortException()
 
 
 def _get_engine_for_format(graph, options: Optional[dict] = None) -> Optional[str]:
