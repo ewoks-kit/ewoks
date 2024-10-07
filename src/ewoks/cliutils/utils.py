@@ -1,9 +1,15 @@
 import os
 import json
+import subprocess
+import sys
 from glob import glob
 from fnmatch import fnmatch
-from typing import Tuple, Any, List
+from typing import Sequence, Tuple, Any, List
 from json.decoder import JSONDecodeError
+
+
+class AbortException(Exception):
+    pass
 
 
 def parse_value(value: str) -> Any:
@@ -111,3 +117,10 @@ def parse_destinations(args):
         destinations.append(destination)
 
     return destinations
+
+
+def pip_install(requirements: Sequence[str]) -> int:
+    # https://pip.pypa.io/en/stable/user_guide/#using-pip-from-your-program
+    return subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", *requirements]
+    )

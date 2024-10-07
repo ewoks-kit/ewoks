@@ -23,13 +23,36 @@ The *ewoks* command line interface can be used for other things like converting 
 
 .. code:: bash
 
-    ewoks execute /path/to/graph.ows /path/to/graph.json
+    ewoks convert /path/to/graph.ows /path/to/graph.json
 
 *Ewoks* jobs can be submitted as follows
 
 .. code:: bash
 
     ewoks submit /path/to/graph.json
+
+Workflows can include a `requirements` field that lists packages that have to be installed to run the workflow. 
+
+.. code:: bash
+
+    # /path/to/graph.json
+    {
+      "graph": {
+        ...
+        "requirements": [
+          <list of packages>
+        ],
+      },
+      ...
+    }
+
+
+`ewoks install` can be used to install the said requirements:
+
+.. code:: bash
+
+    ewoks install /path/to/graph.json
+
 
 For more information
 
