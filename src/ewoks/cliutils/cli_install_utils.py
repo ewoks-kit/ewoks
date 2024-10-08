@@ -24,6 +24,12 @@ def add_install_parameters(parser: ArgumentParser):
         action="store_true",
         help="Accept automatically install prompts",
     )
+    parser.add_argument(
+        "-p",
+        "--python",
+        type=str,
+        help="Python of the env where the packages should be installed. Default: current env Python.",
+    )
 
 
 def apply_install_parameters(args):
