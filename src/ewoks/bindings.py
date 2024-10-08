@@ -1,6 +1,7 @@
 import os
 import logging
 import importlib
+import sys
 from warnings import warn
 from typing import Any, Optional, List, Union
 from ewokscore.graph import TaskGraph
@@ -159,6 +160,7 @@ def convert_graph(
 def install_graph(
     source,
     skip_prompt: bool = False,
+    python_path: Optional[str] = None,
     load_options: Optional[dict] = None,
 ):
     if load_options is None:
@@ -169,15 +171,18 @@ def install_graph(
     if requirements is None:
         raise ValueError("No requirements field")
 
+    if python_path is None:
+        python_path = sys.executable
+
     if skip_prompt:
-        pip_install(requirements)
+        pip_install(requirements, python_path)
         return
 
     answer = input(
-        f'This will run `pip install {" ".join(requirements)}` in the current env. Do you want to proceed (y/N)?'
+        f'This will run f`{python_path} -m pip install {" ".join(requirements)}`. Do you want to proceed (y/N)?'
     )
     if answer.lower() == "y" or answer.lower() == "yes":
-        pip_install(requirements)
+        pip_install(requirements, python_path)
     else:
         raise AbortException()
 

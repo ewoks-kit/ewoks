@@ -1,7 +1,6 @@
 import os
 import json
 import subprocess
-import sys
 from glob import glob
 from fnmatch import fnmatch
 from typing import Sequence, Tuple, Any, List
@@ -119,8 +118,6 @@ def parse_destinations(args):
     return destinations
 
 
-def pip_install(requirements: Sequence[str]) -> int:
+def pip_install(requirements: Sequence[str], python_path: str) -> int:
     # https://pip.pypa.io/en/stable/user_guide/#using-pip-from-your-program
-    return subprocess.check_call(
-        [sys.executable, "-m", "pip", "install", *requirements]
-    )
+    return subprocess.check_call([python_path, "-m", "pip", "install", *requirements])

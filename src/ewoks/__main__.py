@@ -176,7 +176,7 @@ def command_install(args, shell=False):
     cliutils.apply_install_parameters(args, shell=shell)
     for workflow, graph in zip(args.workflows, args.graphs):
         try:
-            install_graph(graph, args.yes)
+            install_graph(graph, args.yes, args.python)
         except (CalledProcessError, ValueError) as e:
             print(f"Install failed for {workflow}: {e}")
         except AbortException:

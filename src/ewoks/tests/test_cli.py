@@ -3,7 +3,6 @@ import subprocess
 import sys
 import pytest
 
-import ewoks
 from ewoks.__main__ import main
 from ewokscore import load_graph
 from ewokscore.tests.examples.graphs import graph_names
@@ -65,20 +64,17 @@ def test_convert(graph_name, tmpdir):
 
 
 def test_install(venv):
-    ewoks_package_path = os.path.dirname(
-        os.path.dirname(os.path.dirname(ewoks.__file__))
-    )
-    venv.install(ewoks_package_path)
-
     with pytest.raises(Exception, match="package is not installed"):
         venv.get_version("ewoksdata")
 
     subprocess.check_call(
         [
-            os.path.join(venv.bin, "ewoks"),
+            "ewoks",
             "install",
             "--yes",
             '{"graph": {"id": "test_install", "requirements": ["ewoksdata"]}}',
+            "-p",
+            f"{venv.python}",
         ]
     )
 
