@@ -4,7 +4,8 @@ include:
 
 variables:
   WARNING1: "ignore::DeprecationWarning:jupyter_client.session"
-  IGNORE_WARNINGS: "-W ${WARNING1}"
+  WARNING2: "ignore::ResourceWarning:orangecanvas.utils.localization" # https://github.com/biolab/orange-canvas-core/pull/312
+  IGNORE_WARNINGS: "-W ${WARNING1} -W ${WARNING2}"
 
 flake8_nb:
   extends: .flake8_nb
@@ -21,8 +22,8 @@ test-3.8_glx:
     JUPYTER_PLATFORM_DIRS: 1
     PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
 
-test-3.11_glx:
-  extends: .test-3.11_glx
+test-3.12_glx:
+  extends: .test-3.12_glx
   variables:
     JUPYTER_PLATFORM_DIRS: 1
     PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
@@ -69,27 +70,13 @@ test_sdist-3.9_glx:
     - python -m pytest -v --pyargs ewoksorange.tests
   variables:
     JUPYTER_PLATFORM_DIRS: 1
-    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS} -W ignore::RuntimeWarning:networkx.utils.backends" # networkx #7372
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS} -W ignore::RuntimeWarning:networkx.utils.backends" #https://github.com/networkx/networkx/issues/7372
   timeout: 15m
 
-test_sdist-3.10_glx:
-  extends: .test_sdist-3.10_glx
+test_sdist-3.12_glx:
+  extends: .test_sdist-3.12_glx
   script:
-    - !reference [.test_sdist-3.10_glx, script]
-    - python -m pip install ewokscore[test]
-    - python -m pytest -v --pyargs ewokscore.tests
-    - python -m pytest -v --pyargs ewoksppf.tests
-    - python -m pytest -v --pyargs ewoksdask.tests
-    - python -m pytest -v --pyargs ewoksorange.tests
-  variables:
-    JUPYTER_PLATFORM_DIRS: 1
-    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
-  timeout: 15m
-
-test_sdist-3.11_glx:
-  extends: .test_sdist-3.11_glx
-  script:
-    - !reference [.test_sdist-3.11_glx, script]
+    - !reference [.test_sdist-3.12_glx, script]
     - python -m pip install ewokscore[test]
     - python -m pytest -v --pyargs ewokscore.tests
     - python -m pytest -v --pyargs ewoksppf.tests
