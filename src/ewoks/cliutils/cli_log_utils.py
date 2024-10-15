@@ -10,13 +10,13 @@ LEVELS = {
 }
 
 
-def add_log_parameters(parser):
+def add_log_parameters(parser, default="warning"):
     parser.add_argument(
         "-l",
         "--log",
         type=str.lower,
         choices=list(LEVELS),
-        default="warning",
+        default=default,
         help="Log level",
     )
 

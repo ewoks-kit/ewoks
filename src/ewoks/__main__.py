@@ -177,7 +177,7 @@ def command_install(args, shell=False):
     for workflow, graph in zip(args.workflows, args.graphs):
         try:
             install_graph(graph, args.yes, args.python)
-        except (CalledProcessError, ValueError) as e:
+        except CalledProcessError as e:
             print(f"Install failed for {workflow}: {e}")
         except AbortException:
             print(f"Install aborted for {workflow}")
