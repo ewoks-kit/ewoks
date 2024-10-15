@@ -43,7 +43,8 @@ def apply_submit_parameters(args, shell=False):
 
 def add_install_parameters(parser, shell=False):
     if shell:
-        cli_log_utils.add_log_parameters(parser)
+        # Show logs of install for better UX
+        cli_log_utils.add_log_parameters(parser, default="info")
     cli_install_utils.add_install_parameters(parser)
 
 

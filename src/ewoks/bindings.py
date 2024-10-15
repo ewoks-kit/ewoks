@@ -7,7 +7,10 @@ from typing import Any, Optional, List, Union
 from ewokscore.graph import TaskGraph
 from ewokscore.events.contexts import job_context, RawExecInfoType
 
-from .cliutils.utils import AbortException, pip_install
+
+from .cliutils.utils import AbortException
+from .cliutils.utils import pip_install
+from .utils import extract_requirements
 from . import graph_cache
 
 try:
@@ -169,7 +172,11 @@ def install_graph(
 
     requirements = graph.requirements
     if requirements is None:
-        raise ValueError("No requirements field")
+        logger.warning(
+            "Requirements field is empty. Trying to extract requirements automatically..."
+        )
+        requirements = extract_requirements(graph)
+        logger.info(f"Extracted the following requirements: {requirements}")
 
     if python_path is None:
         python_path = sys.executable
