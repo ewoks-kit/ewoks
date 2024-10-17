@@ -6,9 +6,20 @@ import pytest
 
 from ewoks.__main__ import main
 from ewokscore import load_graph
+from ewokscore.graph import TaskGraph
 from ewokscore.tests.examples.graphs import graph_names
 from ewokscore.tests.examples.graphs import get_graph
 from ewokscore.tests.utils.results import assert_execute_graph_default_result
+
+
+def _ewokscore_in_graph_requirements(graph: TaskGraph) -> bool:
+    ewokscore_in_req = False
+    for requirement in graph.graph.graph["requirements"]:
+        if "ewokscore" in requirement:
+            ewokscore_in_req = True
+            break
+
+    return ewokscore_in_req
 
 
 @pytest.mark.parametrize("graph_name", graph_names())
@@ -63,6 +74,10 @@ def test_convert(graph_name, tmpdir):
     main(argv=argv, shell=False)
     assert os.path.exists(destination)
 
+    graph = load_graph(destination)
+    assert graph.graph.graph["requirements"] is not None
+    assert _ewokscore_in_graph_requirements(graph)
+
 
 def test_install(venv):
     with pytest.raises(Exception, match="package is not installed"):
@@ -113,3 +128,31 @@ def test_install_with_extract(venv):
     )
 
     assert venv.get_version("ewoksdata") is not None
+
+
+def test_execute_with_convert_destination(tmpdir):
+    destination = str(tmpdir / "convert.json")
+    argv = [
+        sys.executable,
+        "execute",
+        "demo",
+        "--test",
+        "-p",
+        "task1:b=42",
+        "-o",
+        f"convert_destination={destination}",
+    ]
+
+    main(argv=argv, shell=False)
+    assert os.path.exists(destination)
+
+    graph = load_graph(destination)
+
+    task1_node = graph.graph.nodes["task1"]
+    assert task1_node["default_inputs"][-1] == {
+        "name": "b",
+        "value": 42,
+    }
+
+    assert graph.graph.graph["requirements"] is not None
+    assert _ewokscore_in_graph_requirements(graph)

@@ -10,7 +10,7 @@ from ewokscore.events.contexts import job_context, RawExecInfoType
 
 from .cliutils.utils import AbortException
 from .cliutils.utils import pip_install
-from .utils import extract_requirements
+from .utils import extract_requirements, save_current_env_as_requirements
 from . import graph_cache
 
 try:
@@ -75,9 +75,7 @@ def execute_graph(
 
         # Save the graph (with inputs)
         if convert_destination is not None:
-            if save_options is None:
-                save_options = dict()
-            save_graph(graph, convert_destination, **save_options)
+            convert_graph(graph, convert_destination, save_options=save_options)
 
         # Execute the graph
         mod = import_binding(engine)
@@ -122,7 +120,10 @@ def submit_graph(
     if resolve_graph_remotely:
         options["load_options"] = load_options
     else:
-        graph = convert_graph(graph, None, load_options=load_options)
+        # Do not save requirements since the current env is the client
+        graph = convert_graph(
+            graph, None, load_options=load_options, save_requirements=False
+        )
     return submit(args=(graph,), kwargs=options, **_celery_options)
 
 
@@ -151,12 +152,15 @@ def convert_graph(
     inputs: Optional[List[dict]] = None,
     load_options: Optional[dict] = None,
     save_options: Optional[dict] = None,
+    save_requirements: bool = True,
 ) -> Union[str, dict]:
     if load_options is None:
         load_options = dict()
     if save_options is None:
         save_options = dict()
     graph = load_graph(source, inputs=inputs, **load_options)
+    if save_requirements:
+        graph = save_current_env_as_requirements(graph)
     return save_graph(graph, destination, **save_options)
 
 
