@@ -1,4 +1,6 @@
 import logging
+import subprocess
+import sys
 from typing import List
 from ewokscore.graph import TaskGraph
 
@@ -44,3 +46,15 @@ def extract_requirements(graph: TaskGraph) -> List[str]:
             )
 
     return list(imports)
+
+
+def save_current_env_as_requirements(graph: TaskGraph):
+
+    freeze_output = subprocess.check_output(
+        [sys.executable, "-m", "pip", "freeze"], text=True
+    )
+    requirements = freeze_output.strip().split("\n")
+
+    graph.graph.graph["requirements"] = requirements
+
+    return graph
