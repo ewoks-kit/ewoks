@@ -1,5 +1,5 @@
-Ewoks events
-============
+Enable Ewoks events during execution
+====================================
 
 Events can be emitted by *ewoks* during the execution of a workflow to notify
 about progress and potential errors. For this you can specify one or more

@@ -63,20 +63,38 @@ Start the *ewoks* web server, open the link in a web browser and load the `test.
 .. toctree::
     :hidden:
     
-    tutorials
+    hello_world
+    cli
     howtoguides
     api
 
 
 
-Binding documentation:
-----------------------
+Further Ewoks documentation
+---------------------------
 
-* `ewokscore <https://ewokscore.readthedocs.io/>`_ : create workflows and implement tasks
+About creating and editing workflows
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* `ewoks tutorial on workflow creation <https://ewoks.esrf.fr/en/latest/tutorials/create_workflow.html>`_: create a workflow from the Python interface
 * `ewoksorange <https://ewoksorange.readthedocs.io/>`_ : create and execute workflows with a desktop GUI
+* `ewoksweb <https://ewoksweb.readthedocs.io/>`_: web frontend to create, visualize and execute workflows
+* `ewokscore <https://ewokscore.readthedocs.io/>`_ : create workflows and implement tasks
+
+About executing workflows
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * `ewoksppf <https://ewoksppf.readthedocs.io/>`_ : execute cyclic workflows
 * `ewoksdask <https://ewoksdask.readthedocs.io/>`_ : parallelize workflow execution
+
+About setting up infrastructure for workflow execution
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * `ewoksjob <https://ewoksjob.readthedocs.io/>`_: distribute workflow execution
 * `ewoksserver <https://ewoksserver.readthedocs.io/>`_: REST server to manage and execute workflows
-* `ewoksweb <https://ewoksweb.readthedocs.io/>`_: web frontend to create, visualize and execute workflows
+
+About developping Ewoks
+^^^^^^^^^^^^^^^^^^^^^^^
+
 * `ewoksutils <https://ewoksutils.readthedocs.io/>`_ : developer utilities
+

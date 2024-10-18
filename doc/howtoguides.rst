@@ -1,13 +1,14 @@
 How-to Guides
 =============
 
-*Ewoks* has different interfaces to create and/or execute a workflow
+*Ewoks* is extremely versatile with respect to workflow edition and execution. This section presents several possible ways of handling workflows with *Ewoks*.
 
 .. toctree::
 
+    howtoguides/running_workflows
     howtoguides/python
-    howtoguides/cli
     howtoguides/job
+    howtoguides/gui
     howtoguides/rest
-    howtoguides/qt
-    howtoguides/web
+    howtoguides/benchmark
+    howtoguides/ewoks_events

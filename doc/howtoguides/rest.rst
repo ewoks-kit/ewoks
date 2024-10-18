@@ -1,5 +1,5 @@
-How to set up a REST Ewoks server
-=================================
+Set up a REST Ewoks server
+==========================
 
 Install requirements
 
