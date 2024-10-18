@@ -1,5 +1,5 @@
-How to use the Web Graphical Interface
-======================================
+Use the Web Graphical Interface
+===============================
 
 Install requirements
 

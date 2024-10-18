@@ -1,5 +1,5 @@
-How to use ewoks from the command line
-======================================
+Ewoks commands
+==============
 
 Install requirements
 

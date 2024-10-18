@@ -1,5 +1,5 @@
-How to use the Desktop Graphical Interface
-==========================================
+Use the Desktop Graphical Interface
+===================================
 
 Install requirements
 
