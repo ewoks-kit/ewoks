@@ -8,8 +8,7 @@ How-to Guides
     howtoguides/running_workflows
     howtoguides/python
     howtoguides/job
-    howtoguides/qt
-    howtoguides/web
+    howtoguides/gui
     howtoguides/rest
     howtoguides/benchmark
     howtoguides/ewoks_events

@@ -1,63 +1,103 @@
 Hello world
 ===========
 
-A short script that defines a task, creates a workflow and executes it.
+This script demonstrates how to define an Ewoks workflow from the ground up. The only thing needed to run it is the ``ewoks`` Python package
+
+.. code:: bash
+
+    pip install ewoks
+
+
+The script defines defines two tasks, one that ask for a name and the other that creates a greeting, creates a workflow out of these and executes it.
 
 .. code:: python
 
     from ewokscore import Task
     from ewoks import execute_graph
 
-    # Implement a workflow task
-    class SumTask(
-        Task, input_names=["a"], optional_input_names=["b"], output_names=["result"]
+
+    # Define a workflow task with an output
+    class AskForName(Task, output_names=["input_name"]):
+        def run(self):
+            name = input("What is your name?")
+            if not name:
+                name = "World"
+            self.outputs.input_name = name
+
+
+    # Define a workflow task with inputs and outputs
+    class SayHello(
+        Task,
+        input_names=["name"],
+        optional_input_names=["in_french"],
+        output_names=["greeting"],
     ):
         def run(self):
-            result = self.inputs.a
-            if self.inputs.b:
-                result += self.inputs.b
-            self.outputs.result = result
+            name = self.inputs.name
+            if self.inputs.in_french:
+                hello = "Bonjour"
+            else:
+                hello = "Hello"
+            self.outputs.greeting = f"{hello}, {name}!"
 
 
-    # Define a workflow with default inputs
+    # Define nodes: entities that will execute tasks
     nodes = [
         {
-            "id": "task1",
+            "id": "ask_for_name",
             "task_type": "class",
-            "task_identifier": "__main__.SumTask",
-            "default_inputs": [{"name": "a", "value": 1}],
+            "task_identifier": "__main__.AskForName",
         },
         {
-            "id": "task2",
+            "id": "say_hello",
             "task_type": "class",
-            "task_identifier": "__main__.SumTask",
-            "default_inputs": [{"name": "b", "value": 1}],
-        },
-        {
-            "id": "task3",
-            "task_type": "class",
-            "task_identifier": "__main__.SumTask",
-            "default_inputs": [{"name": "b", "value": 1}],
+            "task_identifier": "__main__.SayHello",
         },
     ]
+    # Define links that make data flow from one node to another
     links = [
         {
-            "source": "task1",
-            "target": "task2",
-            "data_mapping": [{"source_output": "result", "target_input": "a"}],
-        },
-        {
-            "source": "task2",
-            "target": "task3",
-            "data_mapping": [{"source_output": "result", "target_input": "a"}],
-        },
+            "source": "ask_for_name",
+            "target": "say_hello",
+            "data_mapping": [{"source_output": "input_name", "target_input": "name"}],
+        }
     ]
-    workflow = {"graph": {"id": "testworkflow"}, "nodes": nodes, "links": links}
+    # Define a workflow from nodes, links and graph metadata
+    workflow = {"graph": {"id": "hello_world"}, "nodes": nodes, "links": links}
 
-    # Define task inputs
-    inputs = [{"id": "task1", "name": "a", "value": 10}]
 
-    # Execute a workflow (use a proper Ewoks task scheduler in production)
-    varinfo = {"root_uri": "/tmp/myresults"}  # optionally save all task outputs
-    result = execute_graph(workflow, varinfo=varinfo, inputs=inputs)
+    # Execute a workflow
+    result = execute_graph(workflow)
     print(result)
+    print('----')
+
+    # Optionally, define inputs
+    inputs = [{"id": "say_hello", "name": "in_french", "value": True}]
+
+    # Execute a workflow with inputs
+    result = execute_graph(workflow, inputs=inputs)
+    print(result)
+
+This is the output you should get
+
+.. code-block:: bash
+
+    $ python hello_world.py
+    What is your name? Ewoks # <--- `input` waits for some input. `Ewoks` was typed here and Enter pressed.
+    {'greeting': 'Hello, Ewoks!'}
+    ----
+    What is your name?  # <--- Enter was pressed without typing anything
+    {'greeting': 'Bonjour, World!'}
+
+
+To go further
+-------------
+
+- The `Ewoksfordevs training <https://ewoksfordevs.readthedocs.io/>`_ gives a more gentle introduction to workflow creation/execution as well as task creation.
+- The `Ewoks website <https://ewoks.esrf.fr/en/latest/tutorials/>`_ also gathers more focused tutorials:
+
+    - `Workflow creation <https://ewoks.esrf.fr/en/latest/tutorials/create_workflow.html>`_
+    - Plus others to come!
+
+- Ewoks developers rarely design workflows by hand like this but instead use graphical interfaces to produce the dictionnary (usually stored in JSON). See `this page about the Ewoks graphical interfaces <./howtoguides/gui>`_.
+- For all the fields that can be set when creating the dictionnary representing the workflow, see the `Ewoks specification <https://ewokscore.readthedocs.io/en/latest/definitions.html>`_
