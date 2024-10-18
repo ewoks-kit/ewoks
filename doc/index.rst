@@ -74,7 +74,7 @@ Further Ewoks documentation
 ---------------------------
 
 About creating and editing workflows
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * `ewoks tutorial on workflow creation <https://ewoks.esrf.fr/en/latest/tutorials/create_workflow.html>`_: create a workflow from the Python interface
 * `ewoksorange <https://ewoksorange.readthedocs.io/>`_ : create and execute workflows with a desktop GUI
@@ -97,3 +97,4 @@ About developping Ewoks
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 * `ewoksutils <https://ewoksutils.readthedocs.io/>`_ : developer utilities
+
