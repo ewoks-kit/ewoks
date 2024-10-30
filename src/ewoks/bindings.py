@@ -189,8 +189,10 @@ def install_graph(
         pip_install(requirements, python_path)
         return
 
+    requirements_as_str = "\n".join(requirements)
+
     answer = input(
-        f'This will run f`{python_path} -m pip install {" ".join(requirements)}`. Do you want to proceed (y/N)?'
+        f"{requirements_as_str}\nThis will install the above packages via {python_path} -m pip install. Do you want to proceed (y/N)?"
     )
     if answer.lower() == "y" or answer.lower() == "yes":
         pip_install(requirements, python_path)
