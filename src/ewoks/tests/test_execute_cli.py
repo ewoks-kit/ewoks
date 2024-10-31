@@ -9,6 +9,8 @@ from ewokscore.tests.examples.graphs import graph_names
 from ewokscore.tests.examples.graphs import get_graph
 from ewokscore.tests.utils.results import assert_execute_graph_default_result
 
+from ewoks.tests.utils import has_default_input
+
 
 def _ewokscore_in_graph_requirements(graph: TaskGraph) -> bool:
     ewokscore_in_req = False
@@ -76,10 +78,33 @@ def test_execute_with_convert_destination(tmpdir):
     graph = load_graph(destination)
 
     task1_node = graph.graph.nodes["task1"]
-    assert task1_node["default_inputs"][-1] == {
-        "name": "b",
-        "value": 42,
-    }
+    assert has_default_input(task1_node, "b", 42)
+
+    assert graph.graph.graph["requirements"] is not None
+    assert _ewokscore_in_graph_requirements(graph)
+
+
+def test_execute_with_convert_destination_inputs_all(tmpdir):
+    destination = str(tmpdir / "convert.json")
+    argv = [
+        sys.executable,
+        "execute",
+        "demo",
+        "--test",
+        "-p",
+        "b=42",
+        "--inputs=all",
+        "-o",
+        f"convert_destination={destination}",
+    ]
+
+    main(argv=argv, shell=False)
+    assert os.path.exists(destination)
+
+    graph = load_graph(destination)
+
+    for node in graph.graph.nodes.values():
+        assert has_default_input(node, "b", 42)
 
     assert graph.graph.graph["requirements"] is not None
     assert _ewokscore_in_graph_requirements(graph)
