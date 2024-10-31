@@ -37,7 +37,9 @@ ewoks convert
 
         **ewoks convert** will save the packages installed in the current environment as `requirements` in the destination workflow. 
         
-        ⚠️ If the source workflow had a `requirements` field, it will be overwritten.
+        ⚠️ If the source workflow has a `requirements` field, it will therefore be replaced by this package list.
+
+        This can be disabled by using the ``--exclude-requirements`` argument.
     
     **ewoks convert** can also be used to store `inputs` inside the destination workflow.
 

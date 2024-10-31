@@ -48,6 +48,12 @@ def add_convert_parameters(parser):
         metavar="OPTION=VALUE",
         help="Save options",
     )
+    parser.add_argument(
+        "--exclude-requirements",
+        dest="exclude_requirements",
+        action="store_true",
+        help="Do not include the packages of the current Python env as requirements in the destination workflow",
+    )
 
 
 def apply_convert_parameters(args):
@@ -71,4 +77,6 @@ def apply_convert_parameters(args):
         "load_options": load_options,
         "inputs": utils.parse_ewoks_inputs_parameters(args),
     }
+    if args.exclude_requirements:
+        convert_options["save_requirements"] = False
     args.convert_options = convert_options
