@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 import os
 import json
 import subprocess
@@ -9,6 +10,76 @@ from json.decoder import JSONDecodeError
 
 class AbortException(Exception):
     pass
+
+
+def add_common_parameters(parser: ArgumentParser):
+    parser.add_argument(
+        "workflows",
+        type=str,
+        help="Workflow to execute (e.g. JSON filename)",
+        nargs="+",
+    )
+    parser.add_argument(
+        "--test",
+        action="store_true",
+        help="The 'workflow' argument refers to the name of a test graph",
+    )
+    parser.add_argument(
+        "--search",
+        action="store_true",
+        help="The 'workflow' argument is a pattern to be search",
+    )
+
+
+def add_subworkflows_parameters(parser: ArgumentParser):
+    parser.add_argument(
+        "--workflow-dir",
+        type=str,
+        default="",
+        dest="root_dir",
+        help="Directory of sub-workflows (current working directory by default)",
+    )
+    parser.add_argument(
+        "--workflow-module",
+        type=str,
+        default="",
+        dest="root_module",
+        help="Python module of sub-workflows (current working directory by default)",
+    )
+
+
+def add_ewoks_inputs_parameters(parser: ArgumentParser):
+    parser.add_argument(
+        "-p",
+        "--parameter",
+        dest="parameters",
+        action="append",
+        default=[],
+        metavar="[NODE:]NAME=VALUE",
+        help="Input variable for a particular node (or all start nodes when missing)",
+    )
+    parser.add_argument(
+        "--input-node-id",
+        dest="node_attr",
+        type=str,
+        choices=["id", "label", "taskid"],
+        default="id",
+        help="The NODE attribute used when specifying an input parameter with [NODE:]NAME=VALUE",
+    )
+    parser.add_argument(
+        "--inputs",
+        type=str,
+        choices=["start", "all"],
+        default="start",
+        help="Inputs without a specific node are given to either all start nodes or all nodes",
+    )
+
+
+def parse_ewoks_inputs_parameters(args):
+    return [
+        parse_parameter(input_item, args.node_attr, args.inputs == "all")
+        for input_item in args.parameters
+    ]
 
 
 def parse_value(value: str) -> Any:

@@ -5,12 +5,10 @@ _REPRESENTATIONS = [str(s).split(".")[-1] for s in GraphRepresentation]
 
 
 def add_convert_parameters(parser):
-    parser.add_argument(
-        "workflows",
-        type=str,
-        help="Workflow to convert (e.g. JSON filename)",
-        nargs="+",
-    )
+    utils.add_common_parameters(parser)
+    utils.add_subworkflows_parameters(parser)
+    utils.add_ewoks_inputs_parameters(parser)
+
     parser.add_argument(
         "destination",
         type=str,
@@ -33,29 +31,6 @@ def add_convert_parameters(parser):
         help="Destination format",
     )
     parser.add_argument(
-        "--workflow-dir",
-        type=str,
-        default="",
-        dest="root_dir",
-        help="Directory of sub-workflows (current working directory by default)",
-    )
-    parser.add_argument(
-        "--workflow-module",
-        type=str,
-        default="",
-        dest="root_module",
-        help="Python module of sub-workflows (current working directory by default)",
-    )
-    parser.add_argument(
-        "-p",
-        "--parameter",
-        dest="parameters",
-        action="append",
-        default=[],
-        metavar="[NODE:]NAME=VALUE",
-        help="Input variable for a particular node (or all start nodes when missing)",
-    )
-    parser.add_argument(
         "-o",
         "--load-option",
         dest="load_options",
@@ -73,25 +48,11 @@ def add_convert_parameters(parser):
         metavar="OPTION=VALUE",
         help="Save options",
     )
-    parser.add_argument(
-        "--test",
-        action="store_true",
-        help="The 'workflow' argument refers to the name of a test graph",
-    )
-    parser.add_argument(
-        "--search",
-        action="store_true",
-        help="The 'workflow' argument is a pattern to be search",
-    )
 
 
 def apply_convert_parameters(args):
     args.workflows, args.graphs = utils.parse_workflows(args)
     args.destinations = utils.parse_destinations(args)
-
-    inputs = [
-        utils.parse_parameter(input_item, "id", False) for input_item in args.parameters
-    ]
 
     load_options = dict(utils.parse_option(item) for item in args.load_options)
     if args.source_representation:
@@ -108,6 +69,6 @@ def apply_convert_parameters(args):
     convert_options = {
         "save_options": save_options,
         "load_options": load_options,
-        "inputs": inputs,
+        "inputs": utils.parse_ewoks_inputs_parameters(args),
     }
     args.convert_options = convert_options
