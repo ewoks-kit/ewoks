@@ -4,7 +4,7 @@ Use Ewoks graphical interfaces
 Ewoks comes with two graphical interfaces. You can either of the two to create and edit workflows.
 
 ``ewoksweb``: full-stack web application
-------------------------------------
+----------------------------------------
 
 Install ``ewoksweb``
 
