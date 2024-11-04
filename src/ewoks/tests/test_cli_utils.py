@@ -34,6 +34,7 @@ def test_cli_execute_workflow():
         ],
         "merge_outputs": False,
         "outputs": [],
+        "task_options": {},
         "varinfo": {"root_uri": "", "scheme": "nexus"},
         "load_options": {"root_dir": "/tmp"},
         "execinfo": {},
