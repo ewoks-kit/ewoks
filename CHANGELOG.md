@@ -2,13 +2,21 @@
 
 ## (unreleased)
 
+## 0.6.0
+
+New features:
+
+- Add graph installation to the python API (`install_graph`) and CLI (`ewoks install`).
+- Add requirements when converting a graph so the graph becomes installable. This is an opt-out feature.
+- Add task options to python API (`execute_graph` and `submit_graph`) and CLI (`ewoks install` and `ewoks submit`).
+
 ## 0.5.0
 
 Changes:
 
-- client-side graph resolution byt default for submitting workflows
+- client-side graph resolution by default for submitting workflows
 
-Big fixes:
+Bug fixes:
 
 - the pyyaml 6.0.2rc1 package is broken
 
