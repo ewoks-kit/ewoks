@@ -2,6 +2,14 @@
 
 ## (unreleased)
 
+## 0.6.0
+
+New features:
+
+- Add graph installation to the python API (`install_graph`) and CLI (`ewoks install`).
+- Add requirements when converting a graph so the graph becomes installable.
+- Add task options to python API (`execute_graph` and `submit_graph`) and CLI (`ewoks install` and `ewoks submit`).
+
 ## 0.5.0
 
 Changes:
