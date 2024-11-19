@@ -12,3 +12,4 @@ How-to Guides
     howtoguides/rest
     howtoguides/benchmark
     howtoguides/ewoks_events
+    howtoguides/task_python
