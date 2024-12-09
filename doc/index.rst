@@ -66,6 +66,7 @@ Start the *ewoks* web server, open the link in a web browser and load the `test.
     hello_world
     cli
     howtoguides
+    explanations
     api
 
 
