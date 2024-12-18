@@ -4,8 +4,9 @@ include:
 
 variables:
   WARNING1: "ignore::DeprecationWarning:jupyter_client.session"
-  WARNING2: "ignore::ResourceWarning:orangecanvas.utils.localization" # https://github.com/biolab/orange-canvas-core/pull/312
-  IGNORE_WARNINGS: "-W ${WARNING1} -W ${WARNING2}"
+  WARNING2: "ignore::DeprecationWarning:orangecanvas.utils.localization"
+  WARNING3: "ignore::DeprecationWarning:orangecanvas.utils.localization.si"
+  IGNORE_WARNINGS: "-W ${WARNING1} -W ${WARNING2} -W ${WARNING3}"
 
 flake8_nb:
   extends: .flake8_nb
