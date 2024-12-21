@@ -48,7 +48,6 @@ def import_binding(engine: Optional[str]):
 def execute_graph(
     graph,
     engine: Optional[str] = None,
-    binding: Optional[str] = None,
     inputs: Optional[List[dict]] = None,
     load_options: Optional[dict] = None,
     execinfo: RawExecInfoType = None,
@@ -58,11 +57,6 @@ def execute_graph(
     upload_parameters: Optional[dict] = None,
     **execute_options,
 ):
-    if binding:
-        if engine:
-            raise ValueError("'binding' and 'engine' cannot be used together")
-        engine = binding
-        warn("'binding' is deprecated in favor of 'engine'", DeprecationWarning)
     with job_context(execinfo, engine=engine) as execinfo:
         if environment:
             environment = {k: str(v) for k, v in environment.items()}

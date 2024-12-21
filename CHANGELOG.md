@@ -2,6 +2,10 @@
 
 ## (unreleased)
 
+Breaking changes:
+
+- Remove deprecated argument `binding` from `execute_graph`.
+
 ## 0.6.0
 
 New features:
