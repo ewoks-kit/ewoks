@@ -1,8 +1,8 @@
 ewoks |version|
 ===============
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.6075053.svg
-   :target: https://doi.org/10.5281/zenodo.6075053
+.. image:: https://img.shields.io/badge/DOI-10.1080/08940886.2024.2432305-blue
+   :target: https://doi.org/10.1080/08940886.2024.2432305
 
 Many `workflow management systems <https://s.apache.org/existing-workflow-systems>`_ exist to deal with data processing
 problems that can be expressed as a graph of tasks, also referred to as a *computational graph* or *workflow*. The main
