@@ -3,6 +3,8 @@
 !.gitignore
 !.gitlab-ci.yml
 !.readthedocs.yaml
+!.flake8
+!.flake8_nb
 
 # Byte / compiled / optimized
 *.py[cod]

@@ -1,3 +1,67 @@
 [build-system]
 requires = ["setuptools>=46.4"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "ewoks"
+version = "1.0.0"
+authors = [{ name = "ESRF", email = "dau-pydev@esrf.fr" }]
+description = "Extensible Workflow System"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE.md" }
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.8"
+dependencies = ["ewokscore ~=1.0"]
+
+[project.urls]
+Homepage = "https://gitlab.esrf.fr/workflow/ewoks/ewoks/"
+Documentation = "https://ewoks.readthedocs.io/"
+Repository = "https://gitlab.esrf.fr/workflow/ewoks/ewoks/"
+Issues = "https://gitlab.esrf.fr/workflow/ewoks/ewoks/issues"
+Changelog = "https://gitlab.esrf.fr/workflow/ewoks/ewoks/-/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dask = ["ewoksdask ~=1.0"]
+ppf = ["ewoksppf ~=1.0"]
+orange = ["ewoksorange ~=1.0"]
+esrf-data-portal = ["pyicat-plus"]
+notebooks = ["ewokscore[notebooks]"]
+test = [
+    "ewoks[dask]",
+    "ewoks[ppf]",
+    "ewoks[orange]",
+    "ewoks[esrf-data-portal]",
+    "pytest >=7",
+    "testbook",
+    "ipykernel",
+    "importlib_resources",
+    "pyqt5",
+    "pytest-venv",
+]
+dev = ["ewoks[test]", "black[jupyter] >=22", "flake8 >=4", "flake8_nb >= 0.3.1"]
+doc = [
+    "ewoks[test]",
+    "sphinx >=4.5",
+    "sphinx-autodoc-typehints >=1.16",
+    "ipykernel",
+    "nbsphinx",
+    "nbsphinx_link",
+    "pydata-sphinx-theme",
+    "sphinx-argparse",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.coverage.run]
+omit = ['*/tests/*']
+
+[project.scripts]
+ewoks = "ewoks.__main__:main"
