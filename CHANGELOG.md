@@ -2,6 +2,8 @@
 
 ## (unreleased)
 
+- Drop Python 3.6 and 3.7
+
 ## 1.0.0
 
 Breaking changes:
