@@ -26,6 +26,12 @@ test-3.12_glx:
     JUPYTER_PLATFORM_DIRS: 1
     PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
 
+test-3.13_glx:
+  extends: .test-3.13_glx
+  variables:
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
+
 build_sdist:
   extends: .build_sdist
 
@@ -61,6 +67,20 @@ test_sdist-3.12_glx:
   extends: .test_sdist-3.12_glx
   script:
     - !reference [.test_sdist-3.12_glx, script]
+    - python -m pip install ewokscore[test]
+    - python -m pytest -v --pyargs ewokscore.tests
+    - python -m pytest -v --pyargs ewoksppf.tests
+    - python -m pytest -v --pyargs ewoksdask.tests
+    - python -m pytest -v --pyargs ewoksorange.tests
+  variables:
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
+  timeout: 15m
+
+test_sdist-3.13_glx:
+  extends: .test_sdist-3.13_glx
+  script:
+    - !reference [.test_sdist-3.13_glx, script]
     - python -m pip install ewokscore[test]
     - python -m pytest -v --pyargs ewokscore.tests
     - python -m pytest -v --pyargs ewoksppf.tests
