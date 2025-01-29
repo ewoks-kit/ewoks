@@ -42,7 +42,7 @@ test = [
     "pyqt5",
     "pytest-venv",
 ]
-dev = ["ewoks[test]", "black[jupyter] >=22", "flake8 >=4", "flake8_nb >= 0.3.1"]
+dev = ["ewoks[test]", "black[jupyter] >=25", "flake8 >=4", "flake8_nb >= 0.3.1"]
 doc = [
     "ewoks[test]",
     "sphinx >=4.5",
