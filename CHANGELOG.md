@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## Unreleased
+
+New features:
+
+- Use `ewoks.engines` entry points to find engines by name.
+- Use `ewoks.engines.serialization.representations` entry points to find engines by graph representation.
+
 ## 1.3.0
 
 New features:

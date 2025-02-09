@@ -1,13 +1,12 @@
-import importlib
 import logging
 import os
 import sys
+from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Union
-from warnings import warn
 
 from ewokscore.events.contexts import RawExecInfoType
 from ewokscore.events.contexts import job_context
@@ -15,6 +14,7 @@ from ewokscore.graph import TaskGraph
 from ewokscore.graph.inputs import graph_inputs_as_table
 from tabulate import tabulate
 
+from . import _engines
 from . import graph_cache
 from .cliutils.utils import AbortException
 from .cliutils.utils import pip_install
@@ -39,32 +39,22 @@ __all__ = ["execute_graph", "load_graph", "save_graph", "convert_graph", "submit
 logger = logging.getLogger(__name__)
 
 
-def import_binding(engine: Optional[str]):
-    if not engine or engine.lower() == "none":
-        binding = "ewokscore"
-    elif engine.startswith("ewoks"):
-        warn(
-            f"engine = '{engine}' is deprecated in favor of '{engine[5:]}'",
-            DeprecationWarning,
-        )
-        binding = engine
-    else:
-        binding = "ewoks" + engine
-    return importlib.import_module(binding)
-
-
 def execute_graph(
     graph,
     engine: Optional[str] = None,
     inputs: Optional[List[dict]] = None,
     load_options: Optional[dict] = None,
+    varinfo: Optional[dict] = None,
     execinfo: RawExecInfoType = None,
+    task_options: Optional[dict] = None,
+    outputs: Optional[List[dict]] = None,
+    merge_outputs: Optional[bool] = True,
     environment: Optional[dict] = None,
     convert_destination: Optional[Any] = None,
     save_options: Optional[dict] = None,
     upload_parameters: Optional[dict] = None,
     **execute_options,
-):
+) -> Optional[dict]:
     with job_context(execinfo, engine=engine) as execinfo:
         if environment:
             environment = {k: str(v) for k, v in environment.items()}
@@ -80,8 +70,16 @@ def execute_graph(
             convert_graph(graph, convert_destination, save_options=save_options)
 
         # Execute the graph
-        mod = import_binding(engine)
-        result = mod.execute_graph(graph, execinfo=execinfo, **execute_options)
+        engine_api = _engines.get_execution_engine(engine)
+        result = engine_api.execute_graph(
+            graph,
+            varinfo=varinfo,
+            execinfo=execinfo,
+            task_options=task_options,
+            outputs=outputs,
+            merge_outputs=merge_outputs,
+            **execute_options,
+        )
 
         # Upload results
         if upload_parameters:
@@ -131,21 +129,42 @@ def submit_graph(
 
 @graph_cache.cache
 def load_graph(
-    graph: Any, inputs: Optional[List[dict]] = None, **load_options
+    graph: Any,
+    inputs: Optional[List[dict]] = None,
+    representation: Optional[str] = None,
+    root_dir: Optional[Union[str, Path]] = None,
+    root_module: Optional[str] = None,
+    **load_options,
 ) -> TaskGraph:
     """When load option `graph_cache_max_size > 0` is provided, the graph will cached in memory.
     When the graph comes from external storage (for example a file) any changes
     to the external graph will require flushing the cache with `graph_cache_max_size = 0`.
     """
-    engine = _get_engine_for_format(graph, options=load_options)
-    mod = import_binding(engine)
-    return mod.load_graph(graph, inputs=inputs, **load_options)
+    engine_api, representation = _engines.get_serialization_engine(
+        graph, representation=representation
+    )
+    return engine_api.deserialize_graph(
+        graph,
+        inputs=inputs,
+        representation=representation,
+        root_dir=root_dir,
+        root_module=root_module,
+        **load_options,
+    )
 
 
-def save_graph(graph: TaskGraph, destination, **save_options) -> Union[str, dict]:
-    engine = _get_engine_for_format(destination, options=save_options)
-    mod = import_binding(engine)
-    return mod.save_graph(graph, destination, **save_options)
+def save_graph(
+    graph: TaskGraph,
+    destination,
+    representation: Optional[str] = None,
+    **save_options,
+) -> Union[str, dict]:
+    engine_api, representation = _engines.get_serialization_engine(
+        destination, representation=representation
+    )
+    return engine_api.serialize_graph(
+        graph, destination, representation=representation, **save_options
+    )
 
 
 def convert_graph(
@@ -237,18 +256,3 @@ def install_graph(
         pip_install(requirements, python_path)
     else:
         raise AbortException()
-
-
-def _get_engine_for_format(graph, options: Optional[dict] = None) -> Optional[str]:
-    """Get the engine which implements the workflow format (loading and saving)."""
-    representation = None
-    if options:
-        representation = options.get("representation")
-    if (
-        representation is None
-        and isinstance(graph, str)
-        and graph.lower().endswith(".ows")
-    ):
-        representation = "ows"
-    if representation == "ows":
-        return "orange"

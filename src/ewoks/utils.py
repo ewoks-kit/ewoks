@@ -48,7 +48,7 @@ def extract_requirements(graph: TaskGraph) -> List[str]:
     return list(imports)
 
 
-def save_current_env_as_requirements(graph: TaskGraph):
+def save_current_env_as_requirements(graph: TaskGraph) -> TaskGraph:
 
     freeze_output = subprocess.check_output(
         [sys.executable, "-m", "pip", "freeze"], text=True
