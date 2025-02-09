@@ -86,8 +86,7 @@ def add_execute_parameters(parser):
     parser.add_argument(
         "--engine",
         type=str,
-        choices=["none", "dask", "ppf", "orange"],
-        default="none",
+        default="core",
         help="Execution engine to be used",
     )
 

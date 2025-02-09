@@ -1,6 +1,12 @@
 # CHANGELOG.md
 
-## (unreleased)
+## Unreleased
+
+New features:
+
+- Add `ewoks.bindings` entry point.
+
+Changes:
 
 - Drop Python 3.6 and 3.7
 

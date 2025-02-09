@@ -1,10 +1,12 @@
 import os
+import sys
+import types
 import logging
 import importlib
-import sys
-from warnings import warn
 from typing import Any, Optional, List, Union
+
 from ewokscore.graph import TaskGraph
+from ewokscore.entry_points import entry_points
 from ewokscore.events.contexts import job_context, RawExecInfoType
 
 
@@ -31,18 +33,15 @@ __all__ = ["execute_graph", "load_graph", "save_graph", "convert_graph", "submit
 logger = logging.getLogger(__name__)
 
 
-def import_binding(engine: Optional[str]):
+def import_binding(engine: Optional[str] = None) -> types.ModuleType:
     if not engine or engine.lower() == "none":
-        binding = "ewokscore"
-    elif engine.startswith("ewoks"):
-        warn(
-            f"engine = '{engine}' is deprecated in favor of '{engine[5:]}'",
-            DeprecationWarning,
-        )
-        binding = engine
-    else:
-        binding = "ewoks" + engine
-    return importlib.import_module(binding)
+        engine = "core"
+
+    for ep in entry_points("ewoks.bindings"):
+        if ep.name == engine:
+            return importlib.import_module(ep.value)
+
+    raise ImportError(f"Cannot import binding for engine '{engine}'")
 
 
 def execute_graph(
