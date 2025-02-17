@@ -2,8 +2,8 @@ import logging
 import subprocess
 import sys
 from typing import List
-from ewokscore.graph import TaskGraph
 
+from ewokscore.graph import TaskGraph
 
 logger = logging.getLogger(__file__)
 

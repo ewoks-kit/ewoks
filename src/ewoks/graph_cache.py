@@ -1,9 +1,10 @@
 from collections import OrderedDict
 from functools import wraps
-from typing import Dict, Optional
+from typing import Dict
+from typing import Optional
 
-from ewokscore.hashing import uhash
 from ewokscore.graph import TaskGraph
+from ewokscore.hashing import uhash
 
 _GRAPH_CACHE: Dict[int, TaskGraph] = OrderedDict()
 _GRAPH_CACHE_MAX_SIZE: int = 0

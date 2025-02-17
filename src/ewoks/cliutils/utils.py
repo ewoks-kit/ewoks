@@ -1,11 +1,14 @@
-from argparse import ArgumentParser
-import os
 import json
+import os
 import subprocess
-from glob import glob
+from argparse import ArgumentParser
 from fnmatch import fnmatch
-from typing import Sequence, Tuple, Any, List
+from glob import glob
 from json.decoder import JSONDecodeError
+from typing import Any
+from typing import List
+from typing import Sequence
+from typing import Tuple
 
 
 class AbortException(Exception):
@@ -146,7 +149,8 @@ def _parse_test_workflows(
     """
     :returns: workflows (possibly expanded due the search), graphs (execute graph arguments)
     """
-    from ewokscore.tests.examples.graphs import graph_names, get_graph
+    from ewokscore.tests.examples.graphs import get_graph
+    from ewokscore.tests.examples.graphs import graph_names
 
     test_workflows = list(graph_names())
     if search:

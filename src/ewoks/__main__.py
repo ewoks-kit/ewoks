@@ -1,16 +1,16 @@
-from subprocess import CalledProcessError
-import sys
 import argparse
+import sys
 import traceback
+from pprint import pprint
+from subprocess import CalledProcessError
 from typing import Optional
 
-from pprint import pprint
 from . import cliutils
-from .cliutils.utils import AbortException
-from .bindings import execute_graph
 from .bindings import convert_graph
-from .bindings import submit_graph
+from .bindings import execute_graph
 from .bindings import install_graph
+from .bindings import submit_graph
+from .cliutils.utils import AbortException
 
 
 def create_argument_parser(shell=False):

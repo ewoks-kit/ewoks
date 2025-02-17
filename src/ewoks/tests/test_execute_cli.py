@@ -1,14 +1,14 @@
 import os
 import sys
-import pytest
 
-from ewoks.__main__ import main
+import pytest
 from ewokscore import load_graph
 from ewokscore.graph import TaskGraph
-from ewokscore.tests.examples.graphs import graph_names
 from ewokscore.tests.examples.graphs import get_graph
+from ewokscore.tests.examples.graphs import graph_names
 from ewokscore.tests.utils.results import assert_execute_graph_default_result
 
+from ewoks.__main__ import main
 from ewoks.tests.utils import has_default_input
 
 
