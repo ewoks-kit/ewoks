@@ -4,6 +4,9 @@
 
 - Drop Python 3.6 and 3.7
 
+New features:
+- The base class to create Ewoks tasks can be imported from `ewoks`: `from ewoks import Task`.
+
 ## 1.0.0
 
 Breaking changes:
