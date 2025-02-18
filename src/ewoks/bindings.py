@@ -1,17 +1,22 @@
-import os
-import logging
 import importlib
+import logging
+import os
 import sys
+from typing import Any
+from typing import List
+from typing import Optional
+from typing import Union
 from warnings import warn
-from typing import Any, Optional, List, Union
+
+from ewokscore.events.contexts import RawExecInfoType
+from ewokscore.events.contexts import job_context
 from ewokscore.graph import TaskGraph
-from ewokscore.events.contexts import job_context, RawExecInfoType
 
-
+from . import graph_cache
 from .cliutils.utils import AbortException
 from .cliutils.utils import pip_install
-from .utils import extract_requirements, save_current_env_as_requirements
-from . import graph_cache
+from .utils import extract_requirements
+from .utils import save_current_env_as_requirements
 
 try:
     from ewoksjob.client import submit
@@ -19,8 +24,8 @@ except ImportError:
     submit = None
 
 try:
-    from pyicat_plus.client.main import IcatClient
     from pyicat_plus.client import defaults as icat_defaults
+    from pyicat_plus.client.main import IcatClient
 except ImportError:
     IcatClient = None
     icat_defaults = None

@@ -11,6 +11,9 @@ variables:
 flake8_nb:
   extends: .flake8_nb
 
+isort:
+  extends: .isort
+
 test-3.8_glx:
   extends: .test-3.8_glx
   variables:
