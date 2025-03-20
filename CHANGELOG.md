@@ -1,11 +1,12 @@
 # CHANGELOG.md
 
-## (unreleased)
+## 1.1.0 (unreleased)
 
 - Drop Python 3.6 and 3.7
 
 New features:
 - The base class to create Ewoks tasks can be imported from `ewoks`: `from ewoks import Task`.
+- Task inputs can be defined via a Pydantic model (`input_model`) instead of `input_names`, `optional_input_names`. The model needs to derive from `BaseInputModel`: `from ewoks import BaseInputModel`.
 
 ## 1.0.0
 
