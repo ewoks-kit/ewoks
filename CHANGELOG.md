@@ -1,11 +1,13 @@
 # CHANGELOG.md
 
-## 1.1.0 (unreleased)
+## 1.1.0
 
-- Drop Python 3.6 and 3.7
+- Drop Python 3.6 and 3.7 and add support for Python 3.13
 
 New features:
+
 - The base class to create Ewoks tasks can be imported from `ewoks`: `from ewoks import Task`.
+- `submit_graph` can be imported from `ewoks`: `from ewoks import submit_graph`
 - Task inputs can be defined via a Pydantic model (`input_model`) instead of `input_names`, `optional_input_names`. The model needs to derive from `BaseInputModel`: `from ewoks import BaseInputModel`.
 
 ## 1.0.0
