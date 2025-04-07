@@ -1,4 +1,5 @@
 from ewokscore import Task  # noqa: F401
+from ewokscore.model import BaseInputModel  # noqa: F401
 
 from .bindings import convert_graph  # noqa: F401
 from .bindings import execute_graph  # noqa: F401

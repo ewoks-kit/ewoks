@@ -13,3 +13,4 @@ How-to Guides
     howtoguides/benchmark
     howtoguides/ewoks_events
     howtoguides/task_python
+    howtoguides/task_inputs
