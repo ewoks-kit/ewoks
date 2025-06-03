@@ -163,6 +163,19 @@ def convert_graph(
     return save_graph(graph, destination, **save_options)
 
 
+def show_graph(
+    original_source,
+    source,
+    inputs: Optional[List[dict]] = None,
+    load_options: Optional[dict] = None,
+) -> Union[str, dict]:
+    if load_options is None:
+        load_options = dict()
+    graph = load_graph(source, inputs=inputs, **load_options)
+    print(f"Workflow: {original_source}")
+    print(graph)
+
+
 def install_graph(
     source,
     skip_prompt: bool = False,
