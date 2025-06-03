@@ -9,8 +9,8 @@ from . import cliutils
 from .bindings import convert_graph
 from .bindings import execute_graph
 from .bindings import install_graph
-from .bindings import submit_graph
 from .bindings import show_graph
+from .bindings import submit_graph
 from .cliutils.utils import AbortException
 
 
@@ -195,7 +195,7 @@ def command_install(args, shell=False):
 def command_show(args, shell=False):
     cliutils.apply_show_parameters(args, shell=shell)
     for workflow, graph in zip(args.workflows, args.graphs):
-        show_graph(workflow, graph, **args.show_options)
+        show_graph(graph, original_source=workflow, **args.show_options)
 
 
 def command_default(args, shell=False):

@@ -2,8 +2,8 @@ from . import cli_convert_utils
 from . import cli_execute_utils
 from . import cli_install_utils
 from . import cli_log_utils
-from . import cli_submit_utils
 from . import cli_show_utils
+from . import cli_submit_utils
 
 
 def add_execute_parameters(parser, shell=False):
