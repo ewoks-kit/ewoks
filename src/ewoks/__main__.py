@@ -9,6 +9,7 @@ from . import cliutils
 from .bindings import convert_graph
 from .bindings import execute_graph
 from .bindings import install_graph
+from .bindings import show_graph
 from .bindings import submit_graph
 from .cliutils.utils import AbortException
 
@@ -41,10 +42,16 @@ def create_argument_parser(shell=False):
         help="Install requirements of a workflow",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    show = subparsers.add_parser(
+        "show",
+        help="Show workflow information",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     cliutils.add_execute_parameters(execute, shell=shell)
     cliutils.add_submit_parameters(submit, shell=shell)
     cliutils.add_convert_parameters(convert, shell=shell)
     cliutils.add_install_parameters(install, shell=shell)
+    cliutils.add_show_parameters(show, shell=shell)
     return parser
 
 
@@ -185,6 +192,12 @@ def command_install(args, shell=False):
             print(f"Installed requirements for {workflow}")
 
 
+def command_show(args, shell=False):
+    cliutils.apply_show_parameters(args, shell=shell)
+    for workflow, graph in zip(args.workflows, args.graphs):
+        show_graph(graph, original_source=workflow, **args.show_options)
+
+
 def command_default(args, shell=False):
     if shell:
         return 0
@@ -206,6 +219,8 @@ def main(argv=None, shell=True):
         return command_convert(args, shell=shell)
     elif args.command == "install":
         return command_install(args, shell=shell)
+    elif args.command == "show":
+        return command_show(args, shell=shell)
     else:
         parser.print_help()
         return command_default(args, shell=shell)

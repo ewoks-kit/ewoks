@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Union
@@ -11,6 +12,8 @@ from warnings import warn
 from ewokscore.events.contexts import RawExecInfoType
 from ewokscore.events.contexts import job_context
 from ewokscore.graph import TaskGraph
+from ewokscore.graph.inputs import graph_inputs_as_table
+from tabulate import tabulate
 
 from . import graph_cache
 from .cliutils.utils import AbortException
@@ -161,6 +164,43 @@ def convert_graph(
     if save_requirements:
         graph = save_current_env_as_requirements(graph)
     return save_graph(graph, destination, **save_options)
+
+
+def show_graph(
+    source,
+    inputs: Optional[List[dict]] = None,
+    load_options: Optional[dict] = None,
+    original_source: Optional[str] = None,
+    column_widths: Optional[Dict[str, Optional[int]]] = None,
+) -> Union[str, dict]:
+    if load_options is None:
+        load_options = dict()
+    graph = load_graph(source, inputs=inputs, **load_options)
+    _print_graph(graph, column_widths=column_widths, original_source=original_source)
+
+
+def _print_graph(
+    graph: TaskGraph,
+    column_widths: Optional[Dict[str, Optional[int]]] = None,
+    original_source: Optional[str] = None,
+) -> None:
+    column_names, rows, metadata, footnotes = graph_inputs_as_table(
+        graph, column_widths=column_widths
+    )
+    print()
+    if original_source:
+        print(f"Workflow: {original_source}")
+    else:
+        print("Workflow:")
+    for key, value in metadata.items():
+        label = key.replace("_", " ").capitalize()
+        print(f"{label}: {value}")
+    if rows:
+        print(tabulate(rows, headers=column_names, tablefmt="fancy_grid"))
+    else:
+        print("No workflow inputs parameters detected!")
+    for footnote in footnotes:
+        print(footnote)
 
 
 def install_graph(

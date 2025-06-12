@@ -2,6 +2,7 @@ from . import cli_convert_utils
 from . import cli_execute_utils
 from . import cli_install_utils
 from . import cli_log_utils
+from . import cli_show_utils
 from . import cli_submit_utils
 
 
@@ -52,3 +53,15 @@ def apply_install_parameters(args, shell=False):
     if shell:
         cli_log_utils.apply_log_parameters(args)
     cli_install_utils.apply_install_parameters(args)
+
+
+def add_show_parameters(parser, shell=False):
+    if shell:
+        cli_log_utils.add_log_parameters(parser)
+    cli_show_utils.add_show_parameters(parser)
+
+
+def apply_show_parameters(args, shell=False):
+    if shell:
+        cli_log_utils.apply_log_parameters(args)
+    cli_show_utils.apply_show_parameters(args)
