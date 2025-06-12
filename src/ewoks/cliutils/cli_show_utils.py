@@ -6,7 +6,7 @@ _REPRESENTATIONS = [str(s).split(".")[-1] for s in GraphRepresentation]
 
 
 def add_show_parameters(parser):
-    utils.add_common_parameters(parser)
+    utils.add_common_parameters(parser, "show")
     utils.add_subworkflows_parameters(parser)
     utils.add_ewoks_inputs_parameters(parser)
 

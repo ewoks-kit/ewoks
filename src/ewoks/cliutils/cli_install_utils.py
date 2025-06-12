@@ -4,7 +4,7 @@ from . import utils
 
 
 def add_install_parameters(parser: ArgumentParser):
-    utils.add_common_parameters(parser)
+    utils.add_common_parameters(parser, "install")
     parser.add_argument(
         "--yes",
         action="store_true",

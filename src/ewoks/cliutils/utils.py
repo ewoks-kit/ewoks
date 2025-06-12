@@ -15,11 +15,11 @@ class AbortException(Exception):
     pass
 
 
-def add_common_parameters(parser: ArgumentParser):
+def add_common_parameters(parser: ArgumentParser, action: str):
     parser.add_argument(
         "workflows",
         type=str,
-        help="Workflow to execute (e.g. JSON filename)",
+        help=f"Workflow(s) to {action} (e.g. JSON filename)",
         nargs="+",
     )
     parser.add_argument(
