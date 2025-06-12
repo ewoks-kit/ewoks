@@ -1,6 +1,14 @@
 # CHANGELOG.md
 
+## 1.2.0
+
+New features:
+
+- Ewoks CLI `show` command: print all workflow parameters that are not connected to outputs from other nodes.
+
 ## 1.1.0
+
+Changes:
 
 - Drop Python 3.6 and 3.7 and add support for Python 3.13
 
@@ -28,18 +36,18 @@ New features:
 
 Changes:
 
-- client-side graph resolution by default for submitting workflows
+- Client-side graph resolution by default for submitting workflows.
 
 Bug fixes:
 
-- the pyyaml 6.0.2rc1 package is broken
+- The pyyaml 6.0.2rc1 package is broken.
 
 ## 0.4.3
 
 Changes:
 
-- ewoks CLI workflow search: sort by creation date
-- ewoks CLI convert: support multiple workflow arguments
+- Ewoks CLI workflow search: sort by creation date.
+- Ewoks CLI `convert` command: support multiple workflow arguments.
 
 ## 0.4.2
 
