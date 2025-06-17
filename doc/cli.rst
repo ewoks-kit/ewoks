@@ -84,3 +84,18 @@ ewoks submit
         Before running this command, the client and the worker must have agreed on a messaging protocol to communicate. 
         
         See the `ewoksjob documentation <https://ewoksjob.readthedocs.io/en/latest/>`_ to see how to set-up this.
+
+ewoks show
+----------
+
+.. argparse::
+    :module: ewoks.__main__
+    :func: create_argument_parser
+    :prog: ewoks
+    :path: show
+
+    **Display the workflow parameters with their default values and descriptions**.
+
+    Required parameters without default value are highlighted. Parameters which get their value at runtime from upstream nodes in the workflow are not shown.
+
+    Parameters values in the displayed table can be provided in the same way as inputs for ``ewoks execute``.
