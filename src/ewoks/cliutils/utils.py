@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import subprocess
 from argparse import ArgumentParser
@@ -9,6 +10,10 @@ from typing import Any
 from typing import List
 from typing import Sequence
 from typing import Tuple
+
+from .requirements_utils import sanitize_requirements
+
+logger = logging.getLogger(__name__)
 
 
 class AbortException(Exception):
@@ -194,5 +199,8 @@ def parse_destinations(args):
 
 
 def pip_install(requirements: Sequence[str], python_path: str) -> int:
+    requirements, warnings = sanitize_requirements(requirements)
+    for warning in warnings:
+        logger.warning(warning)
     # https://pip.pypa.io/en/stable/user_guide/#using-pip-from-your-program
     return subprocess.check_call([python_path, "-m", "pip", "install", *requirements])
