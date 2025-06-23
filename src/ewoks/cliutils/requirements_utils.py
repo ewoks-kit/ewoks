@@ -128,7 +128,7 @@ def _handle_editable_path(requirement: str, comment: str) -> Tuple[str, str]:
     return requirement, warning
 
 
-_EQUIREMENT_COMMENT_RE = re.compile(r"\(([\w\.\-\[\]]+[=><!~]=[\w\.\-]+)\)")
+_REQUIREMENT_COMMENT_RE = re.compile(r"\(([\w\.\-\[\]]+[=><!~]=[\w\.\-]+)\)")
 
 
 def _requirement_from_comment(comment: str) -> str:
@@ -137,7 +137,7 @@ def _requirement_from_comment(comment: str) -> str:
     #   fatal: detected dubious ownership in repository at '/path/to/repo'
     # the requirements list will contain "-e /path/to/repo" with a warning that
     # contains a requirement message.
-    match = _EQUIREMENT_COMMENT_RE.search(comment)
+    match = _REQUIREMENT_COMMENT_RE.search(comment)
     if match:
         return match.group(1)
     return ""
