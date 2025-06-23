@@ -20,6 +20,13 @@ test-3.8_glx:
     JUPYTER_PLATFORM_DIRS: 1
     PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
 
+test-3.9_glx-win:
+  extends: .test-3.9_glx-win
+  variables:
+    JUPYTER_PLATFORM_DIRS: 1
+    PYTEST_WARNINGS: "-W error ${IGNORE_WARNINGS}"
+  timeout: 15m
+
 test-3.13_glx:
   extends: .test-3.13_glx
   variables:
