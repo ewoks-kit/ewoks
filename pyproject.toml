@@ -17,7 +17,8 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
     "ewokscore >= 1.6.0",
-    "tabulate"
+    "tabulate",
+    "importlib_resources; python_version < '3.9'",
 ]
 
 [project.urls]
@@ -78,3 +79,6 @@ force_single_line = "True"
 
 [project.scripts]
 ewoks = "ewoks.__main__:main"
+
+[tool.setuptools.package-data]
+"ewoks.tests.notebooks"= ["*.ipynb"]

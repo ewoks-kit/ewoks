@@ -1,5 +1,4 @@
 import asyncio
-import os
 import sys
 from typing import Generator
 
@@ -10,35 +9,35 @@ import pytest
 import testbook
 from testbook.client import TestbookNotebookClient
 
-_ROOT_DIR = os.path.join(os.path.dirname(__file__), "notebooks")
-_NOTEBOOKS = {"running_workflows.ipynb": "result = 16"}
+from .notebooks import notebook_path
+
+_NOTEBOOK_OUTPUTS = {"running_workflows.ipynb": "result = 16"}
 
 
-@pytest.mark.parametrize("filename", _NOTEBOOKS)
-def test_notebooks(filename):
-    expected_output = _NOTEBOOKS[filename]
-    filename = os.path.join(_ROOT_DIR, filename)
+@pytest.mark.parametrize("name", _NOTEBOOK_OUTPUTS)
+def test_notebooks(name):
+    expected_output = _NOTEBOOK_OUTPUTS[name]
+    with notebook_path(name) as filename:
+        decorator = testbook.testbook(filename)
 
-    decorator = testbook.testbook(filename)
+        output_found = False
 
-    output_found = False
+        def verify_notebook(tb: TestbookNotebookClient) -> None:
+            tb.execute()
 
-    def verify_notebook(tb: TestbookNotebookClient) -> None:
-        tb.execute()
+            nonlocal output_found
+            for output in _iter_cell_outputs(tb):
+                print(output)
+                if expected_output in output:
+                    output_found = True
+                    break
 
-        nonlocal output_found
-        for output in _iter_cell_output(tb):
-            print(output)
-            if expected_output in output:
-                output_found = True
-                break
+        decorator(verify_notebook)()
 
-    decorator(verify_notebook)()
-
-    assert output_found
+        assert output_found
 
 
-def _iter_cell_output(tb: TestbookNotebookClient) -> Generator[str, None, None]:
+def _iter_cell_outputs(tb: TestbookNotebookClient) -> Generator[str, None, None]:
     for cell in tb.nb.cells:
         output_nodes = cell.get("outputs", [])
         for output_node in output_nodes:
