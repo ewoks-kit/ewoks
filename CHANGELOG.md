@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 1.3.0
+
+New features:
+
+- Ewoks CLI `install` command: sanitize requirements, especially handling editable installations without a remote.
+
 ## 1.2.0
 
 New features:
