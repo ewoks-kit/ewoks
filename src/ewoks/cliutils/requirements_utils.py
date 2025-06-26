@@ -56,7 +56,7 @@ def sanitize_requirements(requirements: Sequence[str]) -> Tuple[List[str], List[
 
 def _is_path(requirement: str) -> bool:
     """Return True if requirement looks like a local path (not a URL)."""
-    return "://" not in requirement and "/" in requirement
+    return "://" not in requirement and ("/" in requirement or "\\" in requirement)
 
 
 def _normalize_requirement(requirement: str) -> Tuple[str, str]:
