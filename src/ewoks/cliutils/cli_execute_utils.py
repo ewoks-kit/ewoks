@@ -1,8 +1,6 @@
-from ewokscore.graph.serialize import GraphRepresentation
-
+from .._engines import get_engine_names
+from .._engines import get_graph_representations
 from . import utils
-
-_REPRESENTATIONS = [str(s).split(".")[-1] for s in GraphRepresentation]
 
 
 def add_execute_parameters(parser):
@@ -15,7 +13,7 @@ def add_execute_parameters(parser):
         type=str.lower,
         default="",
         dest="representation",
-        choices=_REPRESENTATIONS,
+        choices=get_graph_representations(),
         help="Source format",
     )
     parser.add_argument(
@@ -87,8 +85,8 @@ def add_execute_parameters(parser):
     parser.add_argument(
         "--engine",
         type=str,
-        choices=["none", "dask", "ppf", "orange"],
-        default="none",
+        choices=get_engine_names(),
+        default="core",
         help="Execution engine to be used",
     )
 

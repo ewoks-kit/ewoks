@@ -1,8 +1,5 @@
-from ewokscore.graph.serialize import GraphRepresentation
-
+from .._engines import get_graph_representations
 from . import utils
-
-_REPRESENTATIONS = [str(s).split(".")[-1] for s in GraphRepresentation]
 
 
 def add_show_parameters(parser):
@@ -15,7 +12,7 @@ def add_show_parameters(parser):
         type=str.lower,
         default="",
         dest="source_representation",
-        choices=_REPRESENTATIONS,
+        choices=get_graph_representations(),
         help="Source format",
     )
     parser.add_argument(
