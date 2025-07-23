@@ -18,10 +18,10 @@ def get_engine_names() -> List[str]:
 
 @lru_cache(1)
 def get_graph_representations() -> List[str]:
-    representations = list()
-    for reps, _ in _iter_engine_class_loaders_with_representations():
-        representations.extend(reps)
-    return representations
+    return [
+        representation
+        for representation, _ in _iter_engine_class_loaders_with_representation()
+    ]
 
 
 def get_execution_engine(engine_name: Optional[str]) -> WorkflowEngine:
@@ -44,7 +44,7 @@ def get_serialization_engine(
         for (
             representations,
             load_engine_cls,
-        ) in _iter_engine_class_loaders_with_representations():
+        ) in _iter_engine_class_loaders_with_representation():
             if representation in representations:
                 engine_cls = load_engine_cls()
                 engine = engine_cls()
@@ -75,8 +75,8 @@ def _iter_engine_class_loaders_with_name() -> (
         yield ep.name, ep.load
 
 
-def _iter_engine_class_loaders_with_representations() -> (
-    Generator[Tuple[List[str], Callable[[], None]], None, None]
+def _iter_engine_class_loaders_with_representation() -> (
+    Generator[Tuple[str, Callable[[], None]], None, None]
 ):
     try:
         eps = entry_points(group="ewoks.engines.serialization.representations")
@@ -84,6 +84,4 @@ def _iter_engine_class_loaders_with_representations() -> (
         return
 
     for ep in eps:
-        representations = [s.strip() for s in ep.name.split(",")]
-        representations = [s for s in representations if s]
-        yield representations, ep.load
+        yield ep.name, ep.load
