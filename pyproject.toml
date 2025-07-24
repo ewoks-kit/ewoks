@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ewoks"
-version = "2.0.0rc1"
+version = "2.0.0rc2"
 authors = [{ name = "ESRF", email = "dau-pydev@esrf.fr" }]
 description = "Extensible Workflow System"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -16,7 +16,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "ewokscore >=2.0.0rc2,<3",
+    "ewokscore >=2.0.0rc3,<3",
     "tabulate",
     "importlib_resources; python_version < '3.9'",
 ]
