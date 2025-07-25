@@ -7,6 +7,7 @@ How-to Guides
 
     howtoguides/running_workflows
     howtoguides/python
+    howtoguides/inspect_workflows
     howtoguides/job
     howtoguides/gui
     howtoguides/rest
