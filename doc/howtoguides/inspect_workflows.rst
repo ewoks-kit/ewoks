@@ -8,7 +8,7 @@ Command-Line Inspection
 -----------------------
 
 When executing workflows, it's often helpful to inspect the available input parameters.
-You can do this directly from the command line.
+You can do this with `ewoks show` from the command line.
 
 To list input parameters for the **demo** workflow:
 
@@ -149,7 +149,7 @@ Sample output:
     ╘════════╧════════════════╧═══════════════════╧══════╧═════════╛
 
 Note that workflow nodes can be identified by `Task identifier`, `Id` or `Label`.
-The later might not be available in which casethe column is omitted.
+In case no workflow node has labels, the `Label` column is omitted.
 
 Validating Execution Arguments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
