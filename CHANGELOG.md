@@ -1,145 +1,168 @@
-# CHANGELOG.md
+# Changelog
 
-## Unreleased
+All notable changes to this project will be documented in this file.
 
-New features:
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
 
 - Use `ewoks.engines` entry points to find engines by name.
 - Use `ewoks.engines.serialization.representations` entry points to find engines by graph representation.
 
-## 1.3.0
+## [1.3.0] - 2025-06-26
 
-New features:
+### Added
 
 - Ewoks CLI `install` command: sanitize requirements, especially handling editable installations without a remote.
 
-## 1.2.0
+## [1.2.0] - 2025-06-12
 
-New features:
+### Added
 
 - Ewoks CLI `show` command: print all workflow parameters that are not connected to outputs from other nodes.
 
-## 1.1.0
+## [1.1.0] - 2025-04-07
 
-Changes:
-
-- Drop Python 3.6 and 3.7 and add support for Python 3.13
-
-New features:
+### Added
 
 - The base class to create Ewoks tasks can be imported from `ewoks`: `from ewoks import Task`.
-- `submit_graph` can be imported from `ewoks`: `from ewoks import submit_graph`
-- Task inputs can be defined via a Pydantic model (`input_model`) instead of `input_names`, `optional_input_names`. The model needs to derive from `BaseInputModel`: `from ewoks import BaseInputModel`.
+- `submit_graph` can be imported from `ewoks`: `from ewoks import submit_graph`.
+- Task inputs can be defined via a Pydantic model (`input_model`) instead of `input_names`, `optional_input_names`.
+  The model needs to derive from `BaseInputModel`: `from ewoks import BaseInputModel`.
 
-## 1.0.0
+### Changed
 
-Breaking changes:
+- Drop Python 3.6 and 3.7 and add support for Python 3.13.
+
+## [1.0.0] - 2024-12-25
+
+### Changed
 
 - Remove deprecated argument `binding` from `execute_graph`.
 
-## 0.6.0
+## [0.6.0] - 2024-11-08
 
-New features:
+### Added
 
 - Add graph installation to the python API (`install_graph`) and CLI (`ewoks install`).
 - Add requirements when converting a graph so the graph becomes installable. This is an opt-out feature.
 - Add task options to python API (`execute_graph` and `submit_graph`) and CLI (`ewoks install` and `ewoks submit`).
 
-## 0.5.0
+## [0.5.0] - 2024-06-23
 
-Changes:
+### Changed
 
 - Client-side graph resolution by default for submitting workflows.
 
-Bug fixes:
+### Fixed
 
 - The pyyaml 6.0.2rc1 package is broken.
 
-## 0.4.3
+## [0.4.3] - 2024-02-13
 
-Changes:
+### Changed
 
 - Ewoks CLI workflow search: sort by creation date.
 - Ewoks CLI `convert` command: support multiple workflow arguments.
 
-## 0.4.2
+## [0.4.2] - 2024-02-05
 
-New features:
+### Added
 
-- CLI support for multiple workflows (explicit or with search pattern)
+- CLI support for multiple workflows (explicit or with search pattern).
 
-## 0.4.1
+## [0.4.1] - 2023-12-15
 
-New features:
+### Added
 
-- Improved documentation
+- Improved documentation.
 
-Bug fixes:
+### Fixed
 
-- Fix test dependencies
+- Fix test dependencies.
 
-## 0.4.0
+## [0.4.0] - 2023-12-15
 
-New features:
+### Added
 
-- add support for jupyter notebooks as workflow tasks
+- Add support for jupyter notebooks as workflow tasks.
 
-## 0.3.0
+## [0.3.0] - 2023-06-09
 
-Changes:
+### Changed
 
-- update dependency bounds
+- Update dependency bounds.
 
-## 0.2.0
+## [0.2.0] - 2023-03-27
 
-Breaking Changes:
+### Changed
 
-- CLI: rename --output to --outputs
+- CLI: rename --output to --outputs.
+- Add celery options to `submit_graph` and `ewoks submit`.
 
-Changes:
+## [0.1.5] - 2023-03-23
 
-- add celery options to `submit_graph` and `ewoks submit`
+### Changed
 
-## 0.1.5
+- Add 'esrf-data-portal' as extra pip requirement.
 
-Changes:
+## [0.1.4] - 2023-03-23
 
-- add 'esrf-data-portal' as extra pip requirement
+### Added
 
-## 0.1.4
+- Add saving and uploading to graph execution.
 
-New features:
+## [0.1.3] - 2023-03-20
 
-- add saving and uploading to graph execution
+### Added
 
-## 0.1.3
+- Workflow caching when loading.
 
-New features:
+### Fixed
 
-- workflow caching when loading
+- CLI binding argument no longer exists for `ewoks submit`.
 
-Bug fixes:
+## [0.1.2] - 2023-03-09
 
-- CLI binding argument no longer exists for `ewoks submit`
+### Deprecated
 
-## 0.1.2
+- Ewoks event field "binding" is deprecated in favor of "engine".
 
-Deprecations:
+## [0.1.1] - 2023-03-08
 
-- ewoks event field "binding" is deprecated in favor of "engine"
+### Changed
 
-## 0.1.1
+- Pin minor versions of ewoks projects.
 
-Changes:
+## [0.1.0] - 2023-01-11
 
-- Pin minor versions of ewoks projects
+### Added
 
-## 0.1.0
+- `ewokscore` dependency.
+- `ewoksdask` dependency.
+- `ewoksorange` dependency.
+- `ewoksppf` dependency.
+- Command-line interface.
 
-New features:
-
-- `ewokscore` dependency
-- `ewoksdask` dependency
-- `ewoksorange` dependency
-- `ewoksppf` dependency
-- command-line interface
+[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v1.3.0...HEAD
+[1.3.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v1.2.0...v1.3.0
+[1.2.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v1.1.0...v1.2.0
+[1.1.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v1.0.0...v1.1.0
+[1.0.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.6.0...v1.0.0
+[0.6.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.5.0...v0.6.0
+[0.5.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.4.3...v0.5.0
+[0.4.3]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.4.2...v0.4.3
+[0.4.2]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.4.1...v0.4.2
+[0.4.1]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.4.0...v0.4.1
+[0.4.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.3.0...v0.4.0
+[0.3.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.2.0...v0.3.0
+[0.2.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.1.5...v0.2.0
+[0.1.5]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.1.4...v0.1.5
+[0.1.4]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.1.3...v0.1.4
+[0.1.3]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.1.2...v0.1.3
+[0.1.2]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.1.1...v0.1.2
+[0.1.1]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v0.1.0...v0.1.1
+[0.1.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/-/tags/v0.1.0
