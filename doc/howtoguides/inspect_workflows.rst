@@ -1,27 +1,30 @@
 Inspect Workflow Inputs
 =======================
 
-Ewoks workflows use input parameters that can be configured for each node in the workflow.
-This tutorial demonstrates how to inspect these input parameters using various methods.
+Ewoks workflows use input parameters that can be configured for each node.
+This tutorial demonstrates how to inspect and verify these input parameters using several methods.
+
+We'll use the `demo` workflow from the Ewoks test suite as an example.
+Convert it to JSON format with the following command:
+
+.. code:: bash
+
+    ewoks convert demo example.json --test
 
 Command-Line Inspection
 -----------------------
 
-When executing workflows, it's often helpful to inspect the available input parameters.
-You can do this with `ewoks show` from the command line.
-
-To list input parameters for the **demo** workflow:
+To view the input parameters defined in a workflow, use the `ewoks show` command:
 
 .. code:: bash
 
-    ewoks show demo --test
+    ewoks show example.json
 
-This will display all input parameters defined in the workflow, along with their default values
-and the tasks they belong to:
+This displays all input parameters, their values, and the workflow node they belong to:
 
 .. code:: bash
 
-    Workflow: demo
+    Workflow: example.json
     Id: demo
     Description: demo
     ╒════════╤════════════════╤═══════════════════╤═══════╕
@@ -56,8 +59,7 @@ and the tasks they belong to:
     │ b      │ 6              │ SumTask           │ task6 │
     ╘════════╧════════════════╧═══════════════════╧═══════╛
 
-The parameters with value `<MISSING_DATA>` do not have a value. When such parameters
-are required, that are tagged with `(*)`. For example:
+Parameters with `<MISSING_DATA>` do not have a value. If a missing parameter is **required**, it is marked with a `(*)`. For example:
 
 .. code:: bash
 
@@ -97,82 +99,36 @@ are required, that are tagged with `(*)`. For example:
     ╘════════╧════════════════╧═══════════════════╧═══════╛
     ⁽*⁾ Value is required for execution.
 
-The parameter `a` of task `SumTask` is required and does not have a value for
-the workflow node with id `task2`.
+In this case, the `a` parameter for task `SumTask` at node `task2` is required and must be provided before execution.
 
-Inspecting Workflow Files
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Workflow nodes can be identified by:
 
-The `ewoks show` command can also inspect workflow definitions from a file.
-For example, you can convert a test workflow to an `.ows` (Orange Workflow Schema) file:
+- **Task identifier** – the identifier of the code to be executed.
+- **Id** – the unique identifier of the node within the workflow.
+- **Label** (if present) – a human-readable tag, which may not be unique.
 
-.. code:: bash
-
-    ewoks convert acyclic1 example.ows --test
-    ewoks show example.ows
-
-Sample output:
-
-.. code:: bash
-
-    Workflow: example.ows
-    Id: acyclic1
-    Description: acyclic1
-    ╒════════╤════════════════╤═══════════════════╤══════╤═════════╕
-    │ Name   │ Value          │ Task identifier   │   Id │ Label   │
-    ╞════════╪════════════════╪═══════════════════╪══════╪═════════╡
-    │ a      │ 1              │ SumTask           │    0 │ task1   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ delay  │ <MISSING_DATA> │ SumTask           │    0 │ task1   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ b      │ <MISSING_DATA> │ SumTask           │    0 │ task1   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ a      │ 2              │ SumTask           │    1 │ task2   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ delay  │ <MISSING_DATA> │ SumTask           │    1 │ task2   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ b      │ <MISSING_DATA> │ SumTask           │    1 │ task2   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ delay  │ <MISSING_DATA> │ SumTask           │    2 │ task3   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ b      │ 3              │ SumTask           │    2 │ task3   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ delay  │ <MISSING_DATA> │ SumTask           │    3 │ task4   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ b      │ 4              │ SumTask           │    3 │ task4   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ delay  │ <MISSING_DATA> │ SumTask           │    4 │ task5   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ delay  │ <MISSING_DATA> │ SumTask           │    5 │ task6   │
-    ├────────┼────────────────┼───────────────────┼──────┼─────────┤
-    │ b      │ 6              │ SumTask           │    5 │ task6   │
-    ╘════════╧════════════════╧═══════════════════╧══════╧═════════╛
-
-Note that workflow nodes can be identified by `Task identifier`, `Id` or `Label`.
-In case no workflow node has labels, the `Label` column is omitted.
+If no labels are defined, the `Label` column is omitted from the output.
 
 Validating Execution Arguments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To override workflow parameters for execution, use the `-p` option.
-
-For example:
+To override workflow parameters for execution, use the `-p` option:
 
 .. code:: bash
 
-    ewoks execute demo --test -p SumTask:delay=99 --input-node-id taskid
+    ewoks execute example.json -p SumTask:delay=99 --input-node-id taskid
 
-Before executing, you can use `ewoks show` with the same arguments to preview the modified inputs:
-
-.. code:: bash
-
-    ewoks show demo --test -p SumTask:delay=99 --input-node-id taskid
-
-Sample output:
+Before executing the workflow, you can verify that your arguments are applied as intended using `ewoks show` with the same arguments:
 
 .. code:: bash
 
-    Workflow: demo
+    ewoks show example.json -p SumTask:delay=99 --input-node-id taskid
+
+The output will reflect the overridden `delay` values:
+
+.. code:: bash
+
+    Workflow: example.json
     Id: demo
     Description: demo
     ╒════════╤════════════════╤═══════════════════╤═══════╕
@@ -207,52 +163,57 @@ Sample output:
     │ b      │ 6              │ SumTask           │ task6 │
     ╘════════╧════════════════╧═══════════════════╧═══════╛
 
-When specifying an input parameter with `-p <name>:delay=99` the `<name>` comes
-from the `Task identifier`, `Id` or `Label` column. By default it is the `Id`
-but this can be changed with the `--input-node-id` command-line argument.
+The value before the colon in `-p <target>:<parameter>=<value>` refers to the node identifier, which defaults to the `Id` column.
+You can change this behavior with the `--input-node-id` option to use the `Label` or `Task identifier` instead.
+
+Graphical Interfaces
+--------------------
+
+You can also inspect input parameters using graphical tools.
 
 Desktop GUI
------------
+~~~~~~~~~~~
 
-You can also inspect parameters visually using the :ref:`desktop GUI <ewoks-canvas>`:
+To use the :ref:`desktop GUI <ewoks-canvas>` based on Orange:
 
 .. code:: bash
 
-    ewoks execute demo --test --engine=orange -p SumTask:delay=99 --input-node-id taskid
+    ewoks execute example.json --engine=orange -p SumTask:delay=99 --input-node-id taskid
 
-Double-click on each node to inspect input parameters:
+Then double-click on each node to inspect or edit parameters:
 
 .. image:: images/inspect_desktop.png
     :alt: Double-click on each node to inspect input parameters.
 
 Web GUI
--------
+~~~~~~~
 
-To inspect inputs via the :ref:`web interface <ewoksweb>`, convert the workflow to JSON
+To inspect parameters via the :ref:`web interface <ewoksweb>`:
 
-.. code:: bash
+1. Convert the workflow while applying overrides:
 
-    ewoks convert demo example.json --test -p SumTask:delay=99 --input-node-id taskid
+    .. code:: bash
 
-and start the web server:
+        ewoks convert example.json example_with_params.json --test -p SumTask:delay=99 --input-node-id taskid
 
-.. code:: bash
+2. Start the web server:
 
-    ewoksweb
+    .. code:: bash
 
-You should see output similar to:
+        ewoksweb
 
-.. code:: bash
+    You should see:
 
-    INFO:     Started server process [92729]
-    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    .. code:: bash
 
-Open the workflow file from disk:
+        INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 
-.. image:: images/inspect_web_open.png
-    :alt: Open the workflow file from disk in the web UI.
+3. Open the workflow file in your browser:
 
-Double-click on each node to inspect input parameters:
+    .. image:: images/inspect_web_open.png
+        :alt: Open the workflow file from disk in the web UI.
 
-.. image:: images/inspect_web_node.png
-    :alt: Double-click on each node to inspect input parameters.
+4. Click on a node to view or edit its parameters:
+
+    .. image:: images/inspect_web_node.png
+        :alt: Click on each node to inspect input parameters.
