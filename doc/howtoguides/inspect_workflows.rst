@@ -214,7 +214,7 @@ but this can be changed with the `--input-node-id` command-line argument.
 Desktop GUI
 -----------
 
-You can also inspect parameters visually using the desktop GUI:
+You can also inspect parameters visually using the :ref:`desktop GUI <ewoks-canvas>`:
 
 .. code:: bash
 
@@ -228,11 +228,17 @@ Double-click on each node to inspect input parameters:
 Web GUI
 -------
 
-To inspect inputs via the web interface, convert the workflow to JSON and start the web server:
+To inspect inputs via the :ref:`web interface <ewoksweb>`, convert the workflow to JSON
 
 .. code:: bash
 
     ewoks convert demo example.json --test -p SumTask:delay=99 --input-node-id taskid
+
+and start the web server:
+
+.. code:: bash
+
+    ewoksweb
 
 You should see output similar to:
 
