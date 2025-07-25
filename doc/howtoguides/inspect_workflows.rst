@@ -207,7 +207,9 @@ Sample output:
     │ b      │ 6              │ SumTask           │ task6 │
     ╘════════╧════════════════╧═══════════════════╧═══════╛
 
-Depending on the value of `--input-node-id` you would use the `Task identifier` or `Id` column.
+When specifying an input parameter with `-p <name>:delay=99` the `<name>` comes
+from the `Task identifier`, `Id` or `Label` column. By default it is the `Id`
+but this can be changed with the `--input-node-id` command-line argument.
 
 Desktop GUI
 -----------
