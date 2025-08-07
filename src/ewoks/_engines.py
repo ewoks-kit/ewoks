@@ -1,5 +1,4 @@
 import logging
-
 from functools import lru_cache
 from typing import Any
 from typing import Callable
@@ -10,6 +9,7 @@ from typing import Tuple
 
 from ewokscore.engine_interface import WorkflowEngine
 from ewokscore.engine_interface import WorkflowEngineWithSerialization
+from ewokscore.entry_points import EntryPoint
 from ewokscore.entry_points import entry_points
 
 _logger = logging.getLogger(__name__)
@@ -89,6 +89,7 @@ def _iter_engine_class_loaders_with_name() -> (
     except Exception:
         return
 
+    eps = sorted(eps, key=_sort_ewoks_engines)
     for ep in eps:
         yield ep.name, ep.load
 
@@ -101,5 +102,10 @@ def _iter_engine_class_loaders_with_representation() -> (
     except Exception:
         return
 
+    eps = sorted(eps, key=_sort_ewoks_engines)
     for ep in eps:
         yield ep.name, ep.load
+
+
+def _sort_ewoks_engines(item: EntryPoint):
+    return (item.name != "core", item)
