@@ -1,3 +1,4 @@
+import logging
 from functools import lru_cache
 from typing import Any
 from typing import Callable
@@ -8,7 +9,10 @@ from typing import Tuple
 
 from ewokscore.engine_interface import WorkflowEngine
 from ewokscore.engine_interface import WorkflowEngineWithSerialization
+from ewokscore.entry_points import EntryPoint
 from ewokscore.entry_points import entry_points
+
+_logger = logging.getLogger(__name__)
 
 
 @lru_cache(1)
@@ -30,8 +34,15 @@ def get_execution_engine(engine_name: Optional[str]) -> WorkflowEngine:
 
     for name, load_engine_cls in _iter_engine_class_loaders_with_name():
         if name == engine_name:
-            engine_cls = load_engine_cls()
-            return engine_cls()
+            try:
+                engine_cls = load_engine_cls()
+            except Exception as e:
+                _logger.warning(
+                    f"Unable to properly load '{name}' engine. Error is {e}"
+                )
+                continue
+            else:
+                return engine_cls()
 
     raise RuntimeError(f"No engine found for graph execution: '{engine_name}'")
 
@@ -50,8 +61,15 @@ def get_serialization_engine(
                 engine = engine_cls()
                 return engine, representation
     else:
-        for _, load_engine_cls in _iter_engine_class_loaders_with_name():
-            engine_cls = load_engine_cls()
+        for name, load_engine_cls in _iter_engine_class_loaders_with_name():
+            try:
+                engine_cls = load_engine_cls()
+            except Exception as e:
+                _logger.warning(
+                    f"Unable to properly load serialization engine '{name}'. Error is {e}"
+                )
+                continue
+
             if not issubclass(engine_cls, WorkflowEngineWithSerialization):
                 continue
 
@@ -71,6 +89,7 @@ def _iter_engine_class_loaders_with_name() -> (
     except Exception:
         return
 
+    eps = sorted(eps, key=_sort_ewoks_engines)
     for ep in eps:
         yield ep.name, ep.load
 
@@ -83,5 +102,10 @@ def _iter_engine_class_loaders_with_representation() -> (
     except Exception:
         return
 
+    eps = sorted(eps, key=_sort_ewoks_engines)
     for ep in eps:
         yield ep.name, ep.load
+
+
+def _sort_ewoks_engines(item: EntryPoint):
+    return (item.name != "core", item)
