@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ewoks"
-version = "2.0.0"
+version = "2.0.1"
 authors = [{ name = "ESRF", email = "dau-pydev@esrf.fr" }]
 description = "Extensible Workflow System"
 readme = { file = "README.md", content-type = "text/markdown" }
