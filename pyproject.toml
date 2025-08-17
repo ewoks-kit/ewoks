@@ -62,6 +62,7 @@ doc = [
     "nbsphinx_link",
     "pydata-sphinx-theme",
     "sphinx-argparse",
+    "sphinx-copybutton",
 ]
 
 [tool.setuptools]
