@@ -23,12 +23,12 @@ extensions = [
     "sphinx_autodoc_typehints",
     "nbsphinx",
     "nbsphinx_link",
+    "sphinx_copybutton",
 ]
 templates_path = ["_templates"]
 exclude_patterns = ["build", "**.ipynb_checkpoints"]
 
 always_document_param_types = True
-
 
 autosummary_generate = True
 autodoc_default_flags = [
@@ -37,12 +37,15 @@ autodoc_default_flags = [
     "show-inheritance",
 ]
 
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "pydata_sphinx_theme"
-html_static_path = []
+html_static_path = ["_static"]
+html_css_files = ["custom.css"]
 html_theme_options = {
     "icon_links": [
         {
