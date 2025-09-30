@@ -6,7 +6,9 @@ variables:
   WARNING1: "ignore::DeprecationWarning:jupyter_client.session"
   WARNING2: "ignore::DeprecationWarning:orangecanvas.utils.localization"
   WARNING3: "ignore::DeprecationWarning:orangecanvas.utils.localization.si"
-  IGNORE_WARNINGS: "-W ${WARNING1} -W ${WARNING2} -W ${WARNING3}"
+  WARNING4: "ignore::DeprecationWarning:matplotlib._fontconfig_pattern"  # https://github.com/matplotlib/matplotlib/issues/30617
+  WARNING5: "ignore::DeprecationWarning:matplotlib._mathtext"
+  IGNORE_WARNINGS: "-W ${WARNING1} -W ${WARNING2} -W ${WARNING3} -W ${WARNING4} -W ${WARNING5}"
 
 flake8_nb:
   extends: .flake8_nb
