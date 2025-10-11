@@ -66,9 +66,8 @@ Start the *ewoks* web server, open the link in a web browser and load the `test.
     
     hello_world
     howtoguides/index
-    reference/index
     explanations/index
-
+    reference/index
 
 Further Ewoks documentation
 ---------------------------
