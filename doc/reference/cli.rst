@@ -1,3 +1,5 @@
+.. _cli:
+
 CLI reference
 =============
 
@@ -83,7 +85,7 @@ ewoks submit
 
         Before running this command, the client and the worker must have agreed on a messaging protocol to communicate. 
         
-        See the `ewoksjob documentation <https://ewoksjob.readthedocs.io/en/latest/>`_ to see how to set-up this.
+        See the `ewoksjob documentation <https://ewoksjob.readthedocs.io>`_ to see how to set-up this.
 
 ewoks show
 ----------

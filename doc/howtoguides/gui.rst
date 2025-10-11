@@ -1,3 +1,5 @@
+.. _gui:
+
 Use Ewoks graphical interfaces
 ==============================
 

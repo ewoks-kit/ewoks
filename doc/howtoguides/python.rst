@@ -1,3 +1,5 @@
+.. _execute_python:
+
 Execute a workflow from Python
 ==============================
 
@@ -15,7 +17,7 @@ Execute a workflow
 
     result = execute_graph("/path/to/graph.json", engine=None)
 
-The :doc:`hello world <../hello_world>` example provides a small but complete example of
+The :ref:`hello world <hello_world>` example provides a small but complete example of
 task implementation, workflow definition and workflow execution.
 
 The *engine* argument can be
