@@ -1,5 +1,5 @@
-Ewoks commands reference
-========================
+CLI reference
+=============
 
 ewoks install
 -------------
