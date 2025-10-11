@@ -3,19 +3,19 @@ Set up a REST Ewoks server
 
 Install requirements
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoksserver
 
 Start the REST server
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks-server
 
 or for an installation with the system python
 
-.. code:: bash
+.. code-block:: bash
 
     python3 -m ewoksserver.server
 

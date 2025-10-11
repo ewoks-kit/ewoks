@@ -7,7 +7,7 @@ This tutorial demonstrates how to inspect and verify these input parameters usin
 We'll use the `demo` workflow from the Ewoks test suite as an example.
 Convert it to JSON format with the following command:
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks convert demo example.json --test
 
@@ -16,13 +16,13 @@ Command-Line Inspection
 
 To view the input parameters defined in a workflow, use the `ewoks show` command:
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks show example.json
 
 This displays all input parameters, their values, and the workflow node they belong to:
 
-.. code:: bash
+.. code-block:: bash
 
     Workflow: example.json
     Id: demo
@@ -61,7 +61,7 @@ This displays all input parameters, their values, and the workflow node they bel
 
 Parameters with `<MISSING_DATA>` do not have a value. If a missing parameter is **required**, it is marked with a `(*)`. For example:
 
-.. code:: bash
+.. code-block:: bash
 
     Workflow: example.json
     Id: demo
@@ -114,19 +114,19 @@ Validating Execution Arguments
 
 To override workflow parameters for execution, use the `-p` option:
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks execute example.json -p SumTask:delay=99 --input-node-id taskid
 
 Before executing the workflow, you can verify that your arguments are applied as intended using `ewoks show` with the same arguments:
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks show example.json -p SumTask:delay=99 --input-node-id taskid
 
 The output will reflect the overridden `delay` values:
 
-.. code:: bash
+.. code-block:: bash
 
     Workflow: example.json
     Id: demo
@@ -176,7 +176,7 @@ Desktop GUI
 
 To use the :ref:`desktop GUI <ewoks-canvas>` based on Orange:
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks execute example.json --engine=orange -p SumTask:delay=99 --input-node-id taskid
 
@@ -192,19 +192,19 @@ To inspect parameters via the :ref:`web interface <ewoksweb>`:
 
 1. Convert the workflow while applying overrides:
 
-    .. code:: bash
+    .. code-block:: bash
 
         ewoks convert example.json example_with_params.json --test -p SumTask:delay=99 --input-node-id taskid
 
 2. Start the web server:
 
-    .. code:: bash
+    .. code-block:: bash
 
         ewoksweb
 
     You should see:
 
-    .. code:: bash
+    .. code-block:: bash
 
         INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 

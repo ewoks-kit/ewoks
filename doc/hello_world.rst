@@ -3,14 +3,14 @@ Hello world
 
 This script demonstrates how to define an Ewoks workflow from the ground up. The only thing needed to run it is the ``ewoks`` Python package
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoks
 
 
 The script defines defines two tasks, one that ask for a name and the other that creates a greeting, creates a workflow out of these and executes it.
 
-.. code:: python
+.. code-block:: python
 
     from ewokscore import Task
     from ewoks import execute_graph

@@ -9,13 +9,13 @@ Installation
 
 Install on the client side
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoksjob[redis]
 
 Install on the worker side
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoksjob[worker,redis,monitor]
 
@@ -29,13 +29,13 @@ Submit a workflow
 
 Start a worker that can execute *ewoks* graphs
 
-.. code:: bash
+.. code-block:: bash
 
     ewoksjob worker
 
 Submit a workflow from python, possible from another machine
 
-.. code:: python
+.. code-block:: python
 
     from ewoksjob.client import submit
 
@@ -45,7 +45,7 @@ Submit a workflow from python, possible from another machine
 
 Submit a workflow from the command line, possible from another machine
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks submit empty --test
 
@@ -54,13 +54,13 @@ Submit a workflow in *BLISS*
 
 In the context of *Bliss*
 
-.. code:: bash
+.. code-block:: bash
 
     BEACON_HOST=hostname:25000 ewoksjob worker
 
 Submit a workflow as usual
 
-.. code:: bash
+.. code-block:: bash
 
     BEACON_HOST=hostname:25000 ewoks submit empty --test
 
@@ -71,6 +71,6 @@ Workflow monitoring
 
 Start a web server for monitoring jobs
 
-.. code:: bash
+.. code-block:: bash
 
     ewoksjob monitor

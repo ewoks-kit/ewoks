@@ -3,13 +3,13 @@ Execute a workflow from Python
 
 Install requirements
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoks
 
 Execute a workflow
 
-.. code:: python
+.. code-block:: python
 
     from ewoks import execute_graph
 
@@ -28,7 +28,7 @@ When no *engine* is specified it will use sequential execution in the current pr
 
 Bindings can be installed as follows
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoks[orange,dask,ppf]
 
