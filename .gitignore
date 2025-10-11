@@ -16,7 +16,7 @@ __pycache__/
 /dist/
 *.egg-info/
 .eggs/
-/doc/_generated
+/doc/reference/_generated
 
 # Dask
 dask-worker-space/
