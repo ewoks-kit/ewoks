@@ -12,7 +12,7 @@ Errors raised when executing an Ewoks task
 
 An exception encountered when running an Ewoks task will always be chained with a ``RuntimeError`` telling which task failed:
 
-.. code:: python
+.. code-block:: python
 
     >>> from ewokscore.tests.examples.tasks.sumtask import SumTask
     >>> task = SumTask(inputs={"a": 'a_string', "b": 10})
@@ -31,7 +31,7 @@ The top-level exception will always be ``RuntimeError`` while the real exception
 
 This is particularly important when testing or catching exceptions:
 
-.. code:: python
+.. code-block:: python
 
     >>> task = SumTask(inputs={"a": 'a_string', "b": 10})
     >>> try:
@@ -48,7 +48,7 @@ This is particularly important when testing or catching exceptions:
 
 We see here that the error caught is indeed the ``RuntimeError`` and not the ``TypeError``. To retrieve the original error, we have to go back to the ``RuntimeError`` cause:
 
-.. code:: python
+.. code-block:: python
     
     >>> original_exception = exception.__cause__
     >>> original_exception
@@ -58,7 +58,7 @@ Full code
 ---------
 
 
-.. code:: python
+.. code-block:: python
 
     from ewokscore.tests.examples.tasks.sumtask import SumTask
 

@@ -19,7 +19,7 @@ If the same input is specified by these different sources, *ewoks* applies the f
 TL;DR
 -----
 
-.. code::
+.. code-block::
 
     Data mapping > Workflow parameters > Node default inputs
 
@@ -28,7 +28,7 @@ Example
 
 Consider the following workflow made of `SumTask` nodes from `ewokscore` (`SumTask` takes two inputs `a` and `b` and sums them):
 
-.. code:: python
+.. code-block:: python
 
     wf = {
         "graph": {"id": "Sum"},
@@ -51,7 +51,7 @@ In this case, we have given two ``default_inputs`` to our ``sum_node``:
 
 If we execute the workflow with no parameters/inputs:
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> execute_graph(graph=wf)
     {'result': 3}
@@ -62,7 +62,7 @@ There is no incoming link with data mapping, no workflow inputs, the two default
 
 If we specify a value for ``b`` when executing the workflow:
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> execute_graph(
     ...     graph=wf,
@@ -82,7 +82,7 @@ If we specify a value for ``b`` when executing the workflow:
 
 If we change our workflow to include a ``SumTask`` before our ``sum_node`` with an incoming data mapping that sets ``b`` value to its result (in this case ``200``):
 
-.. code:: python
+.. code-block:: python
 
     new_wf = {
         "graph": {"id": "Sum"},
@@ -111,7 +111,7 @@ If we change our workflow to include a ``SumTask`` before our ``sum_node`` with 
 
 Then, if we execute as before (with the workflow input):
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> execute_graph(
     ...     graph=new_wf,

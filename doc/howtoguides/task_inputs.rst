@@ -17,7 +17,7 @@ Required input names are given as a list of strings via the ``input_names`` subc
 
 They can then be retrieved in the task via ``self.inputs`` or ``self.get_input_value``:
 
-.. code:: python
+.. code-block:: python
 
     from ewoks import Task
 
@@ -30,7 +30,7 @@ They can then be retrieved in the task via ``self.inputs`` or ``self.get_input_v
 
 For demonstration purposes, we can `execute a task from Python <./task_python.rst>`_.
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ExampleTask(inputs={"a": 1, "b": 2})
     >>> task.run()
@@ -38,7 +38,7 @@ For demonstration purposes, we can `execute a task from Python <./task_python.rs
 
 Since these are **required** input names, Ewoks will throw a ``TaskInputError`` if one is missing
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ExampleTask(inputs={"a": 1})
     ewokscore.task.TaskInputError: Missing inputs for <class '__main__.ExampleTask'>: {'b'}
@@ -46,7 +46,7 @@ Since these are **required** input names, Ewoks will throw a ``TaskInputError`` 
 
 We can allow optional inputs by giving a list of strings to a ``optional_input_names`` subclass argument of ``Task``
 
-.. code:: python
+.. code-block:: python
 
     class ExampleTaskWithOptional(Task, input_names=["a", "b"], optional_input_names=["c"]):
         def run(self):
@@ -58,7 +58,7 @@ We can allow optional inputs by giving a list of strings to a ``optional_input_n
 
 These optional inputs can be specified
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ExampleTaskWithOptional(inputs={"a": 1, "b": 2, "c": 3})
     >>> task.run()
@@ -66,7 +66,7 @@ These optional inputs can be specified
 
 or omitted. In this case, they will be set to the special object ``MISSING_DATA``:
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ExampleTaskWithOptional(inputs={"a": 1, "b": 2})
     >>> task.run()
@@ -74,7 +74,7 @@ or omitted. In this case, they will be set to the special object ``MISSING_DATA`
 
 Default values can be given thanks to ``get_input_value``
 
-.. code:: python
+.. code-block:: python
 
     class ExampleTaskWithDefault(Task, input_names=["a", "b"], optional_input_names=["c"]):
         def run(self):
@@ -84,7 +84,7 @@ Default values can be given thanks to ``get_input_value``
 
             print(f"a={a} b={b} c={c}")
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ExampleTaskWithDefault(inputs={"a": 1, "b": 2})
     >>> task.run()
@@ -96,13 +96,13 @@ Subclassing
 
 Subclasses of a task will inherit the input names from the base class and any additional input name will be added to those:
 
-.. code:: python
+.. code-block:: python
 
     class ChildExampleTask(ExampleTaskWithOptional, input_names=["d"]):
         def run(self):
             print(self.get_input_values())
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ChildExampleTask(inputs={"a": 1, "b": 2, "c": 3, "d": 4}) 
     >>> # Accepts `a`, `b` and `c` in addition to `d` ^
@@ -122,7 +122,7 @@ The model needs to derive from ``ewoks.BaseInputModel`` and must be provided via
 
 Inputs can then be retrieved in the task via ``self.inputs`` or ``self.get_input_value``:
 
-.. code:: python
+.. code-block:: python
 
     from ewoks import Task
     from ewoks import BaseInputModel
@@ -139,7 +139,7 @@ Inputs can then be retrieved in the task via ``self.inputs`` or ``self.get_input
 
             print(f"a={a} b={b}")
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ExampleTaskWithModel(inputs={"a": 1, "b": 2})
     >>> task.run()
@@ -148,7 +148,7 @@ Inputs can then be retrieved in the task via ``self.inputs`` or ``self.get_input
 
 The advantage of using a model is that **inputs are validated by Pydantic**
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ExampleTaskWithModel(inputs={"a": 1})
     ewokscore.task.TaskInputError: 1 validation error for Inputs
@@ -166,7 +166,7 @@ All Pydantic features such has `Default values <https://docs.pydantic.dev/latest
 
 For example, we can add an optional input to our model by giving it a default value
 
-.. code:: python
+.. code-block:: python
 
     from ewoks import Task
     from ewoks import BaseInputModel
@@ -184,7 +184,7 @@ For example, we can add an optional input to our model by giving it a default va
 
             print(f"a={a} b={b} c={c}")
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ExampleTaskWithModel(inputs={"a": 1, "b": 2})
     >>> task.run()
@@ -196,7 +196,7 @@ For example, we can add an optional input to our model by giving it a default va
 
     For this, add ``MissingData`` as a possible type for the input in the model and use ``MISSING_DATA`` as the default value
 
-    .. code:: python
+    .. code-block:: python
 
         from ewoks import Task
         from ewoks import BaseInputModel
@@ -215,7 +215,7 @@ For example, we can add an optional input to our model by giving it a default va
 
                 print(f"a={a} b={b} c={c}")
 
-    .. code:: python-console
+    .. code-block:: python-console
 
         >>> task = ExampleTaskWithModel(inputs={"a": 1, "b": 2})
         >>> task.run()
@@ -229,13 +229,13 @@ Subclassing
 
 Subclasses of tasks with input models will inherit the model if they do not implement a model themselves
 
-.. code:: python
+.. code-block:: python
 
     class ChildTask(ExampleTaskWithModel):
         def run(self):
             print(self.get_input_values())
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ChildTask(inputs={"a": 1, "b": 2, "c": 3})
     >>> task.run()
@@ -243,7 +243,7 @@ Subclasses of tasks with input models will inherit the model if they do not impl
 
 If the subclass does have an input model, it must be inherit from the model of the base class to have compliant inputs
 
-.. code:: python
+.. code-block:: python
 
     class NewInputs(Inputs):
         d: int
@@ -254,7 +254,7 @@ If the subclass does have an input model, it must be inherit from the model of t
             print(self.get_input_values())
 
 
-.. code:: python-console
+.. code-block:: python-console
 
     >>> task = ChildTaskWithModel(inputs={"a": 1, "b": 2, "c": 3, "d": 4})
     >>> task.run()

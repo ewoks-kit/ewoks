@@ -1,21 +1,23 @@
+.. _execute_python:
+
 Execute a workflow from Python
 ==============================
 
 Install requirements
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoks
 
 Execute a workflow
 
-.. code:: python
+.. code-block:: python
 
     from ewoks import execute_graph
 
     result = execute_graph("/path/to/graph.json", engine=None)
 
-The :doc:`hello world <../hello_world>` example provides a small but complete example of
+The :ref:`hello world <hello_world>` example provides a small but complete example of
 task implementation, workflow definition and workflow execution.
 
 The *engine* argument can be
@@ -28,7 +30,7 @@ When no *engine* is specified it will use sequential execution in the current pr
 
 Bindings can be installed as follows
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoks[orange,dask,ppf]
 

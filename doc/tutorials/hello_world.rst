@@ -1,16 +1,20 @@
+.. _hello_world:
+
 Hello world
 ===========
 
-This script demonstrates how to define an Ewoks workflow from the ground up. The only thing needed to run it is the ``ewoks`` Python package
+This script demonstrates how to define an Ewoks workflow from the ground up. The only thing needed to run
+it is the ``ewoks`` Python package
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoks
 
 
-The script defines defines two tasks, one that ask for a name and the other that creates a greeting, creates a workflow out of these and executes it.
+The script defines defines two tasks, one that ask for a name and the other that creates a greeting, creates
+a workflow out of these and executes it.
 
-.. code:: python
+.. code-block:: python
 
     from ewokscore import Task
     from ewoks import execute_graph
@@ -89,15 +93,12 @@ This is the output you should get
     What is your name?  # <--- Enter was pressed without typing anything
     {'greeting': 'Bonjour, World!'}
 
+.. note::
 
-To go further
--------------
+    Ewoks developers rarely design workflows by hand like this but instead use graphical interfaces to produce
+    the dictionnary (usually stored in JSON). See :ref:`this page about the Ewoks graphical interfaces <gui>`.
 
-- The `Ewoksfordevs training <https://ewoksfordevs.readthedocs.io/>`_ gives a more gentle introduction to workflow creation/execution as well as task creation.
-- The `Ewoks website <https://ewoks.esrf.fr/en/latest/tutorials/>`_ also gathers more focused tutorials:
+.. note::
 
-    - `Workflow creation <https://ewoks.esrf.fr/en/latest/tutorials/create_workflow.html>`_
-    - Plus others to come!
-
-- Ewoks developers rarely design workflows by hand like this but instead use graphical interfaces to produce the dictionnary (usually stored in JSON). See `this page about the Ewoks graphical interfaces <./howtoguides/gui>`_.
-- For all the fields that can be set when creating the dictionnary representing the workflow, see the `Ewoks specification <https://ewokscore.readthedocs.io/en/latest/definitions.html>`_
+    For all the fields that can be set when creating the dictionnary representing the workflow, see the
+    `Ewoks specification <https://ewokscore.readthedocs.io/en/latest/reference/specs.html>`_.

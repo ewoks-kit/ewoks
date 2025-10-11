@@ -1,3 +1,5 @@
+.. _gui:
+
 Use Ewoks graphical interfaces
 ==============================
 
@@ -10,13 +12,13 @@ Ewoks comes with two graphical interfaces. You can either of the two to create a
 
 Install ``ewoksweb``
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoksweb
 
 Start ``ewoksweb``
 
-.. code:: bash
+.. code-block:: bash
 
     ewoksweb
 
@@ -31,13 +33,13 @@ For more information see the `ewoksweb documentation <https://ewoksweb.readthedo
 
 Install requirements
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoksorange[orange]
 
 Launch the graphical interface
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks-canvas
 

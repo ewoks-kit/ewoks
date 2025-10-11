@@ -7,7 +7,7 @@ destinations where the events should be send to.
 
 To specify event handlers from python:
 
-.. code:: python
+.. code-block:: python
 
     from ewoks import execute_graph
 
@@ -25,6 +25,6 @@ To specify event handlers from python:
 
 To specify event handlers from the command line:
 
-.. code:: bash
+.. code-block:: bash
 
     ewoks execute /path/to/file.json -j 1234 --sqlite3 /shared/path/test.db
