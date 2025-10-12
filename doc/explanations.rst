@@ -6,6 +6,6 @@ Explanations of some Ewoks concepts.
 .. toctree::
     :maxdepth: 1
 
-    task_errors
-    task_input_priority
+    explanations/task_errors
+    explanations/task_input_priority
 
