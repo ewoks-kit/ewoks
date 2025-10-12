@@ -17,7 +17,7 @@ of the `European Synchrotron <https://www.esrf.eu/>`_.
 
 .. admonition:: Quick Start
 
-   Install ewoks
+   Install *ewoks*
 
    .. code-block:: bash
 
