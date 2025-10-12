@@ -9,13 +9,13 @@ Python APIs, graphical interfaces, or REST services.
 .. toctree::
     :maxdepth: 1
 
-    running_workflows
-    python
-    inspect_workflows
-    job
-    gui
-    rest
-    benchmark
-    ewoks_events
-    task_python
-    task_inputs
+    howtoguides/running_workflows
+    howtoguides/python
+    howtoguides/inspect_workflows
+    howtoguides/job
+    howtoguides/gui
+    howtoguides/rest
+    howtoguides/benchmark
+    howtoguides/ewoks_events
+    howtoguides/task_python
+    howtoguides/task_inputs

@@ -30,9 +30,9 @@ of the `European Synchrotron <https://www.esrf.eu/>`_.
       ewoks execute demo --test
 
 .. toctree::
-    :hidden:
+   :hidden:
     
-    tutorials/index
-    howtoguides/index
-    explanations/index
-    reference/index
+   tutorials
+   howtoguides
+   explanations
+   reference
