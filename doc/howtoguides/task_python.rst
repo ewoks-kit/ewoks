@@ -61,7 +61,9 @@ A new task instance needs to be created to execute it with different inputs
      >>> task.get_output_value("result")
      20
 
-Outputs will be missing before the task is executed. More specifically, the outputs are set to `MISSING_DATA <https://ewokscore.readthedocs.io/en/latest/_generated/ewokscore.task.Task.html#ewokscore.task.Task.MISSING_DATA>`_ until they are set by the execution: 
+Outputs will be missing before the task is executed. More specifically, the outputs are set to
+`MISSING_DATA <https://ewokscore.readthedocs.io/en/stable/_generated/ewokscore.task.Task.html#ewokscore.task.Task.MISSING_DATA>`_
+until they are set by the execution:
 
 .. code-block:: python
 
