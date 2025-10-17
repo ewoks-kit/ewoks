@@ -101,4 +101,4 @@ This is the output you should get
 .. note::
 
     For all the fields that can be set when creating the dictionnary representing the workflow, see the
-    `Ewoks specification <https://ewokscore.readthedocs.io/en/latest/reference/specs.html>`_.
+    `Ewoks specification <https://ewokscore.readthedocs.io/en/stable/reference/specs.html>`_.
