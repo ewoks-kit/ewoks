@@ -3,6 +3,7 @@ import logging
 import os
 import subprocess
 from argparse import ArgumentParser
+from copy import deepcopy
 from fnmatch import fnmatch
 from glob import glob
 from json.decoder import JSONDecodeError
@@ -172,7 +173,8 @@ def _parse_test_workflows(
                 )
         parsed_workflows = workflows
 
-    graphs = [get_graph(workflow)[0] for workflow in parsed_workflows]
+    # Create a deep copy of the test graphs to avoid mutating the source
+    graphs = [deepcopy(get_graph(workflow)[0]) for workflow in parsed_workflows]
     return parsed_workflows, graphs
 
 
