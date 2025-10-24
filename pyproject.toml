@@ -16,7 +16,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "ewokscore >=2,<3",
+    "ewokscore >=2.0.1,<3",
     "tabulate",
     "importlib_resources; python_version < '3.9'",
 ]
@@ -31,7 +31,7 @@ Changelog = "https://gitlab.esrf.fr/workflow/ewoks/ewoks/-/blob/main/CHANGELOG.m
 [project.optional-dependencies]
 dask = ["ewoksdask >=2,<3"]
 ppf = ["ewoksppf >=2,<3"]
-orange = ["ewoksorange >=2,<3"]
+orange = ["ewoksorange >=2.1.0,<3"]
 esrf-data-portal = ["pyicat-plus"]
 notebooks = ["ewokscore[notebooks]"]
 test = [
