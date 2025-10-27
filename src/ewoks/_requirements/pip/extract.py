@@ -15,16 +15,11 @@ def extract_pip_requirements(graph: TaskGraph) -> List[str]:
         task_identifier = node["task_identifier"]
         task_type = node["task_type"]
 
-        if (
-            task_type == "class"
-            or task_type == "method"
-            or task_type == "ppfmethod"
-            or task_type == "ppfport"
-        ):
+        if task_type in ("class", "method", "ppfmethod", "ppfport"):
             package = task_identifier.split(".")[0]
-            if package == "__main__" or "":
+            if package in ("__main__", ""):
                 logger.warning(
-                    f"Could not extract requirements for node {node_id}: the task identifier is a relative import or a import from __main__."
+                    f"Could not extract requirements for node {node_id}: the task identifier is a relative import or an import from __main__."
                 )
                 continue
 
