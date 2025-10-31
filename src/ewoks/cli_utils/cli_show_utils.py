@@ -3,10 +3,10 @@ from typing import List
 
 from ewoksutils.cli_utils import cli_arguments
 from ewoksutils.cli_utils import cli_log_utils
+from ewoksutils.cli_utils import cli_parse
 from ewoksutils.cli_utils.cli_spec import CLIArg
 
 from .._engines import get_graph_representations
-from . import cli_parse
 
 
 def show_arguments(
@@ -50,6 +50,8 @@ def parse_show_arguments(cli_args: Namespace, shell: bool = False) -> None:
         load_options["root_module"] = cli_args.root_module
     if cli_args.root_dir:
         load_options["root_dir"] = cli_args.root_dir
+    if cli_args.test:
+        load_options["representation"] = "test_core"
 
     show_options = {
         "load_options": load_options,

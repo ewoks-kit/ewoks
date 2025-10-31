@@ -7,7 +7,7 @@ from ewoksutils.cli_utils import cli_parse
 from ewoksutils.cli_utils.cli_spec import CLIArg
 
 from .._engines import get_graph_representations
-from . import cli_parse as _cli_parse
+from .cli_parse import parse_destinations
 
 
 def convert_arguments(
@@ -69,7 +69,7 @@ def parse_convert_arguments(cli_args: Namespace, shell: bool = False) -> None:
     if shell:
         cli_log_utils.parse_log_arguments(cli_args)
     cli_args.workflows, cli_args.graphs = cli_parse.parse_workflows(cli_args)
-    cli_args.destinations = _cli_parse.parse_destinations(cli_args)
+    cli_args.destinations = parse_destinations(cli_args)
 
     load_options = dict(cli_parse.parse_option(item) for item in cli_args.load_options)
     if cli_args.source_representation:
