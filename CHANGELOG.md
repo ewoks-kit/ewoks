@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `ewoks cancel` CLI command.
+
+### Changed
+
+- CLI: refactor and rename modules.
+
 ## [2.0.1] - 2025-08-15
 
 ### Fixed

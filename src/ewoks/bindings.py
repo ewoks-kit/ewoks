@@ -16,15 +16,17 @@ from tabulate import tabulate
 
 from . import _engines
 from . import graph_cache
-from .cliutils.utils import AbortException
-from .cliutils.utils import pip_install
-from .utils import extract_requirements
-from .utils import save_current_env_as_requirements
+from ._requirements.pip.extract import add_current_env_pip_requirements
+from ._requirements.pip.extract import extract_pip_requirements
+from ._requirements.pip.install import pip_install
+from .errors import AbortException
 
 try:
-    from ewoksjob.client import submit
+    from ewoksjob.bindings import submit_graph as _submit_graph
+    from ewoksjob.client.futures import FutureInterface
 except ImportError:
-    submit = None
+    _submit_graph = None
+    FutureInterface = Any
 
 try:
     from pyicat_plus.client import defaults as icat_defaults
@@ -104,27 +106,31 @@ def _upload_result(upload_parameters):
 
 def submit_graph(
     graph,
-    _celery_options=None,
+    _celery_options: Optional[dict] = None,
     resolve_graph_remotely: Optional[bool] = None,
     load_options: Optional[dict] = None,
     **options,
-):
+) -> FutureInterface:
     """Submit a workflow to be executed remotely. The workflow is
     resolved on the client-side by default (e.g. load from a file)
     but can optionally be resolved remotely.
     """
-    if submit is None:
+    if _submit_graph is None:
         raise RuntimeError("requires the 'ewoksjob' package")
-    if _celery_options is None:
-        _celery_options = dict()
-    if resolve_graph_remotely:
-        options["load_options"] = load_options
-    else:
-        # Do not save requirements since the current env is the client
-        graph = convert_graph(
-            graph, None, load_options=load_options, save_requirements=False
-        )
-    return submit(args=(graph,), kwargs=options, **_celery_options)
+    return _submit_graph(
+        graph,
+        _convert_graph=_load_graph,
+        _celery_options=_celery_options,
+        resolve_graph_remotely=resolve_graph_remotely,
+        load_options=load_options,
+        **options,
+    )
+
+
+def _load_graph(graph, load_options: Optional[dict] = None) -> dict:
+    return convert_graph(
+        graph, None, load_options=load_options, save_requirements=False
+    )
 
 
 @graph_cache.cache
@@ -181,7 +187,7 @@ def convert_graph(
         save_options = dict()
     graph = load_graph(source, inputs=inputs, **load_options)
     if save_requirements:
-        graph = save_current_env_as_requirements(graph)
+        graph = add_current_env_pip_requirements(graph)
     return save_graph(graph, destination, **save_options)
 
 
@@ -237,7 +243,7 @@ def install_graph(
         logger.warning(
             "Requirements field is empty. Trying to extract requirements automatically..."
         )
-        requirements = extract_requirements(graph)
+        requirements = extract_pip_requirements(graph)
         logger.info(f"Extracted the following requirements: {requirements}")
 
     if python_path is None:
