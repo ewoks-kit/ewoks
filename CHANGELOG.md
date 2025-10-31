@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2025-10-31
+
 ### Added
 
 - Add `ewoks cancel` CLI command.
@@ -163,7 +165,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoksppf` dependency.
 - Command-line interface.
 
-[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.0.1...HEAD
+[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.0...HEAD
+[2.1.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.0.1...v2.1.0
 [2.0.1]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.0.0...v2.0.1
 [2.0.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v1.3.0...v2.0.0
 [1.3.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v1.2.0...v1.3.0
