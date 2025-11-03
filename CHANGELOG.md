@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] - 2025-11-03
+
+### Fixed
+
+- Improved "requires package" error messages.
+
 ## [2.1.0] - 2025-10-31
 
 ### Added
@@ -165,7 +171,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoksppf` dependency.
 - Command-line interface.
 
-[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.0...HEAD
+[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.1...HEAD
+[2.1.1]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.0...v2.1.1
 [2.1.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.0.1...v2.1.0
 [2.0.1]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.0.0...v2.0.1
 [2.0.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v1.3.0...v2.0.0
