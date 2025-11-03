@@ -129,13 +129,13 @@ def command_submit(
     cli_args: Namespace, shell: bool = False
 ) -> Union[List[dict], Literal[0, 1]]:
     if _command_submit is None:
-        raise RuntimeError("requires the 'ewoksjob' package")
+        raise RuntimeError("requires the 'ewoksjob>=1.3' package")
     return _command_submit(cli_args, _convert_graph=_load_graph, shell=shell)
 
 
 def command_cancel(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0, 1]]:
     if _command_cancel is None:
-        raise RuntimeError("requires the 'ewoksjob' package")
+        raise RuntimeError("requires the 'ewoksjob>=1.3' package")
     return _command_cancel(cli_args, shell)
 
 

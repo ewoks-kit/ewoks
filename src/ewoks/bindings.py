@@ -91,7 +91,7 @@ def execute_graph(
 
 def _upload_result(upload_parameters):
     if IcatClient is None:
-        raise RuntimeError("requires pyicat-plus")
+        raise RuntimeError("requires the 'pyicat-plus' package")
     metadata_urls = upload_parameters.pop(
         "metadata_urls", icat_defaults.METADATA_BROKERS
     )
