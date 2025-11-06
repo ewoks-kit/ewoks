@@ -27,10 +27,10 @@ def install_arguments(
             help="Automatically accept installation prompts.",
         ),
         CLIArg(
-            "python",
-            ["-p", "--python"],
+            "manager_command",
+            ["-m", "--manager"],
             type=str,
-            help="Python interpreter of the environment where the packages should be installed. Default: current environment Python.",
+            help='Package manager command. For example "python -m pip"',
         ),
     ]
     return args_list

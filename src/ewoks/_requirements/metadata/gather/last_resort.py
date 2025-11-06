@@ -1,15 +1,19 @@
 import logging
-import subprocess
-import sys
-from typing import List
+from typing import Any
+from typing import Dict
 
 from ewokscore.graph import TaskGraph
 
-logger = logging.getLogger(__file__)
+from . import pip_freeze
+
+logger = logging.getLogger(__name__)
 
 
-def extract_pip_requirements(graph: TaskGraph) -> List[str]:
-    imports: set[str] = set()
+def last_resort_requirements(graph: TaskGraph) -> Dict[str, Any]:
+    """Last resort when installing a workflow that does not have requirements:
+    guess the requirements from the workflow nodes.
+    """
+    freeze: set[str] = set()
 
     for node_id, node in graph.graph.nodes.items():
         task_identifier = node["task_identifier"]
@@ -23,13 +27,13 @@ def extract_pip_requirements(graph: TaskGraph) -> List[str]:
                 )
                 continue
 
-            imports.add(package)
+            freeze.add(package)
 
         elif task_type == "notebook":
             logger.warning(
                 f"Requirement extraction may be incomplete for node {node_id}: {task_type} is only partially supported."
             )
-            imports.add("ewokscore[notebook]")
+            freeze.add("ewokscore[notebook]")
 
         elif task_type == "script":
             logger.warning(
@@ -40,18 +44,4 @@ def extract_pip_requirements(graph: TaskGraph) -> List[str]:
                 f"Could not extract requirements for node {node_id}: unsupported task type {task_type}."
             )
 
-    return list(imports)
-
-
-def add_current_env_pip_requirements(graph: TaskGraph) -> TaskGraph:
-    try:
-        freeze_output = subprocess.check_output(
-            [sys.executable, "-m", "pip", "freeze"], text=True
-        )
-    except subprocess.CalledProcessError as ex:
-        logger.warning("Cannot generate list of requirements with 'pip' (%s).", ex)
-        return graph
-
-    requirements = freeze_output.strip().split("\n")
-    graph.graph.graph["requirements"] = requirements
-    return graph
+    return pip_freeze.pip_freeze_requirements(list(freeze))
