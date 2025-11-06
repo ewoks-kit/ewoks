@@ -44,11 +44,14 @@ def extract_pip_requirements(graph: TaskGraph) -> List[str]:
 
 
 def add_current_env_pip_requirements(graph: TaskGraph) -> TaskGraph:
-    freeze_output = subprocess.check_output(
-        [sys.executable, "-m", "pip", "freeze"], text=True
-    )
+    try:
+        freeze_output = subprocess.check_output(
+            [sys.executable, "-m", "pip", "freeze"], text=True
+        )
+    except subprocess.CalledProcessError as ex:
+        logger.warning("Cannot generate list of requirements with 'pip' (%s).", ex)
+        return graph
+
     requirements = freeze_output.strip().split("\n")
-
     graph.graph.graph["requirements"] = requirements
-
     return graph
