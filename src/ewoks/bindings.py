@@ -1,9 +1,12 @@
+import datetime
 import logging
 import os
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 from typing import Dict
+from typing import Generator
 from typing import List
 from typing import Optional
 from typing import Union
@@ -58,46 +61,61 @@ def execute_graph(
     **execute_options,
 ) -> Optional[dict]:
     with job_context(execinfo, engine=engine) as execinfo:
-        if environment:
-            environment = {k: str(v) for k, v in environment.items()}
-            os.environ.update(environment)
+        with _upload_context(upload_parameters):
+            if environment:
+                environment = {k: str(v) for k, v in environment.items()}
+                os.environ.update(environment)
 
-        # Load the graph
-        if load_options is None:
-            load_options = dict()
-        graph = load_graph(graph, inputs=inputs, **load_options)
+            # Load the graph
+            if load_options is None:
+                load_options = dict()
+            graph = load_graph(graph, inputs=inputs, **load_options)
 
-        # Save the graph (with inputs)
-        if convert_destination is not None:
-            convert_graph(graph, convert_destination, save_options=save_options)
+            # Save the graph (with inputs)
+            if convert_destination is not None:
+                convert_graph(graph, convert_destination, save_options=save_options)
 
-        # Execute the graph
-        engine_api = _engines.get_execution_engine(engine)
-        result = engine_api.execute_graph(
-            graph,
-            varinfo=varinfo,
-            execinfo=execinfo,
-            task_options=task_options,
-            outputs=outputs,
-            merge_outputs=merge_outputs,
-            **execute_options,
-        )
+            # Execute the graph
+            engine_api = _engines.get_execution_engine(engine)
+            result = engine_api.execute_graph(
+                graph,
+                varinfo=varinfo,
+                execinfo=execinfo,
+                task_options=task_options,
+                outputs=outputs,
+                merge_outputs=merge_outputs,
+                **execute_options,
+            )
 
-        # Upload results
-        if upload_parameters:
-            _upload_result(upload_parameters)
-        return result
+            return result
 
 
-def _upload_result(upload_parameters):
+@contextmanager
+def _upload_context(upload_parameters: Optional[dict]) -> Generator[None, None, None]:
+    if upload_parameters is None:
+        yield
+        return
+
     if IcatClient is None:
         raise RuntimeError("requires the 'pyicat-plus' package")
+
+    metadata = upload_parameters.setdefault("metadata", {})
+    if "startDate" not in metadata:
+        metadata["startDate"] = datetime.datetime.now().astimezone()
+
+    yield
+
+    # Only upload when no exception is raised.
+
+    if "endDate" not in metadata:
+        metadata["endDate"] = datetime.datetime.now().astimezone()
+
     metadata_urls = upload_parameters.pop(
         "metadata_urls", icat_defaults.METADATA_BROKERS
     )
     client = IcatClient(metadata_urls=metadata_urls)
     logger.info(
-        "Sending processed dataset '%s' to ICAT: %s",
+        "Upload processed dataset '%s' metadata to ICAT: %s",
         upload_parameters.get("dataset"),
         upload_parameters.get("path"),
     )
