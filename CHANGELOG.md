@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2025-12-12
+
 ### Added
 
 - `execute_graph`: ICAT startDate and endDate are the start and end of the workflow by default.
+
+### Changes
+
+- Depend on `ewoksorange 3.x`.
 
 ## [2.1.2] - 2025-11-07
 
@@ -181,7 +187,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoksppf` dependency.
 - Command-line interface.
 
-[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.2...HEAD
+[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v3.0.0...HEAD
+[3.0.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.2...v3.0.0
 [2.1.2]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.1...v2.1.2
 [2.1.1]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.0...v2.1.1
 [2.1.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.0.1...v2.1.0
