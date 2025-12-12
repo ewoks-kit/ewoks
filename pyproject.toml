@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ewoks"
-version = "2.1.2"
+version = "3.0.0"
 authors = [{ name = "ESRF", email = "dau-pydev@esrf.fr" }]
 description = "Extensible Workflow System"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -32,7 +32,7 @@ Changelog = "https://gitlab.esrf.fr/workflow/ewoks/ewoks/-/blob/main/CHANGELOG.m
 [project.optional-dependencies]
 dask = ["ewoksdask >=2,<3"]
 ppf = ["ewoksppf >=2,<3"]
-orange = ["ewoksorange >=2.1.0,<3"]
+orange = ["ewoksorange >=3,<4"]
 esrf-data-portal = ["pyicat-plus"]
 notebooks = ["ewokscore[notebooks]"]
 test = [
