@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2025-12-30
+
+### Changes
+
+- Depend on `ewokscore 4.x`.
+
 ## [3.0.0] - 2025-12-12
 
 ### Added
@@ -187,7 +193,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoksppf` dependency.
 - Command-line interface.
 
-[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v3.0.0...HEAD
+[unreleased]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v4.0.0...HEAD
+[4.0.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v3.0.0...v4.0.0
 [3.0.0]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.2...v3.0.0
 [2.1.2]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.1...v2.1.2
 [2.1.1]: https://gitlab.esrf.fr/workflow/ewoks/ewoks/compare/v2.1.0...v2.1.1
