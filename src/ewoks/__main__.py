@@ -159,7 +159,7 @@ def command_install(
     cli_install_utils.parse_install_arguments(cli_args, shell=shell)
     for workflow, graph in zip(cli_args.workflows, cli_args.graphs):
         try:
-            install_graph(graph, cli_args.yes, cli_args.python)
+            install_graph(graph, cli_args.yes, command=cli_args.manager_command)
         except CalledProcessError as e:
             print(f"Install failed for {workflow}: {e}")
         except AbortException:
