@@ -11,10 +11,12 @@ from typing import Literal
 from typing import Optional
 from typing import Union
 
+from ewokscore import Task
 from ewoksutils.cli_utils import cli_cancel_utils
 from ewoksutils.cli_utils import cli_execute_utils
 from ewoksutils.cli_utils import cli_submit_utils
 from ewoksutils.cli_utils.cli_argparse import add_to_parser
+from ewoksutils.import_utils import instantiate_class
 
 from .bindings import _load_graph
 from .bindings import convert_graph
@@ -22,6 +24,7 @@ from .bindings import execute_graph
 from .bindings import install_graph
 from .bindings import show_graph
 from .cli_utils import cli_convert_utils
+from .cli_utils import cli_galaxy_utils
 from .cli_utils import cli_install_utils
 from .cli_utils import cli_show_utils
 from .errors import AbortException
@@ -32,6 +35,12 @@ try:
 except ImportError:
     _command_submit = None
     _command_cancel = None
+
+
+def _header_print(header: str):
+    print("#" * len(header))
+    print(header)
+    print("#" * len(header))
 
 
 def create_argument_parser(shell: bool = False) -> ArgumentParser:
@@ -72,12 +81,18 @@ def create_argument_parser(shell: bool = False) -> ArgumentParser:
         help="Show workflow information",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
+    galaxy = subparsers.add_parser(
+        "galaxy",
+        help="Execute a single task via the CLI. Experimental command for Galaxy integration.",
+        formatter_class=ArgumentDefaultsHelpFormatter,
+    )
     add_to_parser(execute, cli_execute_utils.execute_arguments(shell=shell))
     add_to_parser(submit, cli_submit_utils.submit_arguments(shell=shell))
     add_to_parser(cancel, cli_cancel_utils.cancel_arguments(shell=shell))
     add_to_parser(convert, cli_convert_utils.convert_arguments(shell=shell))
     add_to_parser(install, cli_install_utils.install_arguments(shell=shell))
     add_to_parser(show, cli_show_utils.show_arguments(shell=shell))
+    add_to_parser(galaxy, cli_galaxy_utils.galaxy_arguments(shell=shell))
     return parser
 
 
@@ -89,9 +104,7 @@ def command_execute(
     return_code = 0
     keep_results = []
     for workflow, graph in zip(cli_args.workflows, cli_args.graphs):
-        print("###################################")
-        print(f"# Execute workflow '{workflow}'")
-        print("###################################")
+        _header_print(f"# Execute workflow '{workflow}'")
         try:
             results = execute_graph(
                 graph, engine=cli_args.engine, **cli_args.execute_options
@@ -180,6 +193,31 @@ def command_show(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0
     return None
 
 
+def command_galaxy(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0, 1]]:
+    cli_galaxy_utils.parse_galaxy_arguments(cli_args, shell=shell)
+    _header_print(f"# Execute task '{cli_args.task_qualifier_name}'")
+    try:
+        task: Task = instantiate_class(
+            cli_args.task_qualifier_name, inputs=cli_args.parameters
+        )
+        task.execute()
+    except Exception:
+        traceback.print_exc()
+        print("FAILED")
+        return_code = 1
+    else:
+        print("")
+        print("RESULTS:")
+        pprint(task.get_output_values())
+        print("")
+        print("FINISHED")
+        return_code = 0
+
+    if shell:
+        return return_code
+    return None
+
+
 def command_default(
     cli_args: Namespace, shell: bool = False
 ) -> Optional[Literal[0, 1]]:
@@ -207,6 +245,8 @@ def main(argv=None, shell: bool = True) -> Union[Any, Literal[0, 1]]:
         return command_install(cli_args, shell=shell)
     elif cli_args.command == "show":
         return command_show(cli_args, shell=shell)
+    elif cli_args.command == "galaxy":
+        return command_galaxy(cli_args, shell=shell)
     else:
         parser.print_help()
         return command_default(cli_args, shell=shell)
