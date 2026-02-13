@@ -28,7 +28,7 @@ def _ewokscore_in_graph_requirements(graph: TaskGraph) -> bool:
 def test_execute(graph_name, scheme, engine, tmpdir):
     if graph_name == "self_trigger":
         pytest.skip(
-            "Self-triggering workflow execution is inconsistent: https://gitlab.esrf.fr/workflow/ewoks/ewoksppf/-/issues/16"
+            "Self-triggering workflow execution is inconsistent: https://github.com/ewoks-kit/ewoksppf/issues/16"
         )
 
     graph, expected = get_graph(graph_name)

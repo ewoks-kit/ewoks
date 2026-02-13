@@ -72,7 +72,7 @@ def test_editable_local_path_without_comment_replacement(tmp_path, exists):
 
 def test_branch_specified_requirement():
     project_name = "ewoksutils"
-    project_url = "gitlab.esrf.fr/workflow/ewoks/ewoksutils.git"
+    project_url = "github.com/ewoks-kit/ewoksutils.git"
     project_branch = "main"
 
     req = [f"{project_name}@ git+https://{project_url}@{project_branch}"]
@@ -85,7 +85,7 @@ def test_branch_specified_requirement():
 
 
 def test_invalid_requirement_warning():
-    project_url = "gitlab.esrf.fr/workflow/ewoks/ewoksutils.git"
+    project_url = "github.com/ewoks-kit/ewoksutils.git"
 
     req = [f"git+https://{project_url}"]
 
