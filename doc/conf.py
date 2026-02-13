@@ -54,7 +54,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "gitlab",
-            "url": "https://gitlab.esrf.fr/workflow/ewoks/ewoks",
+            "url": "https://github.com/ewoks-kit/ewoks",
             "icon": "fa-brands fa-gitlab",
         },
         {
