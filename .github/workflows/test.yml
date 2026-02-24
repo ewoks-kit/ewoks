@@ -8,14 +8,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-env:
-  PYTEST_IGNORE_WARNINGS: >-
-    -W ignore::DeprecationWarning:jupyter_client.session
-    -W ignore::DeprecationWarning:orangecanvas.utils.localization
-    -W ignore::DeprecationWarning:orangecanvas.utils.localization.si
-    -W ignore::DeprecationWarning:matplotlib._fontconfig_pattern
-    -W ignore::DeprecationWarning:matplotlib._mathtext
-
 jobs:
   # Build Python package
   build:
@@ -32,7 +24,11 @@ jobs:
       python-version: ${{ matrix.python-version }}
       pytest-args: >-
         -v -ra -W error
-        ${{ env.PYTEST_IGNORE_WARNINGS }}
+        -W ignore::DeprecationWarning:jupyter_client.session
+        -W ignore::DeprecationWarning:orangecanvas.utils.localization
+        -W ignore::DeprecationWarning:orangecanvas.utils.localization.si
+        -W ignore::DeprecationWarning:matplotlib._fontconfig_pattern
+        -W ignore::DeprecationWarning:matplotlib._mathtext
         ${{ matrix.extra-pytest-warnings }}
       enable-coverage: ${{ matrix.enable-coverage }}
       jupyter-platform-dirs: "1"
