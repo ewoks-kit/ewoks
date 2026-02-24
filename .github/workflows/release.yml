@@ -13,7 +13,6 @@ jobs:
     needs: build
     uses: ewoks-kit/.github/.github/workflows/python-tests.yml@main
     with:
-      qt-api: PyQt6
       pytest-args: >-
         -v -ra -W error
         -W ignore::DeprecationWarning:jupyter_client.session
