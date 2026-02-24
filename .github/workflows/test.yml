@@ -68,6 +68,11 @@ jobs:
             enable-coverage: "false"
             extra-pytest-warnings: ""
 
+          - os: ubuntu-latest
+            python-version: "3.14"
+            enable-coverage: "false"
+            extra-pytest-warnings: ""
+
           - os: windows-latest
             python-version: "3.9"
             enable-coverage: "false"
