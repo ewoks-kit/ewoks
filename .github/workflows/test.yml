@@ -85,4 +85,4 @@ jobs:
   # Build documentation
   docs:
     needs: build
-    uses: ewoks-kit/.github/.github/workflows/python-docs.yml@add-pandoc-to-docs-template
+    uses: ewoks-kit/.github/.github/workflows/python-docs.yml@main
