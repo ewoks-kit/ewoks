@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # Build Python package
+  build:
+    uses: ewoks-kit/.github/.github/workflows/python-build.yml@main
+
+  # Run tests
+  tests:
+    needs: build
+    uses: ewoks-kit/.github/.github/workflows/python-tests.yml@main
+    with:
+      pytest-args: >-
+        -v -ra -W error
+        -W ignore::DeprecationWarning:jupyter_client.session
+        -W ignore::DeprecationWarning:orangecanvas.utils.localization
+        -W ignore::DeprecationWarning:orangecanvas.utils.localization.si
+        -W ignore::DeprecationWarning:matplotlib._fontconfig_pattern
+        -W ignore::DeprecationWarning:matplotlib._mathtext
+        -W ignore::RuntimeWarning:networkx.utils.backends
+
+  # Publish package to TestPyPI
+  publish-testpypi:
+    needs: tests
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+    permissions:
+      id-token: write
+    steps:
+      - uses: ewoks-kit/.github/.github/actions/setup-python-package@main
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  # Publish package to PyPI
+  publish-pypi:
+    needs: tests
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+    permissions:
+      id-token: write
+    steps:
+      - uses: ewoks-kit/.github/.github/actions/setup-python-package@main
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  # Tag
+  tag-release:
+    needs: publish-pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: ewoks-kit/.github/.github/actions/setup-python-package@main
+      - uses: ewoks-kit/.github/.github/actions/tag-release@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

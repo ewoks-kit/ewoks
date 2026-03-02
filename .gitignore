@@ -1,6 +1,7 @@
 # Hidden files
 .*
 !.gitignore
+!.github
 !.readthedocs.yaml
 !.flake8
 !.flake8_nb
