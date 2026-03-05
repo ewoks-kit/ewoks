@@ -19,3 +19,4 @@ Python APIs, graphical interfaces, or REST services.
     howtoguides/ewoks_events
     howtoguides/task_python
     howtoguides/task_inputs
+    howtoguides/ewoks_ppf
