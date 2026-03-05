@@ -20,9 +20,11 @@ from .bindings import _load_graph
 from .bindings import convert_graph
 from .bindings import execute_graph
 from .bindings import install_graph
+from .bindings import lint_graph
 from .bindings import show_graph
 from .cli_utils import cli_convert_utils
 from .cli_utils import cli_install_utils
+from .cli_utils import cli_lint_utils
 from .cli_utils import cli_show_utils
 from .errors import AbortException
 
@@ -72,12 +74,18 @@ def create_argument_parser(shell: bool = False) -> ArgumentParser:
         help="Show workflow information",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
+    lint = subparsers.add_parser(
+        "lint",
+        help="Check that a workflow follows the Ewoks specification",
+        formatter_class=ArgumentDefaultsHelpFormatter,
+    )
     add_to_parser(execute, cli_execute_utils.execute_arguments(shell=shell))
     add_to_parser(submit, cli_submit_utils.submit_arguments(shell=shell))
     add_to_parser(cancel, cli_cancel_utils.cancel_arguments(shell=shell))
     add_to_parser(convert, cli_convert_utils.convert_arguments(shell=shell))
     add_to_parser(install, cli_install_utils.install_arguments(shell=shell))
     add_to_parser(show, cli_show_utils.show_arguments(shell=shell))
+    add_to_parser(lint, cli_lint_utils.lint_arguments(shell=shell))
     return parser
 
 
@@ -180,6 +188,15 @@ def command_show(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0
     return None
 
 
+def command_lint(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0, 1]]:
+    cli_lint_utils.parse_lint_arguments(cli_args, shell=shell)
+    for workflow, graph in zip(cli_args.workflows, cli_args.graphs):
+        lint_graph(graph, original_source=workflow, **cli_args.lint_options)
+    if shell:
+        return 0
+    return None
+
+
 def command_default(
     cli_args: Namespace, shell: bool = False
 ) -> Optional[Literal[0, 1]]:
@@ -207,6 +224,8 @@ def main(argv=None, shell: bool = True) -> Union[Any, Literal[0, 1]]:
         return command_install(cli_args, shell=shell)
     elif cli_args.command == "show":
         return command_show(cli_args, shell=shell)
+    elif cli_args.command == "lint":
+        return command_lint(cli_args, shell=shell)
     else:
         parser.print_help()
         return command_default(cli_args, shell=shell)
