@@ -12,7 +12,7 @@ from packaging.requirements import InvalidRequirement
 from packaging.requirements import Requirement
 
 
-def sanitize_requirements(requirements: Sequence[str]) -> Tuple[List[str], List[str]]:
+def sanitize_pip_freeze(requirements: Sequence[str]) -> Tuple[List[str], List[str]]:
     """Sanitize a list of requirements coming from 'pip freeze'.
     Returns a sanitized with warnings regarding applied changes.
     """

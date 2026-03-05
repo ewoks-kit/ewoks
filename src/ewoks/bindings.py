@@ -1,7 +1,7 @@
 import datetime
 import logging
 import os
-import sys
+import shlex
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -9,6 +9,7 @@ from typing import Dict
 from typing import Generator
 from typing import List
 from typing import Optional
+from typing import Tuple
 from typing import Union
 
 from ewokscore.events.contexts import RawExecInfoType
@@ -18,10 +19,8 @@ from ewokscore.graph.inputs import graph_inputs_as_table
 from tabulate import tabulate
 
 from . import _engines
+from . import _requirements
 from . import graph_cache
-from ._requirements.pip.extract import add_current_env_pip_requirements
-from ._requirements.pip.extract import extract_pip_requirements
-from ._requirements.pip.install import pip_install
 from .errors import AbortException
 
 try:
@@ -205,7 +204,7 @@ def convert_graph(
         save_options = dict()
     graph = load_graph(source, inputs=inputs, **load_options)
     if save_requirements:
-        graph = add_current_env_pip_requirements(graph)
+        _requirements.add_requirements(graph)
     return save_graph(graph, destination, **save_options)
 
 
@@ -249,34 +248,28 @@ def _print_graph(
 def install_graph(
     source,
     skip_prompt: bool = False,
-    python_path: Optional[str] = None,
+    command: Union[None, str, Tuple[str]] = None,
     load_options: Optional[dict] = None,
-):
+) -> None:
     if load_options is None:
         load_options = dict()
     graph = load_graph(source, **load_options)
 
-    requirements = graph.requirements
-    if requirements is None:
-        logger.warning(
-            "Requirements field is empty. Trying to extract requirements automatically..."
-        )
-        requirements = extract_pip_requirements(graph)
-        logger.info(f"Extracted the following requirements: {requirements}")
+    requirements = _requirements.get_requirements(graph)
 
-    if python_path is None:
-        python_path = sys.executable
+    if not command:
+        command = tuple()
+    elif isinstance(command, str):
+        command = tuple(shlex.split(command))
 
     if skip_prompt:
-        pip_install(requirements, python_path)
+        _requirements.install_requirements(requirements, command=command)
         return
 
-    requirements_as_str = "\n".join(requirements)
-
     answer = input(
-        f"{requirements_as_str}\nThis will install the above packages via {python_path} -m pip install. Do you want to proceed (y/N)?"
+        f"{requirements.__info__()}\n\nThis will install the packages above. Do you want to proceed (y/N)?"
     )
     if answer.lower() == "y" or answer.lower() == "yes":
-        pip_install(requirements, python_path)
+        _requirements.install_requirements(requirements, command=command)
     else:
         raise AbortException()

@@ -1,11 +1,11 @@
 import pytest
 
-from .._requirements.pip.sanitize import sanitize_requirements
+from .._requirements.metadata.pip_freeze import sanitize_pip_freeze
 
 
 def test_normal_requirement():
     req = ["ewoks==1.1.0"]
-    sanitized, warnings = sanitize_requirements(req)
+    sanitized, warnings = sanitize_pip_freeze(req)
     assert sanitized == ["ewoks==1.1.0"]
     assert warnings == []
 
@@ -18,7 +18,7 @@ def test_editable_ssh_vcs_url_normalized():
         f"-e git+ssh://git@{ssh_project_url}@{ssh_project_commit}#egg={ssh_project_name}"
     ]
 
-    sanitized, warnings = sanitize_requirements(req)
+    sanitized, warnings = sanitize_pip_freeze(req)
 
     expected_sanitized = [
         f"{ssh_project_name} @ git+https://{ssh_project_url}@{ssh_project_commit}"
@@ -44,7 +44,7 @@ def test_editable_local_path_with_comment_replacement(tmp_path, exists):
     replacement = "project_name==1.0.0"
     req = [comment, f"-e {path}"]
 
-    sanitized, warnings = sanitize_requirements(req)
+    sanitized, warnings = sanitize_pip_freeze(req)
 
     assert sanitized == [replacement]
     assert warnings == [f"Replaced editable install '{path}' with '{replacement}'."]
@@ -61,7 +61,7 @@ def test_editable_local_path_without_comment_replacement(tmp_path, exists):
 
     req = [f"-e {path}"]
 
-    sanitized, warnings = sanitize_requirements(req)
+    sanitized, warnings = sanitize_pip_freeze(req)
 
     assert sanitized == [f"-e {path}"]
     if exists:
@@ -77,7 +77,7 @@ def test_branch_specified_requirement():
 
     req = [f"{project_name}@ git+https://{project_url}@{project_branch}"]
 
-    sanitized, warnings = sanitize_requirements(req)
+    sanitized, warnings = sanitize_pip_freeze(req)
 
     # No warnings expected here (assuming valid format)
     assert sanitized == [f"{project_name}@ git+https://{project_url}@{project_branch}"]
@@ -89,7 +89,7 @@ def test_invalid_requirement_warning():
 
     req = [f"git+https://{project_url}"]
 
-    sanitized, warnings = sanitize_requirements(req)
+    sanitized, warnings = sanitize_pip_freeze(req)
 
     assert sanitized == [f"git+https://{project_url}"]
     assert any("Possibly invalid requirement format" in w for w in warnings)

@@ -14,8 +14,8 @@ def test_install(venv):
             "install",
             "--yes",
             '{"graph": {"id": "test_install", "requirements": ["ewoksdata"]}}',
-            "-p",
-            f"{venv.python}",
+            "-m",
+            f"{venv.python} -m pip",
         ]
     )
 
@@ -47,8 +47,8 @@ def test_install_with_extract(venv):
             "install",
             "--yes",
             json.dumps(graph),
-            "-p",
-            f"{venv.python}",
+            "-m",
+            f"{venv.python} -m pip",
         ]
     )
 
