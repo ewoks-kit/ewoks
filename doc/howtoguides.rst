@@ -14,3 +14,4 @@ How-to Guides
     howtoguides/ewoks_events
     howtoguides/task_python
     howtoguides/task_inputs
+    howtoguides/ewoks_ppf
