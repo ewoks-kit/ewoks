@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `ewoks lint` CLI command to check if a workflow is conform to the Ewoks specification.
+
 ## [4.0.1] - 2026-03-02
 
 ### Changed

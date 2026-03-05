@@ -15,6 +15,8 @@ from ewokscore.events.contexts import RawExecInfoType
 from ewokscore.events.contexts import job_context
 from ewokscore.graph import TaskGraph
 from ewokscore.graph.inputs import graph_inputs_as_table
+from ewokscore.graph.schema.model import EwoksWorkflow
+from pydantic import ValidationError
 from tabulate import tabulate
 
 from . import _engines
@@ -280,3 +282,22 @@ def install_graph(
         pip_install(requirements, python_path)
     else:
         raise AbortException()
+
+
+def lint_graph(
+    source: Any,
+    inputs: Optional[List[dict]] = None,
+    load_options: Optional[dict] = None,
+    original_source: Optional[str] = None,
+):
+    if load_options is None:
+        load_options = dict()
+    graph = load_graph(source, inputs=inputs, **load_options)
+    try:
+        EwoksWorkflow(**graph.dump(representation="json_dict"))
+    except ValidationError as e:
+        print(f"Workflow {original_source or ''} has validation errors!")
+        for line in str(e).split("\n"):
+            print(f"    {line}")
+    else:
+        print(f"Workflow {original_source or ''} linted without errors!")
