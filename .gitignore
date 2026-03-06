@@ -3,8 +3,6 @@
 !.gitignore
 !.github
 !.readthedocs.yaml
-!.flake8
-!.flake8_nb
 
 # Byte / compiled / optimized
 *.py[cod]
@@ -17,6 +15,7 @@ __pycache__/
 *.egg-info/
 .eggs/
 /doc/reference/_generated
+uv.lock
 
 # Dask
 dask-worker-space/

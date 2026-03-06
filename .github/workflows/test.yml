@@ -81,6 +81,11 @@ jobs:
   # Run linter / checks
   checks:
     uses: ewoks-kit/.github/.github/workflows/python-check.yml@main
+    with:
+      enable-black: "false"
+      enable-flake8: "false"
+      enable-isort: "false"
+      enable-ruff: "true"
 
   # Build documentation
   docs:

@@ -81,9 +81,10 @@ def get_serialization_engine(
     return get_execution_engine("core"), core_representation
 
 
-def _iter_engine_class_loaders_with_name() -> (
-    Generator[Tuple[str, Callable[[], None]], None, None]
-):
+_EngineClassLoaderGenerator = Generator[Tuple[str, Callable[[], None]], None, None]
+
+
+def _iter_engine_class_loaders_with_name() -> _EngineClassLoaderGenerator:
     try:
         eps = entry_points(group="ewoks.engines")
     except Exception:
@@ -94,9 +95,7 @@ def _iter_engine_class_loaders_with_name() -> (
         yield ep.name, ep.load
 
 
-def _iter_engine_class_loaders_with_representation() -> (
-    Generator[Tuple[str, Callable[[], None]], None, None]
-):
+def _iter_engine_class_loaders_with_representation() -> _EngineClassLoaderGenerator:
     try:
         eps = entry_points(group="ewoks.engines.serialization.representations")
     except Exception:
