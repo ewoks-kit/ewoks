@@ -1,7 +1,7 @@
 # Ewoks: Extensible Workflow System
 
 [![Pipeline](https://github.com/ewoks-kit/ewoks/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/ewoks-kit/ewoks/actions/workflows/test.yml)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![License](https://img.shields.io/github/license/ewoks-kit/ewoks)](https://github.com/ewoks-kit/ewoks/blob/main/LICENSE.md)
 [![Coverage](https://codecov.io/gh/ewoks-kit/ewoks/branch/main/graph/badge.svg)](https://codecov.io/gh/ewoks-kit/ewoks)
 [![Docs](https://readthedocs.org/projects/ewoks/badge/?version=latest)](https://ewoks.readthedocs.io/en/latest/?badge=latest)

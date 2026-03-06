@@ -48,13 +48,7 @@ test = [
     "pyqt5",
     "pytest-venv",
 ]
-dev = [
-    "ewoks[test]",
-    "black[jupyter] >=25",
-    "flake8 >=4",
-    "flake8_nb >= 0.3.1",
-    "isort",
-]
+dev = ["ewoks[test]", "ruff"]
 doc = [
     "ewoks[test]",
     "sphinx >=4.5",
@@ -77,12 +71,19 @@ where = ["src"]
 [tool.coverage.run]
 omit = ['*/tests/*']
 
-[tool.isort]
-profile = "black"
-force_single_line = "True"
-
 [project.scripts]
 ewoks = "ewoks.__main__:main"
 
 [tool.setuptools.package-data]
-"ewoks.tests.notebooks"= ["*.ipynb"]
+"ewoks.tests.notebooks" = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore `S101` (assert used violations) in all test files
+"src/ewoks/tests/*.py" = ["S101"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
