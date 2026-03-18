@@ -1,6 +1,7 @@
 # Hidden files
 .*
 !.gitignore
+!.gitattributes
 !.github
 !.readthedocs.yaml
 

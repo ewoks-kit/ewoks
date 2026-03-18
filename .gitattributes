@@ -1,0 +1,2 @@
+doc/* linguist-documentation
+*.ipynb linguist-generated=true
