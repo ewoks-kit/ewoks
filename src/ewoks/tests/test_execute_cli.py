@@ -3,23 +3,13 @@ import sys
 
 import pytest
 from ewokscore import load_graph
-from ewokscore.graph import TaskGraph
 from ewokscore.tests.examples.graphs import get_graph
 from ewokscore.tests.examples.graphs import graph_names
 from ewokscore.tests.utils.results import assert_execute_graph_default_result
 
-from ewoks.__main__ import main
-from ewoks.tests.utils import has_default_input
-
-
-def _ewokscore_in_graph_requirements(graph: TaskGraph) -> bool:
-    ewokscore_in_req = False
-    for requirement in graph.graph.graph["requirements"]:
-        if "ewokscore" in requirement:
-            ewokscore_in_req = True
-            break
-
-    return ewokscore_in_req
+from ..__main__ import main
+from .requirements.utils import assert_in_graph_requirements
+from .utils import has_default_input
 
 
 @pytest.mark.parametrize("graph_name", graph_names())
@@ -80,8 +70,7 @@ def test_execute_with_convert_destination(tmpdir):
     task1_node = graph.graph.nodes["task1"]
     assert has_default_input(task1_node, "b", 42)
 
-    assert graph.graph.graph["requirements"] is not None
-    assert _ewokscore_in_graph_requirements(graph)
+    assert_in_graph_requirements(graph, "ewokscore")
 
 
 def test_execute_with_convert_destination_inputs_all(tmpdir):
@@ -106,5 +95,4 @@ def test_execute_with_convert_destination_inputs_all(tmpdir):
     for node in graph.graph.nodes.values():
         assert has_default_input(node, "b", 42)
 
-    assert graph.graph.graph["requirements"] is not None
-    assert _ewokscore_in_graph_requirements(graph)
+    assert_in_graph_requirements(graph, "ewokscore")

@@ -11,10 +11,95 @@ from urllib.parse import urlunparse
 from packaging.requirements import InvalidRequirement
 from packaging.requirements import Requirement
 
+from ..models.distro import Distribution
 
-def sanitize_requirements(requirements: Sequence[str]) -> Tuple[List[str], List[str]]:
+
+def freeze_distribution(
+    dist: Distribution,
+) -> Tuple[List[str], List[str]]:
+    """
+    Return the pip freeze of the distribution with associated warnings regarding reproducibility.
+    """
+    lines = []
+    warnings = []
+
+    if dist.version:
+        pypi_req = f"{dist.name}=={dist.version}"
+    else:
+        pypi_req = dist.name
+
+    if dist.archive:
+        archive_req = f"{dist.name} @ {dist.archive.url}"
+
+        if dist.archive.hashes:
+            for algo, value in dist.archive.hashes.items():
+                archive_req += f" --hash={algo}:{value}"
+
+        lines.append(archive_req)
+        return lines, warnings
+
+    if dist.git:
+        warning_fmt = "Non-reproducible Ewoks workflow requirement: {}@{} {}"
+
+        if dist.git.remote:
+            url = _normalize_git_url(dist.git.remote)
+            git_req = f"{dist.name} @ {url}@{dist.git.commit}"
+        else:
+            git_req = pypi_req
+            warning = warning_fmt.format(
+                dist.name, dist.git.commit, "has no remote repository"
+            )
+            warnings.append(warning)
+            lines.append(f"# {warning}")
+
+        if dist.git.uncomitted_changes:
+            warning = warning_fmt.format(
+                dist.name, dist.git.commit, "has uncommited changes"
+            )
+            warnings.append(warning)
+            lines.append(f"# {warning}")
+
+        lines.append(git_req)
+        return lines, warnings
+
+    lines.append(pypi_req)
+    return lines, warnings
+
+
+def _normalize_git_url(url: str, preserve_ssh: bool = False) -> str:
+    """
+    Return a PEP 508-compatible VCS URL, prefixed with 'git+'.
+    """
+    # SCP-like SSH syntax: git@host:group/repo.git
+    if url.startswith("git@"):
+        host, path = url[len("git@") :].split(":", 1)
+        if preserve_ssh:
+            return f"git+ssh://git@{host}/{path}"
+        return f"git+https://{host}/{path}"
+
+    # Explicit SSH URL
+    if url.startswith("ssh://"):
+        if preserve_ssh:
+            return f"git+{url}"
+
+        # ssh://git@host/group/repo.git -> https://host/group/repo.git
+        without_scheme = url[len("ssh://") :]
+        if without_scheme.startswith("git@"):
+            without_scheme = without_scheme[len("git@") :]
+        return f"git+https://{without_scheme}"
+
+    # HTTP(S)
+    if url.startswith("http://") or url.startswith("https://"):
+        return f"git+{url}"
+
+    # Unknown / already normalized
+    return url
+
+
+def sanitize_freeze(requirements: Sequence[str]) -> Tuple[List[str], List[str]]:
     """Sanitize a list of requirements coming from 'pip freeze'.
-    Returns a sanitized with warnings regarding applied changes.
+
+    Returns a sanitized list with warnings regarding applied changes.
     """
     sanitized = []
     warnings = []
