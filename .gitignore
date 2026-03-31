@@ -4,6 +4,7 @@
 !.gitattributes
 !.github
 !.readthedocs.yaml
+!.wci.yml
 
 # Byte / compiled / optimized
 *.py[cod]

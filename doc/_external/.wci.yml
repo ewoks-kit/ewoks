@@ -1,0 +1,35 @@
+name: Ewoks
+headline: Meta-workflow system for scientific data processing and expert systems
+description: |
+  Ewoks is a Python-based meta workflow system for automating scientific 
+  data processing and experiments. It provides a common, technology-agnostic 
+  persistent and runtime representation of workflows, enabling them to be executed
+  across different workflow engines without modification.
+
+  By using different workflow management systems, Ewoks supports a wide 
+  range of use cases — from interactive analysis to fully automated pipelines 
+  on clusters or expert systems orchestrating experiments.
+
+  Ewoks is designed to make data processing more reproducible, traceable, 
+  and FAIR (Findable, Accessible, Interoperable, Reusable).
+
+language: Python
+
+documentation:
+  general: https://ewoks.esrf.fr/
+  installation: https://ewoks.esrf.fr/en/latest/getting_started.html#quick-start
+  tutorial: https://ewoks.esrf.fr/en/latest/tutorials.html
+
+execution_environment:
+  interfaces:
+    - Python API
+    - Command Line Interface
+    - REST API
+    - Desktop GUI
+    - Web GUI
+    - Message brokers
+  resource_managers:
+    - Slurm
+  transfer_protocols:
+    - TCP/IP
+    - HTTPS
