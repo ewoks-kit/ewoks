@@ -7,7 +7,7 @@ description: |
   across different workflow engines without modification.
 
   By using different workflow management systems, Ewoks supports a wide 
-  range of use cases—from interactive analysis to fully automated pipelines 
+  range of use cases — from interactive analysis to fully automated pipelines 
   on clusters or expert systems orchestrating experiments.
 
   Ewoks is designed to make data processing more reproducible, traceable, 
