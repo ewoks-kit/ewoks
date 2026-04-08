@@ -101,3 +101,16 @@ ewoks show
     Required parameters without default value are highlighted. Parameters which get their value at runtime from upstream nodes in the workflow are not shown.
 
     Parameters values in the displayed table can be provided in the same way as inputs for ``ewoks execute``.
+
+ewoks lint
+----------
+
+.. argparse::
+    :module: ewoks.__main__
+    :func: create_argument_parser
+    :prog: ewoks
+    :path: lint
+
+    **Checks if a workflow is conform to the Ewoks specification**.
+
+    Validation errors will be printed in the console if any.
