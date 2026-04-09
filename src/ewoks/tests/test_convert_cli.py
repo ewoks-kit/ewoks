@@ -4,25 +4,15 @@ from xml.etree import ElementTree
 
 import pytest
 from ewokscore import load_graph
-from ewokscore.graph import TaskGraph
 from ewokscore.task import Task
 from ewokscore.tests.examples.graphs import graph_names
 from ewoksutils.import_utils import import_qualname
 from orangewidget.widget import OWBaseWidget
 
-from ewoks.__main__ import main
-from ewoks.tests.utils import has_default_input
-from ewoks.tests.utils import no_widget_registry
-
-
-def _ewokscore_in_graph_requirements(graph: TaskGraph) -> bool:
-    ewokscore_in_req = False
-    for requirement in graph.graph.graph["requirements"]:
-        if "ewokscore" in requirement:
-            ewokscore_in_req = True
-            break
-
-    return ewokscore_in_req
+from ..__main__ import main
+from .requirements.utils import assert_in_graph_requirements
+from .utils import has_default_input
+from .utils import no_widget_registry
 
 
 @pytest.mark.parametrize("graph_name", graph_names())
@@ -41,8 +31,8 @@ def test_convert_to_json(graph_name, tmpdir):
     assert os.path.exists(destination)
 
     graph = load_graph(destination)
-    assert graph.graph.graph["requirements"] is not None
-    assert _ewokscore_in_graph_requirements(graph)
+
+    assert_in_graph_requirements(graph, "ewokscore")
 
 
 def test_convert_with_all_inputs(tmpdir):
