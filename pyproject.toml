@@ -30,9 +30,9 @@ Issues = "https://github.com/ewoks-kit/ewoks/issues"
 Changelog = "https://github.com/ewoks-kit/ewoks/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
-dask = ["ewoksdask >=2,<3"]
+dask = ["ewoksdask >=3,<4"]
 ppf = ["ewoksppf >=2,<3"]
-orange = ["ewoksorange >=3,<4"]
+orange = ["ewoksorange >=4,<5"]
 esrf-data-portal = ["pyicat-plus"]
 notebooks = ["ewokscore[notebooks]"]
 test = [
