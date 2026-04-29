@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0] - 2026-04-30
+
+### Changed
+
+- Upgrade `ewokscore` to 5.*
+- Upgrade `ewoksppf` to 3.*
+
 ## [5.0.0] - 2026-04-27
+
+### Changed
 
 - Upgrade `ewoksdask` to 3.*
 - Upgrade `ewoksorange` to 5.*
@@ -204,7 +213,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoksppf` dependency.
 - Command-line interface.
 
-[unreleased]: https://github.com/ewoks-kit/ewoks/compare/v5.0.0...HEAD
+[unreleased]: https://github.com/ewoks-kit/ewoks/compare/v6.0.0...HEAD
+[6.0.0]: https://github.com/ewoks-kit/ewoks/compare/v5.0.0...v6.0.0
 [5.0.0]: https://github.com/ewoks-kit/ewoks/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/ewoks-kit/ewoks/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/ewoks-kit/ewoks/compare/v2.1.2...v3.0.0
