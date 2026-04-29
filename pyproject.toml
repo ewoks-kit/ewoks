@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ewoks"
-version = "5.0.0"
+version = "6.0.0"
 authors = [{ name = "ESRF", email = "dau-pydev@esrf.fr" }]
 description = "Extensible Workflow System"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -16,7 +16,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "ewokscore >=4.0.1,<5",
+    "ewokscore >=5,<6",
     "ewoksutils >=1.6.0,<2",
     "tabulate",
     "importlib_resources; python_version < '3.9'",
@@ -31,7 +31,7 @@ Changelog = "https://github.com/ewoks-kit/ewoks/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dask = ["ewoksdask >=3,<4"]
-ppf = ["ewoksppf >=2,<3"]
+ppf = ["ewoksppf >=3,<4"]
 orange = ["ewoksorange >5,<6"]
 esrf-data-portal = ["pyicat-plus"]
 notebooks = ["ewokscore[notebooks]"]
