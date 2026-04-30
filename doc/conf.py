@@ -62,6 +62,12 @@ html_theme_options = {
             "url": "https://pypi.org/project/ewoks",
             "icon": "fa-brands fa-python",
         },
+        {
+            "name": "matrix",
+            "url": "https://matrix.to/#/#ewoks:helmholtz.cloud",
+            "icon": "_static/matrix-icon.svg",
+            "type": "local",
+        },
     ],
     "logo": {
         "text": docstitle,
