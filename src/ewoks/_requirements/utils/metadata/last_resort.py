@@ -1,6 +1,7 @@
 import logging
 from typing import Any
 from typing import Dict
+from typing import Set
 
 from ewokscore.graph import TaskGraph
 
@@ -13,7 +14,8 @@ def last_resort_requirements(graph: TaskGraph) -> Dict[str, Any]:
     """Last resort when installing a workflow that does not have requirements:
     guess the requirements from the workflow nodes.
     """
-    freeze: set[str] = set()
+    freeze: Set[str] = set()
+    distributions: Set[str] = set()
 
     for node_id, node in graph.graph.nodes.items():
         task_identifier = node["task_identifier"]
@@ -28,6 +30,7 @@ def last_resort_requirements(graph: TaskGraph) -> Dict[str, Any]:
                 continue
 
             freeze.add(package)
+            distributions.add(package)
 
         elif task_type == "notebook":
             logger.warning(
@@ -44,4 +47,8 @@ def last_resort_requirements(graph: TaskGraph) -> Dict[str, Any]:
                 f"Could not extract requirements for node {node_id}: unsupported task type {task_type}."
             )
 
-    return pip_freeze_requirements(list(freeze))
+    requirements = pip_freeze_requirements(sorted(freeze))
+    requirements["distributions"] = [
+        {"name": name, "version": ""} for name in sorted(distributions)
+    ]
+    return requirements
