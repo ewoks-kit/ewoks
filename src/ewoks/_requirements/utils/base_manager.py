@@ -63,6 +63,9 @@ class BaseManager:
             raise ValueError(f"{type(self).__name__} needs an associated shell command")
         self._cmd_args = command
 
+    def __repr__(self):
+        return f"{type(self).__name__}({', '.join(self._cmd_args)})"
+
     @abstractmethod
     def version(self) -> Optional[str]:
         """Returns None when this manager is not available."""

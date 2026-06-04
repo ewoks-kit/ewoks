@@ -33,6 +33,9 @@ def test_cli_convert(cli_interface):  # noqa F811
         ],
         "load_options": {"representation": "test_core"},
         "save_options": {"representation": "json"},
+        "package_manager_command": None,
+        "package_manager_name": None,
+        "save_requirements": True,
     }
     assert cli_args.convert_options == convert_options
 

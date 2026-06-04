@@ -14,27 +14,38 @@ logger = logging.getLogger(__name__)
 
 def get_manager(
     manager_name: Optional[str] = None,
-    command: Tuple[str, ...] = tuple(),
+    manager_command: Tuple[str, ...] = tuple(),
 ) -> BaseManager:
     """
-    :raise ValueError: package manager not support
+    :raise ValueError: package manager not support or not available
     :raise RuntimeError: no package manager available
     """
     if manager_name:
-        managers = get_supported_managers()
+        return _select_manager(manager_name, manager_command)
 
-        manager_cls = managers.get(manager_name)
-        if manager_cls is None:
-            raise ValueError(f"Package manager {manager_name!r} is not supported")
-
-        return manager_cls(*command)
-    else:
-        if command:
-            raise ValueError(f"Provide 'manager_name' associated to command {command}")
+    if manager_command:
+        raise ValueError(
+            f"Provide 'manager_name' associated to command {manager_command}"
+        )
 
     manager = _detect_manager()
+
     if manager is None:
         raise RuntimeError("No known package manager installed or available")
+
+    return manager
+
+
+def _select_manager(manager_name: str, manager_command: Tuple[str, ...]) -> BaseManager:
+    managers = get_supported_managers()
+
+    manager_cls = managers.get(manager_name)
+    if manager_cls is None:
+        raise ValueError(f"Package manager {manager_name!r} is not supported")
+
+    manager = manager_cls(*manager_command)
+    if not manager.version:
+        raise ValueError(f"Package manager {manager_name!r} is not available")
 
     return manager
 

@@ -199,15 +199,27 @@ def convert_graph(
     load_options: Optional[dict] = None,
     save_options: Optional[dict] = None,
     save_requirements: bool = True,
+    package_manager_name: Optional[str] = None,
+    package_manager_command: Union[None, str, Tuple[str, ...]] = None,
 ) -> Union[str, dict]:
     if load_options is None:
         load_options = dict()
     if save_options is None:
         save_options = dict()
     graph = load_graph(source, inputs=inputs, **load_options)
+
     if save_requirements:
+        if not package_manager_command:
+            package_manager_command = tuple()
+        elif isinstance(package_manager_command, str):
+            package_manager_command = _split_command(package_manager_command)
+
         try:
-            _requirements.add_requirements(graph)
+            _requirements.add_requirements(
+                graph,
+                manager_name=package_manager_name,
+                manager_command=package_manager_command,
+            )
         except Exception:
             logger.exception("Continue after failure to add workflow requirements")
     return save_graph(graph, destination, **save_options)
@@ -253,7 +265,8 @@ def _print_graph(
 def install_graph(
     source,
     skip_prompt: bool = False,
-    command: Union[None, str, Tuple[str, ...]] = None,
+    package_manager_name: Optional[str] = None,
+    package_manager_command: Union[None, str, Tuple[str, ...]] = None,
     load_options: Optional[dict] = None,
 ) -> None:
     if load_options is None:
@@ -262,20 +275,28 @@ def install_graph(
 
     requirements = _requirements.get_requirements(graph)
 
-    if not command:
-        command = tuple()
-    elif isinstance(command, str):
-        command = _split_command(command)
+    if not package_manager_command:
+        package_manager_command = tuple()
+    elif isinstance(package_manager_command, str):
+        package_manager_command = _split_command(package_manager_command)
 
     if skip_prompt:
-        _requirements.install_requirements(requirements, command=command)
+        _requirements.install_requirements(
+            requirements,
+            manager_name=package_manager_name,
+            manager_command=package_manager_command,
+        )
         return
 
     answer = input(
         f"{requirements.__info__()}\n\nThis will install the packages above. Do you want to proceed (y/N)?"
     )
     if answer.lower() == "y" or answer.lower() == "yes":
-        _requirements.install_requirements(requirements, command=command)
+        _requirements.install_requirements(
+            requirements,
+            manager_name=package_manager_name,
+            manager_command=package_manager_command,
+        )
     else:
         raise AbortException()
 

@@ -49,6 +49,18 @@ def convert_arguments(
             action="store_true",
             help="Do not include the packages of the current Python environment as requirements in the destination workflow.",
         ),
+        CLIArg(
+            "package_manager_name",
+            ["--package-manager-name"],
+            type=str,
+            help='Package manager name to generate requirements. For example "pip"',
+        ),
+        CLIArg(
+            "package_manager_command",
+            ["--package-manager-command"],
+            type=str,
+            help='Package manager command to generate requirements. For example "python -m pip"',
+        ),
     ]
     return args_list
 
@@ -80,4 +92,9 @@ def parse_convert_arguments(cli_args: Namespace, shell: bool = False) -> None:
     }
     if cli_args.exclude_requirements:
         convert_options["save_requirements"] = False
+    else:
+        convert_options["save_requirements"] = True
+        convert_options["package_manager_name"] = cli_args.package_manager_name
+        convert_options["package_manager_command"] = cli_args.package_manager_command
+
     cli_args.convert_options = convert_options

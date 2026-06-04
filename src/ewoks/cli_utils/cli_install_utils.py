@@ -27,8 +27,14 @@ def install_arguments(
             help="Automatically accept installation prompts.",
         ),
         CLIArg(
-            "manager_command",
-            ["-m", "--manager"],
+            "package_manager_name",
+            ["--package-manager-name"],
+            type=str,
+            help='Package manager name. For example "pip"',
+        ),
+        CLIArg(
+            "package_manager_command",
+            ["--package-manager-command"],
             type=str,
             help='Package manager command. For example "python -m pip"',
         ),

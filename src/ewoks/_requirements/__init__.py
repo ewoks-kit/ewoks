@@ -1,7 +1,9 @@
 """Workflow requirements."""
 
 import logging
+from typing import Optional
 from typing import Tuple
+from typing import Union
 
 from ewokscore.graph import TaskGraph
 
@@ -13,9 +15,13 @@ from .utils.metadata import last_resort
 logger = logging.getLogger(__file__)
 
 
-def add_requirements(graph: TaskGraph, command: Tuple[str, ...] = tuple()) -> None:
+def add_requirements(
+    graph: TaskGraph,
+    manager_name: Optional[str] = None,
+    manager_command: Tuple[str, ...] = tuple(),
+) -> None:
     """Add requirements to a workflow definition in-place."""
-    manager = get_manager(command=command)
+    manager = get_manager(manager_name=manager_name, manager_command=manager_command)
     requirements = manager.gather_requirements()
     graph.graph.graph["requirements"] = requirements.model_dump()
 
@@ -40,10 +46,27 @@ def get_requirements(graph: TaskGraph) -> BaseRequirements:
 
 
 def install_requirements(
-    requirements: BaseRequirements, command: Tuple[str, ...] = tuple()
+    requirements: BaseRequirements,
+    manager_name: Optional[str] = None,
+    manager_command: Union[None, str, Tuple[str, ...]] = None,
 ) -> None:
     """Install workflow requirements."""
-    manager = get_manager(manager_name=requirements.manager.name, command=command)
+
+    if manager_command and not manager_name:
+        raise ValueError(
+            f"Provide 'manager_name' associated to command {manager_command}"
+        )
+
+    try:
+        if manager_name:
+            raise ValueError("Ignore package manager used to generate the requirements")
+        else:
+            manager = get_manager(manager_name=requirements.manager.name)
+    except ValueError:
+        manager = get_manager(
+            manager_name=manager_name, manager_command=manager_command
+        )
+
     manager.install_requirements(requirements)
 
 
@@ -55,7 +78,7 @@ if __name__ == "__main__":
     t0 = time.perf_counter()
 
     try:
-        manager = get_manager(manager_name=None)
+        manager = get_manager(manager_name="pip")
         requirements = manager.gather_requirements()
 
         print()

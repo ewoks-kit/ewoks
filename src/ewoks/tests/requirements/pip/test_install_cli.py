@@ -22,7 +22,16 @@ def test_install_pip_with_freeze(venv):
     }
 
     subprocess.check_call(
-        ["ewoks", "install", "--yes", json.dumps(graph), "-m", f"{venv.python} -m pip"]
+        [
+            "ewoks",
+            "install",
+            "--yes",
+            json.dumps(graph),
+            "--package-manager-name",
+            "pip",
+            "--package-manager-command",
+            f"{venv.python} -m pip",
+        ]
     )
 
     assert venv.get_version("ewoksdata")
@@ -47,7 +56,16 @@ def test_install_pip_without_freeze(venv):
     }
 
     subprocess.check_call(
-        ["ewoks", "install", "--yes", json.dumps(graph), "-m", f"{venv.python} -m pip"]
+        [
+            "ewoks",
+            "install",
+            "--yes",
+            json.dumps(graph),
+            "--package-manager-name",
+            "pip",
+            "--package-manager-command",
+            f"{venv.python} -m pip",
+        ]
     )
 
     assert venv.get_version("ewoksdata")
@@ -72,7 +90,9 @@ def test_install_legacy_pip_freeze(venv):
             "install",
             "--yes",
             json.dumps(graph),
-            "-m",
+            "--package-manager-name",
+            "pip",
+            "--package-manager-command",
             f"{venv.python} -m pip",
         ]
     )
@@ -108,7 +128,9 @@ def test_install_without_requirements(venv):
             "install",
             "--yes",
             json.dumps(graph),
-            "-m",
+            "--package-manager-name",
+            "pip",
+            "--package-manager-command",
             f"{venv.python} -m pip",
         ]
     )
