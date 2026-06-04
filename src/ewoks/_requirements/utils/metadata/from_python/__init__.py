@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 @lru_cache(1)
 def current_requirements() -> Dict[str, Any]:
     """
-    Return installed distributions.
+    Return installed python distributions.
     """
     distributions = [
         _distribution_from_metadata(dist) for dist in metadata.distributions()

@@ -54,27 +54,29 @@ class PipManager(BaseManager):
 
         return {"freeze": freeze_output}
 
-    def _install_requirements(self, requirements: PipRequirements) -> None:
+    def _install_native_requirements(self, requirements: PipRequirements) -> bool:
         freeze = requirements.manager.freeze
 
-        if freeze:
-            arguments = self._arguments(freeze)
-            try:
-                self._check_call("install", "--no-cache-dir", *arguments)
-                return
-            except Exception:
-                if not requirements.distributions:
-                    raise
+        if not freeze:
+            return False
 
-        freeze = self.freeze_distributions(requirements)
-        if freeze:
-            arguments = self._arguments(freeze)
-            self._check_call("install", "--no-cache-dir", *arguments)
-            return
+        arguments = self._arguments(freeze)
+        self._check_call("install", "--no-cache-dir", *arguments)
+        return True
 
-        raise ValueError("No distibutions provided to install")
+    def _install_base_requirements(self, requirements: BaseRequirements) -> bool:
+        freeze = self._freeze_distributions(requirements)
+        if not freeze:
+            return False
 
-    def freeze_distributions(self, requirements: PipRequirements) -> List[str]:
+        arguments = self._arguments(freeze)
+        self._check_call("install", "--no-cache-dir", *arguments)
+        return True
+
+    def _freeze_distributions(self, requirements: BaseRequirements) -> List[str]:
+        """
+        Pip freeze argument from list of distributions.
+        """
         freeze = []
         for dist in requirements.distributions:
             lines, warnings = pip_freeze.freeze_distribution(dist)

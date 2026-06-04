@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     pip_freeze = requirements.manager.freeze
 
-    dists_freeze = manager.freeze_distributions(requirements)
+    dists_freeze = manager._freeze_distributions(requirements)
     dists_freeze = [s for s in dists_freeze if not s.startswith("#")]
 
     print()

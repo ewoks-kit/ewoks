@@ -53,7 +53,7 @@ class PipenvManager(BaseManager):
 
         return {"requirements": requirements}
 
-    def _install_requirements(self, requirements: PipenvRequirements) -> None:
+    def _install_native_requirements(self, requirements: PipenvRequirements) -> bool:
         lock_data = {
             "_meta": {"hash": {"sha256": "dummy"}},  # minimal metadata
             "default": {
@@ -69,3 +69,6 @@ class PipenvManager(BaseManager):
 
         with self._temporary_file(text, ".lock") as tmp_path:
             self._check_call("sync", "--ignore-pipfile", "-f", tmp_path)
+
+    def _install_base_requirements(self, requirements: BaseRequirements) -> bool:
+        raise NotImplementedError(f"{self.NAME} installation of python distributions")

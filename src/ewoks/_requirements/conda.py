@@ -57,10 +57,14 @@ class CondaManager(BaseManager):
 
         return {"environment": environment}
 
-    def install_requirements(self, requirements: CondaRequirements) -> None:
+    def _install_native_requirements(self, requirements: CondaRequirements) -> bool:
         text = yaml.safe_dump(requirements.environment)
         with self._temporary_file(text, ".yml") as tmp_path:
             self._check_call("env", "update", "-f", tmp_path)
+        return True
+
+    def _install_base_requirements(self, requirements: BaseRequirements) -> bool:
+        raise NotImplementedError(f"{self.NAME} installation of python distributions")
 
     def _get_conda_command(self) -> Tuple[str, ...]:
         try:

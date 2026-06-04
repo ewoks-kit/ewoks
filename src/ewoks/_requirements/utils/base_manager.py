@@ -63,11 +63,25 @@ class BaseManager:
             raise ValueError(f"{type(self).__name__} needs an associated shell command")
         self._cmd_args = command
 
+    @abstractmethod
+    def version(self) -> Optional[str]:
+        """Returns None when this manager is not available."""
+        pass
+
+    @abstractmethod
+    def is_active(self) -> bool:
+        """Manager is explicitly active."""
+        pass
+
     def gather_requirements(self) -> Optional[BaseRequirements]:
-        """Return requirements generated from the current python environment."""
+        """
+        Return requirements associated to the current python environment.
+
+        :raises RuntimeError: package manager not available
+        """
         manager_version = self.version()
         if manager_version is None:
-            raise RuntimeError(f"{self.NAME!r} is not installed")
+            raise RuntimeError(f"{self.NAME!r} is not available")
 
         try:
             parameters = self._gather_requirements()
@@ -80,18 +94,12 @@ class BaseManager:
         manager = dict(name=self.NAME, version=manager_version, **parameters)
         return self.REQUIREMENTS_MODEL(manager=manager, **current_requirements())
 
-    @abstractmethod
-    def version(self) -> Optional[str]:
-        """Returns None when this manager is not available."""
-        pass
-
-    @abstractmethod
-    def is_active(self) -> bool:
-        """Manager is explicitly active."""
-        pass
-
     def install_requirements(self, requirements: BaseRequirements) -> None:
-        """Install requirements into the current python environment."""
+        """
+        Install requirements into the current environment.
+
+        :raises ValueError: no distibutions provided to install
+        """
         try:
             return self._install_requirements(requirements)
         except Exception as ex:
@@ -100,12 +108,42 @@ class BaseManager:
             )
             raise
 
+    def _install_requirements(self, requirements: BaseRequirements) -> None:
+        reraise = None
+
+        if isinstance(requirements, self.REQUIREMENTS_MODEL):
+            try:
+                if self._install_native_requirements(requirements):
+                    return
+            except Exception as ex:
+                reraise = ex
+                logger.debug(
+                    (
+                        "Failed installing requirements native to package %s. "
+                        "Try installing python distributions."
+                    ),
+                    self.NAME,
+                    ex,
+                )
+                pass
+
+        if self._install_base_requirements(requirements):
+            return
+
+        if reraise:
+            raise reraise
+        raise ValueError("No distibutions provided to install")
+
     @abstractmethod
     def _gather_requirements(self) -> Dict[str, Any]:
         pass
 
     @abstractmethod
-    def _install_requirements(self, requirements: BaseRequirements) -> None:
+    def _install_native_requirements(self, requirements: BaseRequirements) -> bool:
+        pass
+
+    @abstractmethod
+    def _install_base_requirements(self, requirements: BaseRequirements) -> bool:
         pass
 
     def _check_output(self, *args: str) -> str:

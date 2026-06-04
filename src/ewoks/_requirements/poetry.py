@@ -48,7 +48,12 @@ class PoetryManager(BaseManager):
 
         return {"requirements": requirements}
 
-    def _install_requirements(self, requirements: PoetryRequirements) -> None:
+    def _install_native_requirements(self, requirements: PoetryRequirements) -> bool:
         text = "\n".join(requirements.requirements)
         with self._temporary_file(text, ".txt") as tmp_path:
             self._check_call("add", "--lock", "--file", tmp_path)
+
+        return True
+
+    def _install_base_requirements(self, requirements: BaseRequirements) -> bool:
+        raise NotImplementedError(f"{self.NAME} installation of python distributions")

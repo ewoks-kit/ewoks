@@ -50,7 +50,12 @@ class UvManager(BaseManager):
 
         return {"requirements": requirements}
 
-    def _install_requirements(self, requirements: UvRequirements) -> None:
+    def _install_native_requirements(self, requirements: UvRequirements) -> bool:
         text = "\n".join(requirements.requirements)
         with self._temporary_file(text, ".txt") as tmp_path:
             self._check_call("add", "-r", tmp_path)
+
+        return True
+
+    def _install_base_requirements(self, requirements: BaseRequirements) -> bool:
+        raise NotImplementedError(f"{self.NAME} installation of python distributions")

@@ -52,6 +52,11 @@ class PixiManager(BaseManager):
 
         return {"lockfile": lock_content}
 
-    def _install_requirements(self, requirements: PixiRequirements) -> None:
+    def _install_requirements(self, requirements: PixiRequirements) -> bool:
         with self._temporary_file(requirements.lockfile, ".lock") as tmp_path:
             self._check_call("install", cwd=os.path.dirname(tmp_path))
+
+        return True
+
+    def _install_base_requirements(self, requirements: BaseRequirements) -> bool:
+        raise NotImplementedError(f"{self.NAME} installation of python distributions")
