@@ -6,7 +6,7 @@ from typing import Dict
 from . import installed
 
 
-@lru_cache
+@lru_cache(1)
 def current_requirements() -> Dict[str, Any]:
     return dict(
         system=_system_metadata(),

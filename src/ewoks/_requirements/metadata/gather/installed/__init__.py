@@ -13,7 +13,7 @@ from . import git
 logger = logging.getLogger(__name__)
 
 
-@lru_cache()
+@lru_cache(1)
 def distributions() -> List[Distribution]:
     """
     Return installed distributions.

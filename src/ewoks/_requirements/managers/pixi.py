@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from ..metadata.gather import gather_requirements
 from ..models.pixi import PixiRequirements
@@ -7,6 +8,24 @@ from .utils.base import BaseManager
 
 class PixiManager(BaseManager):
     NAME = "pixi"
+    PRIORITY = 5
+
+    def __init__(self, *command: str) -> None:
+        if not command:
+            command = ("pixi",)
+        super().__init__(*command)
+
+    def version(self) -> Optional[str]:
+        """Returns None when this manager is not available."""
+        try:
+            output = self._check_output("--version", text=True)
+            return output.strip().split(" ")[-1]
+        except Exception:
+            return None
+
+    def is_active(self) -> bool:
+        """Manager is explicitly active."""
+        return "PIXI_PROJECT_ROOT" in os.environ
 
     def _gather_requirements(self, manager_version: str) -> PixiRequirements:
         if os.path.exists("pixi.lock"):

@@ -1,5 +1,8 @@
+import importlib.metadata
 import logging
+import sys
 from typing import List
+from typing import Optional
 
 from ..metadata import pip_freeze
 from ..metadata.gather import gather_requirements
@@ -11,6 +14,23 @@ logger = logging.getLogger(__name__)
 
 class PipManager(BaseManager):
     NAME = "pip"
+    PRIORITY = 0
+
+    def __init__(self, *command: str) -> None:
+        if not command:
+            command = sys.executable, "-m", "pip"
+        super().__init__(*command)
+
+    def version(self) -> Optional[str]:
+        """Returns None when this manager is not available."""
+        try:
+            return importlib.metadata.version("pip")
+        except importlib.metadata.PackageNotFoundError:
+            return None
+
+    def is_active(self) -> bool:
+        """Manager is explicitly active."""
+        return False
 
     def _gather_requirements(self, manager_version: str) -> PipRequirements:
         freeze_output = self._check_output("freeze").strip().splitlines()

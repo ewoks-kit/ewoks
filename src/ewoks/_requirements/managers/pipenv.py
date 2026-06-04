@@ -1,4 +1,8 @@
+import importlib.metadata
 import json
+import os
+import sys
+from typing import Optional
 
 from ..metadata.gather import gather_requirements
 from ..models.pipenv import PipenvRequirements
@@ -7,6 +11,23 @@ from .utils.base import BaseManager
 
 class PipenvManager(BaseManager):
     NAME = "pipenv"
+    PRIORITY = 3
+
+    def __init__(self, *command: str) -> None:
+        if not command:
+            command = sys.executable, "-m", "pipenv"
+        super().__init__(*command)
+
+    def version(self) -> Optional[str]:
+        """Returns None when this manager is not available."""
+        try:
+            return importlib.metadata.version("pipenv")
+        except importlib.metadata.PackageNotFoundError:
+            return None
+
+    def is_active(self) -> bool:
+        """Manager is explicitly active."""
+        return "PIPENV_ACTIVE" in os.environ
 
     def _gather_requirements(self, manager_version: str) -> PipenvRequirements:
         output = self._check_output("lock", "--requirements")

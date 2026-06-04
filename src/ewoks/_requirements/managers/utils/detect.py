@@ -7,7 +7,6 @@ from typing import Tuple
 
 from ...metadata.gather import installed
 from .base import BaseManager
-from .supported import ManagerInfo
 from .supported import get_supported_managers
 
 logger = logging.getLogger(__name__)
@@ -22,43 +21,47 @@ def get_manager(
     :raise RuntimeError: no package manager available
     """
     if manager_name:
-        managers = get_supported_managers()
+        managers = get_supported_managers(*command)
 
-        info = managers.get(manager_name)
-        if info is None:
+        manager = managers.get(manager_name)
+        if manager is None:
             raise ValueError(f"Package manager {manager_name!r} is not supported")
 
-        return info.manager_type(*command)
+        return manager
 
-    info = _detect_manager()
-    if info is None:
+    manager = _detect_manager()
+    if manager is None:
         raise RuntimeError("No known package manager installed or available")
 
-    return info.manager_type(*command)
+    return manager
 
 
-def _detect_manager() -> Optional[ManagerInfo]:
+def _detect_manager() -> Optional[BaseManager]:
     # Available package managers
     available_managers = {
-        name: info for name, info in get_supported_managers().items() if info.version
+        name: manager
+        for name, manager in get_supported_managers().items()
+        if manager.version()
     }
     if not available_managers:
         return None
 
     # Select the active manager with the highest priority
     active_managers = {
-        name: info for name, info in available_managers.items() if info.is_active
+        name: manager
+        for name, manager in available_managers.items()
+        if manager.is_active()
     }
     if active_managers:
-        name = max(active_managers, key=lambda name: active_managers[name].priority)
-        info = active_managers[name]
+        name = max(active_managers, key=lambda name: active_managers[name].PRIORITY)
+        manager = active_managers[name]
         logger.debug(
             "Detected active %r package manager\n available = %s\n active = %s",
             name,
             list(available_managers),
             list(active_managers),
         )
-        return info
+        return manager
 
     # Infer most likely package manager
     counts = _installer_distribution_count()
@@ -69,7 +72,9 @@ def _detect_manager() -> Optional[ManagerInfo]:
     else:
         # Use the package manager priority as the score
         crit = "priority"
-        scores = {name: info.priority for name, info in available_managers.items()}
+        scores = {
+            name: manager.PRIORITY for name, manager in available_managers.items()
+        }
 
     name = max(scores, key=scores.get)
     logger.debug(
@@ -82,7 +87,7 @@ def _detect_manager() -> Optional[ManagerInfo]:
     return available_managers[name]
 
 
-@lru_cache
+@lru_cache(1)
 def _installer_distribution_count() -> Dict[str, int]:
     counts: Counter = Counter()
     for dist in installed.distributions():

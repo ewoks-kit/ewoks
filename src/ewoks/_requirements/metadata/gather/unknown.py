@@ -3,7 +3,7 @@ from typing import Any
 from typing import Dict
 
 
-@lru_cache
+@lru_cache(1)
 def unknown_requirements() -> Dict[str, Any]:
     return dict(
         system=_unknown_system_metadata(),
