@@ -52,7 +52,7 @@ def _distribution_from_metadata(dist: metadata.Distribution) -> Distribution:
             commit_id = vcs_info.get("commit_id")
             if commit_id:
                 git_info = GitInfo(
-                    commit=commit_id, remote=url, uncomitted_changes=False
+                    commit=commit_id, remote=url, uncommitted_changes=False
                 )
                 has_info = True
 

@@ -66,7 +66,7 @@ def _detect_manager() -> Optional[BaseManager]:
     # Infer most likely package manager
     counts = _installer_distribution_count()
     if set(counts) & set(available_managers):
-        # Use the number of installed distibutions as the score
+        # Use the number of installed distributions as the score
         crit = "distribution count"
         scores = {name: counts.get(name, -1) for name in available_managers}
     else:

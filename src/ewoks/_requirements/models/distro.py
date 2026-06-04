@@ -8,7 +8,7 @@ from pydantic import Field
 class GitInfo(BaseModel):
     commit: str
     remote: Optional[str] = None
-    uncomitted_changes: bool = Field(default=False, description="Uncommited changes")
+    uncommitted_changes: bool = Field(default=False, description="Uncommited changes")
 
 
 class ArchiveInfo(BaseModel):

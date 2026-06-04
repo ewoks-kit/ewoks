@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 class BaseManager:
     """Defines the interface all package managers must implement.
 
-    If `MyManager` is an impementation of this interface then
-    to get the Ewoks workflow requirements like this:
+    If `MyManager` is an implementation of this interface then
+    Ewoks workflow requirements can be obtained like this:
 
     .. code-block:: python
 
@@ -28,7 +28,7 @@ class BaseManager:
     .. code-block:: python
 
         manager = MyManager()
-        install_requirements.install_requirements(requirements)
+        manager.install_requirements(requirements)
     """
 
     NAME = NotImplemented

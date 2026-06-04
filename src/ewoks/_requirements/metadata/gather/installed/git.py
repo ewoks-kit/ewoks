@@ -16,9 +16,9 @@ def git_info_from_path(path: Path) -> Optional[GitInfo]:
         return None
 
     try:
-        uncomitted_changes = bool(_git(["status", "--porcelain"], path))
+        uncommitted_changes = bool(_git(["status", "--porcelain"], path))
     except Exception:
-        uncomitted_changes = False
+        uncommitted_changes = False
 
     remote_name = _find_remote_for_commit(path, commit)
     if remote_name:
@@ -30,7 +30,7 @@ def git_info_from_path(path: Path) -> Optional[GitInfo]:
         remote_url = None
 
     return GitInfo(
-        commit=commit, remote=remote_url, uncomitted_changes=uncomitted_changes
+        commit=commit, remote=remote_url, uncommitted_changes=uncommitted_changes
     )
 
 

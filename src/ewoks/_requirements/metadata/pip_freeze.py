@@ -52,7 +52,7 @@ def freeze_distribution(
             warnings.append(warning)
             lines.append(f"# {warning}")
 
-        if dist.git.uncomitted_changes:
+        if dist.git.uncommitted_changes:
             warning = warning_fmt.format(
                 dist.name, dist.git.commit, "has uncommited changes"
             )
