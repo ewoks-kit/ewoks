@@ -21,13 +21,16 @@ def get_manager(
     :raise RuntimeError: no package manager available
     """
     if manager_name:
-        managers = get_supported_managers(*command)
+        managers = get_supported_managers()
 
-        manager = managers.get(manager_name)
-        if manager is None:
+        manager_cls = managers.get(manager_name)
+        if manager_cls is None:
             raise ValueError(f"Package manager {manager_name!r} is not supported")
 
-        return manager
+        return manager_cls(*command)
+    else:
+        if command:
+            raise ValueError(f"Provide 'manager_name' associated to command {command}")
 
     manager = _detect_manager()
     if manager is None:
@@ -39,8 +42,11 @@ def get_manager(
 def _detect_manager() -> Optional[BaseManager]:
     # Available package managers
     available_managers = {
+        name: manager_cls() for name, manager_cls in get_supported_managers().items()
+    }
+    available_managers = {
         name: manager
-        for name, manager in get_supported_managers().items()
+        for name, manager in available_managers.items()
         if manager.version()
     }
     if not available_managers:

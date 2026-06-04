@@ -1,5 +1,6 @@
 from functools import lru_cache
 from typing import Dict
+from typing import Type
 
 from ..pip import PipManager
 from .base import BaseManager
@@ -11,13 +12,14 @@ from .base import BaseManager
 # from ..uv import UvManager
 
 
-@lru_cache(maxsize=None)
-def get_supported_managers(*command: str) -> Dict[str, BaseManager]:
+@lru_cache(1)
+def get_supported_managers() -> Dict[str, Type[BaseManager]]:
     managers = [
-        PipManager(*command),  # UvManager(*command),
-        # PoetryManager(*command),
-        # PipenvManager(*command),
-        # CondaManager(*command),
-        # PixiManager(*command),
+        PipManager,
+        # UvManager,
+        # PoetryManager,
+        # PipenvManager,
+        # CondaManager,
+        # PixiManager,
     ]
-    return {manager.NAME: manager for manager in managers}
+    return {manager_cls.NAME: manager_cls for manager_cls in managers}
