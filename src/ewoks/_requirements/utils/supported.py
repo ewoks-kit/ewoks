@@ -3,7 +3,7 @@ from typing import Dict
 from typing import Type
 
 from ..pip import PipManager
-from .base import BaseManager
+from .base_manager import BaseManager
 
 # from ..conda import CondaManager
 # from ..pipenv import PipenvManager

@@ -3,7 +3,7 @@ import subprocess
 
 import pytest
 
-from ...._requirements.metadata.gather import unknown
+from ...._requirements.utils.metadata import unknown
 
 
 def test_install_pip_with_freeze(venv):

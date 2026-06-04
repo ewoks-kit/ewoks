@@ -1,20 +1,37 @@
 import importlib.metadata
 import logging
 import sys
+from typing import Any
+from typing import Dict
 from typing import List
+from typing import Literal
 from typing import Optional
 
-from ..metadata import pip_freeze
-from ..metadata.gather import gather_requirements
-from ..models.pip import PipRequirements
-from .utils.base import BaseManager
+from .utils import pip_freeze
+from .utils.base_manager import BaseManager
+from .utils.base_manager import BaseManagerInfo
+from .utils.base_manager import BaseRequirements
 
 logger = logging.getLogger(__name__)
+
+
+class PipManagerInfo(BaseManagerInfo):
+    name: Literal["pip"] = "pip"
+    freeze: List[str]
+
+
+class PipRequirements(BaseRequirements):
+    manager: PipManagerInfo
+
+    def __info__(self) -> str:
+        freeze = "\n  ".join(self.manager.freeze)
+        return f"{super().__info__()}\nRequirements:\n  {freeze}"
 
 
 class PipManager(BaseManager):
     NAME = "pip"
     PRIORITY = 0
+    REQUIREMENTS_MODEL = PipRequirements
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -32,13 +49,10 @@ class PipManager(BaseManager):
         """Manager is explicitly active."""
         return False
 
-    def _gather_requirements(self, manager_version: str) -> PipRequirements:
+    def _gather_requirements(self) -> Dict[str, Any]:
         freeze_output = self._check_output("freeze").strip().splitlines()
-        return gather_requirements(
-            manager_name=self.NAME,
-            manager_version=manager_version,
-            freeze=freeze_output,
-        )
+
+        return {"freeze": freeze_output}
 
     def _install_requirements(self, requirements: PipRequirements) -> None:
         freeze = requirements.manager.freeze

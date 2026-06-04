@@ -11,11 +11,11 @@ from urllib.parse import urlunparse
 from packaging.requirements import InvalidRequirement
 from packaging.requirements import Requirement
 
-from ..models.distro import Distribution
+from .metadata import metadata_models
 
 
 def freeze_distribution(
-    dist: Distribution,
+    dist: metadata_models.Distribution,
 ) -> Tuple[List[str], List[str]]:
     """
     Return the pip freeze of the distribution with associated warnings regarding reproducibility.

@@ -5,10 +5,10 @@ from typing import Tuple
 
 from ewokscore.graph import TaskGraph
 
-from .managers.utils.base import BaseRequirements
-from .managers.utils.detect import get_manager
-from .metadata import parse
-from .metadata.gather import last_resort
+from .utils import parse
+from .utils.base_manager import BaseRequirements
+from .utils.detect import get_manager
+from .utils.metadata import last_resort
 
 logger = logging.getLogger(__file__)
 

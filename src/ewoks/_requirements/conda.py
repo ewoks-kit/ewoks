@@ -1,21 +1,34 @@
 import logging
 import os
 import sys
+from typing import Any
+from typing import Dict
+from typing import Literal
 from typing import Optional
 from typing import Tuple
 
 import yaml
 
-from ..metadata.gather import gather_requirements
-from ..models.conda import CondaRequirements
-from .utils.base import BaseManager
+from .utils.base_manager import BaseManager
+from .utils.base_manager import BaseManagerInfo
+from .utils.base_manager import BaseRequirements
 
 logger = logging.getLogger(__name__)
+
+
+class CondaManagerInfo(BaseManagerInfo):
+    name: Literal["conda"] = "conda"
+
+
+class CondaRequirements(BaseRequirements):
+    manager: CondaManagerInfo
+    environment: dict
 
 
 class CondaManager(BaseManager):
     NAME = "conda"
     PRIORITY = 4
+    REQUIREMENTS_MODEL = CondaRequirements
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -36,17 +49,13 @@ class CondaManager(BaseManager):
             os.path.join(sys.prefix, "conda-meta")
         )
 
-    def _gather_requirements(self, manager_version: str) -> CondaRequirements:
+    def _gather_requirements(self) -> Dict[str, Any]:
         output = self._check_output("env", "export")
         environment = yaml.safe_load(output)
         environment.pop("name", None)
         environment.pop("prefix", None)
 
-        return gather_requirements(
-            manager_name="conda",
-            manager_version=manager_version,
-            environment=environment,
-        )
+        return {"environment": environment}
 
     def install_requirements(self, requirements: CondaRequirements) -> None:
         text = yaml.safe_dump(requirements.environment)

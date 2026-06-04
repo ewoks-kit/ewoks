@@ -1,13 +1,31 @@
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Literal
 from typing import Optional
 
-from ..metadata.gather import gather_requirements
-from ..models.uv import UvRequirements
-from .utils.base import BaseManager
+from .utils.base_manager import BaseManager
+from .utils.base_manager import BaseManagerInfo
+from .utils.base_manager import BaseRequirements
+
+
+class UvManagerInfo(BaseManagerInfo):
+    name: Literal["uv"] = "uv"
+    requirements: List[str]
+
+
+class UvRequirements(BaseRequirements):
+    manager: UvManagerInfo
+
+    def __info__(self) -> str:
+        requirements = "\n  ".join(self.manager.requirements)
+        return f"{super().__info__()}\nRequirements:\n  {requirements}"
 
 
 class UvManager(BaseManager):
     NAME = "uv"
     PRIORITY = 1
+    REQUIREMENTS_MODEL = UvRequirements
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -26,15 +44,11 @@ class UvManager(BaseManager):
         """Manager is explicitly active."""
         pass
 
-    def _gather_requirements(self, manager_version: str) -> UvRequirements:
+    def _gather_requirements(self) -> Dict[str, Any]:
         output = self._check_output("pip", "freeze")
         requirements = output.strip().splitlines()
 
-        return gather_requirements(
-            manager_name=self.NAME,
-            manager_version=manager_version,
-            requirements=requirements,
-        )
+        return {"requirements": requirements}
 
     def _install_requirements(self, requirements: UvRequirements) -> None:
         text = "\n".join(requirements.requirements)

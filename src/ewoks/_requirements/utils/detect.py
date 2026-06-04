@@ -5,8 +5,8 @@ from typing import Dict
 from typing import Optional
 from typing import Tuple
 
-from ...metadata.gather import installed
-from .base import BaseManager
+from .base_manager import BaseManager
+from .metadata.from_python import current_requirements
 from .supported import get_supported_managers
 
 logger = logging.getLogger(__name__)
@@ -96,7 +96,7 @@ def _detect_manager() -> Optional[BaseManager]:
 @lru_cache(1)
 def _installer_distribution_count() -> Dict[str, int]:
     counts: Counter = Counter()
-    for dist in installed.distributions():
+    for dist in current_requirements()["distributions"]:
         if dist.installer:
             counts[dist.installer] += 1
     return dict(counts)

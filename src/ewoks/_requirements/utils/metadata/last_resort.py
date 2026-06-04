@@ -4,7 +4,7 @@ from typing import Dict
 
 from ewokscore.graph import TaskGraph
 
-from . import pip_freeze
+from .from_pip_freeze import pip_freeze_requirements
 
 logger = logging.getLogger(__name__)
 
@@ -44,4 +44,4 @@ def last_resort_requirements(graph: TaskGraph) -> Dict[str, Any]:
                 f"Could not extract requirements for node {node_id}: unsupported task type {task_type}."
             )
 
-    return pip_freeze.pip_freeze_requirements(list(freeze))
+    return pip_freeze_requirements(list(freeze))

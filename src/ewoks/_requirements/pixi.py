@@ -1,14 +1,27 @@
 import os
+from typing import Any
+from typing import Dict
+from typing import Literal
 from typing import Optional
 
-from ..metadata.gather import gather_requirements
-from ..models.pixi import PixiRequirements
-from .utils.base import BaseManager
+from .utils.base_manager import BaseManager
+from .utils.base_manager import BaseManagerInfo
+from .utils.base_manager import BaseRequirements
+
+
+class PixiManagerInfo(BaseManagerInfo):
+    name: Literal["pixi"] = "pixi"
+    lockfile: str
+
+
+class PixiRequirements(BaseRequirements):
+    manager: PixiManagerInfo
 
 
 class PixiManager(BaseManager):
     NAME = "pixi"
     PRIORITY = 5
+    REQUIREMENTS_MODEL = PixiRequirements
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -27,7 +40,7 @@ class PixiManager(BaseManager):
         """Manager is explicitly active."""
         return "PIXI_PROJECT_ROOT" in os.environ
 
-    def _gather_requirements(self, manager_version: str) -> PixiRequirements:
+    def _gather_requirements(self) -> Dict[str, Any]:
         if os.path.exists("pixi.lock"):
             with open("pixi.lock", "r", encoding="utf-8") as f:
                 lock_content = f.read()
@@ -37,11 +50,7 @@ class PixiManager(BaseManager):
         else:
             raise RuntimeError("No pixi.lock or pixi.toml file found")
 
-        return gather_requirements(
-            manager_name=self.NAME,
-            manager_version=manager_version,
-            lockfile=lock_content,
-        )
+        return {"lockfile": lock_content}
 
     def _install_requirements(self, requirements: PixiRequirements) -> None:
         with self._temporary_file(requirements.lockfile, ".lock") as tmp_path:

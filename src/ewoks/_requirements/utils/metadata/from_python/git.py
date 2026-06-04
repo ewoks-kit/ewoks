@@ -3,10 +3,10 @@ from pathlib import Path
 from typing import List
 from typing import Optional
 
-from ....models.distro import GitInfo
+from .. import metadata_models
 
 
-def git_info_from_path(path: Path) -> Optional[GitInfo]:
+def git_info_from_path(path: Path) -> Optional[metadata_models.GitInfo]:
     """
     Return GitInfo for a local path, or None if not a git repository.
     """
@@ -29,7 +29,7 @@ def git_info_from_path(path: Path) -> Optional[GitInfo]:
     else:
         remote_url = None
 
-    return GitInfo(
+    return metadata_models.GitInfo(
         commit=commit, remote=remote_url, uncommitted_changes=uncommitted_changes
     )
 

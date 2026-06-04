@@ -2,16 +2,34 @@ import importlib.metadata
 import json
 import os
 import sys
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Literal
 from typing import Optional
 
-from ..metadata.gather import gather_requirements
-from ..models.pipenv import PipenvRequirements
-from .utils.base import BaseManager
+from .utils.base_manager import BaseManager
+from .utils.base_manager import BaseManagerInfo
+from .utils.base_manager import BaseRequirements
+
+
+class PipenvManagerInfo(BaseManagerInfo):
+    name: Literal["pipenv"] = "pipenv"
+    requirements: List[str]
+
+
+class PipenvRequirements(BaseRequirements):
+    manager: PipenvManagerInfo
+
+    def __info__(self) -> str:
+        requirements = "\n  ".join(self.manager.requirements)
+        return f"{super().__info__()}\nRequirements:\n  {requirements}"
 
 
 class PipenvManager(BaseManager):
     NAME = "pipenv"
     PRIORITY = 3
+    REQUIREMENTS_MODEL = PipenvRequirements
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -29,15 +47,11 @@ class PipenvManager(BaseManager):
         """Manager is explicitly active."""
         return "PIPENV_ACTIVE" in os.environ
 
-    def _gather_requirements(self, manager_version: str) -> PipenvRequirements:
+    def _gather_requirements(self) -> Dict[str, Any]:
         output = self._check_output("lock", "--requirements")
         requirements = output.strip().splitlines()
 
-        return gather_requirements(
-            manager_name=self.NAME,
-            manager_version=manager_version,
-            requirements=requirements,
-        )
+        return {"requirements": requirements}
 
     def _install_requirements(self, requirements: PipenvRequirements) -> None:
         lock_data = {

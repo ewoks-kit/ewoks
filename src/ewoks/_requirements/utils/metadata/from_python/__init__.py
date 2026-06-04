@@ -1,27 +1,56 @@
 import json
 import logging
+import platform
 from functools import lru_cache
 from importlib import metadata
 from pathlib import Path
-from typing import List
+from typing import Any
+from typing import Dict
 
-from ....models.distro import ArchiveInfo
-from ....models.distro import Distribution
-from ....models.distro import GitInfo
+from .. import metadata_models
 from . import git
 
 logger = logging.getLogger(__name__)
 
 
 @lru_cache(1)
-def distributions() -> List[Distribution]:
+def current_requirements() -> Dict[str, Any]:
     """
     Return installed distributions.
     """
-    return [_distribution_from_metadata(dist) for dist in metadata.distributions()]
+    distributions = [
+        _distribution_from_metadata(dist) for dist in metadata.distributions()
+    ]
+    return dict(
+        system=_system_metadata(),
+        python=_python_metadata(),
+        distributions=distributions,
+    )
 
 
-def _distribution_from_metadata(dist: metadata.Distribution) -> Distribution:
+def _system_metadata() -> Dict[str, Any]:
+    uname = platform.uname()
+    return dict(
+        system=uname.system,
+        release=uname.release,
+        version=uname.version,
+        machine=uname.machine,
+        processor=uname.processor,
+    )
+
+
+def _python_metadata() -> Dict[str, Any]:
+    return dict(
+        version=platform.python_version(),
+        implementation=platform.python_implementation(),
+        compiler=platform.python_compiler(),
+        build=", ".join(platform.python_build()),
+    )
+
+
+def _distribution_from_metadata(
+    dist: metadata.Distribution,
+) -> metadata_models.Distribution:
     name = dist.metadata["Name"]
     version = dist.version
 
@@ -51,7 +80,7 @@ def _distribution_from_metadata(dist: metadata.Distribution) -> Distribution:
         if vcs_info.get("vcs") == "git":
             commit_id = vcs_info.get("commit_id")
             if commit_id:
-                git_info = GitInfo(
+                git_info = metadata_models.GitInfo(
                     commit=commit_id, remote=url, uncommitted_changes=False
                 )
                 has_info = True
@@ -76,10 +105,10 @@ def _distribution_from_metadata(dist: metadata.Distribution) -> Distribution:
             else:
                 hashes = {}
 
-            archive_info = ArchiveInfo(url=url, hashes=hashes)
+            archive_info = metadata_models.ArchiveInfo(url=url, hashes=hashes)
             has_info = True
 
-    return Distribution(
+    return metadata_models.Distribution(
         name=name,
         version=version,
         git=git_info,

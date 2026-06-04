@@ -4,12 +4,35 @@ import subprocess
 import tempfile
 from abc import abstractmethod
 from contextlib import contextmanager
+from typing import Any
+from typing import Dict
 from typing import Generator
+from typing import List
 from typing import Optional
 
-from ...models.base import BaseRequirements
+from .metadata import metadata_models
+from .metadata.from_python import current_requirements
 
 logger = logging.getLogger(__name__)
+
+
+class BaseManagerInfo(metadata_models.BaseModel):
+    name: str
+    version: str
+
+
+class BaseRequirements(metadata_models.BaseModel):
+    system: metadata_models.SystemInfo
+    python: metadata_models.PythonInfo
+    distributions: List[metadata_models.Distribution]
+    manager: BaseManagerInfo
+
+    def __info__(self) -> str:
+        return (
+            f"Manager: {self.manager.name} ({self.manager.version}) "
+            f"python={self.python.version}) "
+            f"distributions={len(self.distributions)}"
+        )
 
 
 class BaseManager:
@@ -33,6 +56,7 @@ class BaseManager:
 
     NAME = NotImplemented
     PRIORITY = NotImplemented
+    REQUIREMENTS_MODEL = NotImplemented
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -46,12 +70,15 @@ class BaseManager:
             raise RuntimeError(f"{self.NAME!r} is not installed")
 
         try:
-            return self._gather_requirements(manager_version)
+            parameters = self._gather_requirements()
         except Exception as ex:
             logger.error(
                 "%s: failed to generate requirements (%s)", type(self).__name__, ex
             )
             return None
+
+        manager = dict(name=self.NAME, version=manager_version, **parameters)
+        return self.REQUIREMENTS_MODEL(manager=manager, **current_requirements())
 
     @abstractmethod
     def version(self) -> Optional[str]:
@@ -74,7 +101,7 @@ class BaseManager:
             raise
 
     @abstractmethod
-    def _gather_requirements(self, manager_version: str) -> BaseRequirements:
+    def _gather_requirements(self) -> Dict[str, Any]:
         pass
 
     @abstractmethod

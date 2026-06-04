@@ -1,6 +1,6 @@
 from ewokscore.graph import TaskGraph
 
-from ..._requirements.metadata.parse import parse_requirements
+from ..._requirements.utils.parse import parse_requirements
 
 
 def assert_in_graph_requirements(graph: TaskGraph, *distribution_names) -> None:
