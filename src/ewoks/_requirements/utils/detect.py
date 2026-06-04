@@ -5,9 +5,9 @@ from typing import Dict
 from typing import Optional
 from typing import Tuple
 
+from ._supported import get_supported_managers
 from .base_manager import BaseManager
 from .metadata.from_python import current_requirements
-from .supported import get_supported_managers
 
 logger = logging.getLogger(__name__)
 

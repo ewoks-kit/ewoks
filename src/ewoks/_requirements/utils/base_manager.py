@@ -10,21 +10,21 @@ from typing import Generator
 from typing import List
 from typing import Optional
 
-from .metadata import metadata_models
+from .metadata import models
 from .metadata.from_python import current_requirements
 
 logger = logging.getLogger(__name__)
 
 
-class BaseManagerInfo(metadata_models.BaseModel):
+class BaseManagerInfo(models.BaseModel):
     name: str
     version: str
 
 
-class BaseRequirements(metadata_models.BaseModel):
-    system: metadata_models.SystemInfo
-    python: metadata_models.PythonInfo
-    distributions: List[metadata_models.Distribution]
+class BaseRequirements(models.BaseModel):
+    system: models.SystemInfo
+    python: models.PythonInfo
+    distributions: List[models.Distribution]
     manager: BaseManagerInfo
 
     def __info__(self) -> str:

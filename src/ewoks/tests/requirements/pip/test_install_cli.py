@@ -3,15 +3,14 @@ import subprocess
 
 import pytest
 
-from ...._requirements.utils.metadata import unknown
+from ...._requirements.utils.metadata import from_pip_freeze
 
 
 def test_install_pip_with_freeze(venv):
     with pytest.raises(Exception, match="package is not installed"):
         _ = venv.get_version("ewoksdata")
 
-    requirements = unknown.unknown_requirements()
-    requirements["manager"] = {"name": "pip", "version": "", "freeze": ["ewoksdata"]}
+    requirements = from_pip_freeze.pip_freeze_requirements(["ewoksdata"])
 
     graph = {
         "graph": {
@@ -41,8 +40,7 @@ def test_install_pip_without_freeze(venv):
     with pytest.raises(Exception, match="package is not installed"):
         _ = venv.get_version("ewoksdata")
 
-    requirements = unknown.unknown_requirements()
-    requirements["manager"] = {"name": "pip", "version": "", "freeze": []}
+    requirements = from_pip_freeze.pip_freeze_requirements(["ewoksdata"])
     requirements["distributions"] = [
         {"name": "ewoksdata", "version": ""},
     ]

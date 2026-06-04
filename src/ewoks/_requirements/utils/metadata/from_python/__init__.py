@@ -7,8 +7,8 @@ from pathlib import Path
 from typing import Any
 from typing import Dict
 
-from .. import metadata_models
-from . import git
+from .. import models
+from . import _git
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ def _python_metadata() -> Dict[str, Any]:
 
 def _distribution_from_metadata(
     dist: metadata.Distribution,
-) -> metadata_models.Distribution:
+) -> models.Distribution:
     name = dist.metadata["Name"]
     version = dist.version
 
@@ -80,7 +80,7 @@ def _distribution_from_metadata(
         if vcs_info.get("vcs") == "git":
             commit_id = vcs_info.get("commit_id")
             if commit_id:
-                git_info = metadata_models.GitInfo(
+                git_info = models.GitInfo(
                     commit=commit_id, remote=url, uncommitted_changes=False
                 )
                 has_info = True
@@ -89,7 +89,7 @@ def _distribution_from_metadata(
         if url.startswith("file://") or "://" not in url:
             path = Path(url.replace("file://", ""))
             if path.exists():
-                git_info = git.git_info_from_path(path)
+                git_info = _git.git_info_from_path(path)
                 has_info = git_info is not None
 
     if not has_info and "archive_info" in direct_url:
@@ -105,10 +105,10 @@ def _distribution_from_metadata(
             else:
                 hashes = {}
 
-            archive_info = metadata_models.ArchiveInfo(url=url, hashes=hashes)
+            archive_info = models.ArchiveInfo(url=url, hashes=hashes)
             has_info = True
 
-    return metadata_models.Distribution(
+    return models.Distribution(
         name=name,
         version=version,
         git=git_info,

@@ -1,9 +1,9 @@
 from typing import List
 from typing import Union
 
+from ._supported import get_supported_managers
 from .base_manager import BaseRequirements
 from .metadata.from_pip_freeze import pip_freeze_requirements
-from .supported import get_supported_managers
 
 
 def parse_requirements(requirements: Union[dict, List[str]]) -> BaseRequirements:
