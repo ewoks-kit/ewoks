@@ -17,10 +17,6 @@ Inspect workflow parameters before executing the workflow
 
 .. code-block:: bash
 
-   Inspect the demo workflow
-
-.. code-block:: bash
-
 	ewoks show test.json
 
 Execute a workflow and print the output of all tasks
