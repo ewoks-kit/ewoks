@@ -55,7 +55,7 @@ def test_convert_with_all_inputs(tmpdir):
         graph_name,
         destination,
         "--test",
-        "-p",
+        "-pa",
         "value=10",
         "--inputs=all",
     ]
@@ -79,7 +79,7 @@ def test_convert_with_taskid_inputs(tmpdir):
         graph_name,
         destination,
         "--test",
-        "-p",
+        "-pt",
         f"{taskid}:value=test",
         "--input-node-id",
         "taskid",
