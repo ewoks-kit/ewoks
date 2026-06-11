@@ -93,7 +93,6 @@ def test_execute_with_convert_destination_inputs_all(tmpdir):
         "--test",
         "-pa",
         "b=42",
-        "--inputs=all",
         "-o",
         f"convert_destination={destination}",
     ]

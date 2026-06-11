@@ -57,7 +57,6 @@ def test_convert_with_all_inputs(tmpdir):
         "--test",
         "-pa",
         "value=10",
-        "--inputs=all",
     ]
 
     main(argv=argv, shell=False)
@@ -81,8 +80,6 @@ def test_convert_with_taskid_inputs(tmpdir):
         "--test",
         "-pt",
         f"{taskid}:value=test",
-        "--input-node-id",
-        "taskid",
     ]
 
     main(argv=argv, shell=False)

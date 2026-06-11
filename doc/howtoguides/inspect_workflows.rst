@@ -112,17 +112,17 @@ If no labels are defined, the `Label` column is omitted from the output.
 Validating Execution Arguments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To override workflow parameters for execution, use the `-p` option:
+To override workflow parameters for execution, use the `-p` option (or `-pt` to target a specific task identifier):
 
 .. code-block:: bash
 
-    ewoks execute example.json -p SumTask:delay=99 --input-node-id taskid
+    ewoks execute example.json -pt SumTask:delay=99
 
 Before executing the workflow, you can verify that your arguments are applied as intended using `ewoks show` with the same arguments:
 
 .. code-block:: bash
 
-    ewoks show example.json -p SumTask:delay=99 --input-node-id taskid
+    ewoks show example.json -pt SumTask:delay=99
 
 The output will reflect the overridden `delay` values:
 
@@ -163,8 +163,7 @@ The output will reflect the overridden `delay` values:
     │ b      │ 6              │ SumTask           │ task6 │
     ╘════════╧════════════════╧═══════════════════╧═══════╛
 
-The value before the colon in `-p <target>:<parameter>=<value>` refers to the node identifier, which defaults to the `Id` column.
-You can change this behavior with the `--input-node-id` option to use the `Label` or `Task identifier` instead.
+The `-pt` flag uses the task identifier as the target prefix in the format `<taskid>:<parameter>=<value>`, so `-pt SumTask:delay=99` applies `delay=99` to all nodes whose task identifier is `SumTask`.
 
 Graphical Interfaces
 --------------------
@@ -178,7 +177,7 @@ To use the :ref:`desktop GUI <ewoks-canvas>` based on Orange:
 
 .. code-block:: bash
 
-    ewoks execute example.json --engine=orange -p SumTask:delay=99 --input-node-id taskid
+    ewoks execute example.json --engine=orange -pt SumTask:delay=99
 
 Then double-click on each node to inspect or edit parameters:
 
@@ -194,7 +193,7 @@ To inspect parameters via the :ref:`web interface <ewoksweb>`:
 
     .. code-block:: bash
 
-        ewoks convert example.json example_with_params.json --test -p SumTask:delay=99 --input-node-id taskid
+        ewoks convert example.json example_with_params.json --test -pt SumTask:delay=99
 
 2. Start the web server:
 
