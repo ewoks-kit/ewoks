@@ -112,7 +112,15 @@ If no labels are defined, the `Label` column is omitted from the output.
 Validating Execution Arguments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To override workflow parameters for execution, use the `-p` option (or `-pt` to target a specific task identifier):
+Workflow parameters can be overridden at execution time using one of the following options:
+
+* ``-pt TASK_ID:NAME=VALUE`` — apply to all nodes with the specified task identifier
+* ``-pn NODE_ID:NAME=VALUE`` — apply to the node with the specified node id
+* ``-pl LABEL:NAME=VALUE`` — apply to all nodes with the specified label
+* ``-ps NAME=VALUE`` — apply to all start nodes
+* ``-pa NAME=VALUE`` — apply to all nodes
+
+For example, to target a specific task identifier:
 
 .. code-block:: bash
 

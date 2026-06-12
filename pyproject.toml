@@ -17,7 +17,7 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
     "ewokscore >=4.0.1,<5",
-    "ewoksutils >=1.6.0,<2",
+    "ewoksutils >=1.10.0rc1,<2",
     "tabulate",
     "importlib_resources; python_version < '3.9'",
 ]
