@@ -9,9 +9,9 @@ def test_cli_convert(cli_interface):  # noqa F811
         "acyclic1",
         "test.json",
         "--test",
-        "-p",
+        "-ps",
         "a=1",
-        "-p",
+        "-pn",
         "task1:b=test",
         "--src-format",
         "yaml",
@@ -28,8 +28,8 @@ def test_cli_convert(cli_interface):  # noqa F811
 
     convert_options = {
         "inputs": [
-            {"all": False, "name": "a", "value": 1},
             {"id": "task1", "name": "b", "value": "test"},
+            {"all": False, "name": "a", "value": 1},
         ],
         "load_options": {"representation": "test_core"},
         "save_options": {"representation": "json"},

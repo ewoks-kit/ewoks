@@ -52,7 +52,7 @@ Description: demo
 
 
 def test_show_with_inputs(capsys):
-    argv = [sys.executable, "show", "demo", "--test", "-p", "b=999", "--inputs=all"]
+    argv = [sys.executable, "show", "demo", "--test", "-pa", "b=999"]
     main(argv=argv, shell=False)
     captured = capsys.readouterr()
 
