@@ -8,7 +8,7 @@ release = importlib.metadata.version("ewoks")
 
 project = "ewoks"
 version = ".".join(release.split(".")[:2])
-copyright = "2021-present, ESRF"
+copyright = "2021-2026, ESRF"
 author = "ESRF"
 docstitle = f"{project} {version}"
 
