@@ -1,7 +1,7 @@
-Ewoks workflow creation tutorial
-================================
+Create workflows
+================
 
-This page demonstrates how to create an Ewoks workflow from Python.
+This page demonstrates how to create an Ewoks workflow in Python.
 
 .. note::
 
@@ -19,9 +19,9 @@ These tasks are part of the ``ewoksxrpd`` package.
 
 .. note::
 
-   See the `Task catalog page <https://ewoks.esrf.fr/en/latest/tasks/index.html>`_ to see the existing Ewoks tasks and which package needs to be installed to use them.
+   The `Ewoks Task Catalog <https://ewoks.esrf.fr/en/latest/tasks/index.html>`_ lists Ewoks tasks provided by Python packages published on `PyPI <https://pypi.org/>`_.
 
-   For example, the tasks we will use can be found on the `SAXS/WAXS page <https://ewoks.esrf.fr/en/latest/tasks/saxs_waxs.html>`_
+   The tasks used in this tutorial are described on the `SAXS/WAXS page <https://ewoks.esrf.fr/en/latest/tasks/saxs_waxs.html>`_ of the catalog.
 
 
 Requirements
@@ -33,7 +33,7 @@ For this, we will firstly need to install the ``ewoks`` package
 
    pip install ewoks
 
-but also the ``ewoksxrpd`` package that contains the tasks we will use to create our workflows.
+but also the ``ewoksxrpd`` package that contains the tasks we will use to create the workflow.
 
 .. code-block:: bash
 
@@ -56,7 +56,7 @@ An Ewoks workflow is represented in Python by a Python ``dict`` with three entri
 Defining the nodes
 ------------------
 
-Ewoks nodes are represented as Python ``dict``. Each entry of the dictionnary defines a characteristic of the node. Let"s illustrate this with our first node that will define the detector geometry:
+Ewoks nodes are represented as Python ``dict``. Each entry of the dictionnary defines a characteristic of the node. Lets illustrate this with the first node that will define the detector geometry:
 
 .. code-block:: python
 
@@ -68,9 +68,9 @@ Ewoks nodes are represented as Python ``dict``. Each entry of the dictionnary de
 
 The Python ``dict`` contain three fields:
 
-The first field ``id`` is mandatory: it serves as unique identifier of the node in the workflow. It will notably used to define links later.
+The first field ``id`` is mandatory: it serves as a unique identifier of the node in the workflow. It will be used to define links later.
 
-The second field ``task_identifier`` tells which task should used when this node is executed. The identifier can be found in the `Task catalog page <https://ewoks.esrf.fr/en/latest/tasks/saxs_waxs.html>`_.
+The second field ``task_identifier`` defines which task is used when this node is executed. The identifier can be found in the `Task catalog <https://ewoks.esrf.fr/en/latest/tasks/saxs_waxs.html>`_.
 
 The third field ``task_type`` defines the type of the task defined by the ``task_identifier``. Almost all tasks found in the `Task catalog <https://ewoks.esrf.fr/en/latest/tasks/index.html>`_ are ``class`` task types.
 
@@ -86,7 +86,7 @@ The second node will be responsible for azimuthal integration using ``IntegrateS
       "task_type": "class"
    }
 
-We set the same fields as before but changing ``id``, since it is another node, and ``task_identifier``, since the node uses the ``IntegrateSinglePattern`` task this time.
+We set the same fields as before with a different ``id``, since it is another node, and a different ``task_identifier``, since the node uses the ``IntegrateSinglePattern`` task this time.
 
 In a similar fashion, we define the last node that will save the data using ``SaveNexusPattern1D``:
 
@@ -103,7 +103,7 @@ We end up then with the following workflow:
 .. image:: /_static/Workflow_no_link.svg
    :alt: Three workflow nodes: one called config, one called integrate and the last called save
 
-We now need to define the links to structure our workflow and pass data from one node to the next.
+We now need to create links to define the node execution order and to pass data from one node to the next.
 
 Defining the links
 ------------------
@@ -150,10 +150,10 @@ Secondly, we need to pass the data produced by the ``integrate`` node to the ``s
 
 This time, we link the output named ``radial`` of the ``IntegrateSinglePattern`` task to the input named ``x`` of the ``SaveNexusPattern1D`` task, demonstrating how links can connect outputs and inputs of different names. Similarly, we link the output named ``intensity`` of the integration task to the input named ``y`` of the saving task.
 
-Putting the workflow together
------------------------------
+Define the workflow
+-------------------
 
-Now that the nodes and link are defined, all is left is to build our Python ``dict`` representing the workflow
+Now that the nodes and link are defined, all is left is to build a Python ``dict`` representing the workflow
 
 .. code-block:: python
 
@@ -166,17 +166,17 @@ Now that the nodes and link are defined, all is left is to build our Python ``di
 Visually, the workflow now looks like this:
 
 .. image:: /_static/Workflow_with_links.svg
-   :alt: Three workflow nodes: one called config, one called integrate and the last called save. There is a link between the config and integrate nodes and another one between the integrate and save nodes
+   :alt: Three workflow nodes: one called config, one called integrate and the last called save. There is a link between the config and integrate nodes and another one between the integrate and save nodes.
 
 
 To go further
 =============
 
-We demonstrate here how to create a simple workflow from Python objects. For more complex workflows, you may use `EwoksWeb <https://ewoksweb.readthedocs.io>`_ instead, a web-based GUI to design workflows. In *EwoksWeb*, you can drag and drop nodes in a canvas, link them together and EwoksWeb will create the workflow file for you.
+We demonstrated here how to create a simple workflow from Python objects. For more complex workflows, you may want to use `EwoksWeb <https://ewoksweb.readthedocs.io>`_ instead, a web-based GUI to design workflows. In *EwoksWeb*, you can drag and drop nodes in a canvas, link them together and EwoksWeb will create the workflow file for you.
 
-Also, so far, we did not run the workflow. Workflow execution is the focus of another tutorial that can be found in the `How to execute a workflow <./execute_workflow.html>`_ page.
+Also, so far, we did not run the workflow. Workflow execution is the focus of another tutorial that can be found in the :doc:`./execute` page.
 
-Finally, this tutorial only covers the required fields of the nodes, links and workflow dictionaries to build a working Ewoks workflow. The `Ewoks specification page <https://ewokscore.readthedocs.io/en/stable/reference/specs.html>`_ gathers all the possible fields and their explanation.
+Finally, this tutorial only covers the required fields of the nodes, links and workflow dictionaries to build a working Ewoks workflow. The `Ewoks specification page <https://ewokscore.readthedocs.io/en/stable/reference/specs.html>`_ documents all the possible fields and their explanation.
 
 
 Full code
