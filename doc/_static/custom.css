@@ -1,7 +1,19 @@
 button.copybtn {
-    opacity: 0.3;
+  opacity: 0.3;
 }
 
 button.copybtn:hover {
-    opacity: 1;
+  opacity: 1;
+}
+
+.table td.red {
+  color: red;
+}
+
+.table td.green {
+  color: green;
+}
+
+.table td.orange {
+  color: orange;
 }
