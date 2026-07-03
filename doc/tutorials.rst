@@ -6,7 +6,7 @@ Tutorials
 
     tutorials/getting_started
     tutorials/hello_world
-    tutorials/create_and_edit
+    tutorials/create_workflow
     tutorials/execute
     tutorials/infrastructure
     tutorials/external
