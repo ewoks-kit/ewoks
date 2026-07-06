@@ -1,7 +1,7 @@
 .. _execute_python:
 
-Execute a workflow from Python
-==============================
+Execute a :term:`workflow` from Python
+======================================
 
 Install requirements
 
@@ -9,7 +9,7 @@ Install requirements
 
     pip install ewoks
 
-Execute a workflow
+Execute a :term:`workflow`
 
 .. code-block:: python
 
@@ -18,13 +18,13 @@ Execute a workflow
     result = execute_graph("/path/to/graph.json", engine=None)
 
 The :ref:`hello world <hello_world>` example provides a small but complete example of
-task implementation, workflow definition and workflow execution.
+:term:`task <Task>` implementation, :term:`workflow` definition and :term:`workflow` execution.
 
 The *engine* argument can be
 
- * *ppf*: required to execute cyclic workflows
- * *dask*: required to parallelize workflow execution (thread, processes, cluster)
- * *orange*: required to execute workflows with a graphical interface
+ * *ppf*: required to execute cyclic :term:`workflows <Workflow>`
+ * *dask*: required to parallelize :term:`workflow` execution (thread, processes, cluster)
+ * *orange*: required to execute :term:`workflows <Workflow>` with a graphical interface
 
 When no *engine* is specified it will use sequential execution in the current process.
 

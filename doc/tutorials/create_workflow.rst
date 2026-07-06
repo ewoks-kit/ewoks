@@ -1,27 +1,27 @@
 Create workflows
 ================
 
-This page demonstrates how to create an Ewoks workflow in Python.
+This page demonstrates how to create an :term:`Ewoks` :term:`workflow` in Python.
 
 .. note::
 
-   For other ways of creating workflows, see :doc:`./external`.
+   For other ways of creating :term:`workflows <Workflow>`, see :doc:`./external`.
 
-We want to create an Ewoks workflow that does the azimuthal integration of a detector image using `pyFAI <https://pyfai.readthedocs.io/en/stable/>`_ and saves the result as `HDF5/NeXus <https://www.nexusformat.org/>`_.
+We want to create an :term:`Ewoks` :term:`workflow` that does the azimuthal integration of a detector image using `pyFAI <https://pyfai.readthedocs.io/en/stable/>`_ and saves the result as `HDF5/NeXus <https://www.nexusformat.org/>`_.
 
-The workflow will be composed of three tasks:
+The :term:`workflow` will be composed of three :term:`tasks <Task>`:
 
 - ``PyFaiConfig`` that will define the detector geometry
 - ``IntegrateSinglePattern`` for the azimuthal integration
 - ``SaveNexusPattern1D`` for the saving as HDF5/NeXus
 
-These tasks are part of the ``ewoksxrpd`` package.
+These :term:`tasks <Task>` are part of the ``ewoksxrpd`` package.
 
 .. note::
 
-   The `Ewoks Task Catalog <https://ewoks.esrf.fr/en/latest/tasks/index.html>`_ lists Ewoks tasks provided by Python packages published on `PyPI <https://pypi.org/>`_.
+   The `Ewoks Task Catalog <https://ewoks.esrf.fr/en/latest/tasks/index.html>`_ lists :term:`Ewoks` :term:`tasks <Task>` provided by Python packages published on `PyPI <https://pypi.org/>`_.
 
-   The tasks used in this tutorial are described on the `SAXS/WAXS page <https://ewoks.esrf.fr/en/latest/tasks/saxs_waxs.html>`_ of the catalog.
+   The :term:`tasks <Task>` used in this tutorial are described on the `SAXS/WAXS page <https://ewoks.esrf.fr/en/latest/tasks/saxs_waxs.html>`_ of the catalog.
 
 
 Requirements
@@ -33,7 +33,7 @@ For this, we will firstly need to install the ``ewoks`` package
 
    pip install ewoks
 
-but also the ``ewoksxrpd`` package that contains the tasks we will use to create the workflow.
+but also the ``ewoksxrpd`` package that contains the :term:`tasks <Task>` we will use to create the :term:`workflow`.
 
 .. code-block:: bash
 
@@ -47,16 +47,16 @@ Finally, pyFAI needs a `PONI file <https://pyfai.readthedocs.io/en/stable/>`_ th
 Walkthrough
 ===========
 
-An Ewoks workflow is represented in Python by a Python ``dict`` with three entries:
+An :term:`Ewoks` :term:`workflow` is represented in Python by a Python ``dict`` with three entries:
 
-- ``nodes``: the list of the Ewoks nodes composing the workflow. Each node represent a task that should be executed by the workflow.
-- ``links``: the list of links between the nodes. A link between node A and node B is made to pass the outputs of node A to the inputs of node B.
-- ``graph``: metadata of the workflow.
+- ``nodes``: the list of the :term:`Ewoks` :term:`nodes` composing the :term:`workflow`. Each :term:`node <Nodes>` represent a :term:`task <Task>` that should be executed by the :term:`workflow`.
+- ``links``: the list of :term:`links` between the :term:`nodes`. A :term:`link <Links>` between :term:`node <Nodes>` A and :term:`node <Nodes>` B is made to pass the outputs of :term:`node <Nodes>` A to the inputs of :term:`node <Nodes>` B.
+- ``graph``: metadata of the :term:`workflow`.
 
 Defining the nodes
 ------------------
 
-Ewoks nodes are represented as Python ``dict``. Each entry of the dictionnary defines a characteristic of the node. Lets illustrate this with the first node that will define the detector geometry:
+:term:`Ewoks` :term:`nodes` are represented as Python ``dict``. Each entry of the dictionnary defines a characteristic of the :term:`node <Nodes>`. Lets illustrate this with the first :term:`node <Nodes>` that will define the detector geometry:
 
 .. code-block:: python
 
@@ -68,15 +68,15 @@ Ewoks nodes are represented as Python ``dict``. Each entry of the dictionnary de
 
 The Python ``dict`` contain three fields:
 
-The first field ``id`` is mandatory: it serves as a unique identifier of the node in the workflow. It will be used to define links later.
+The first field ``id`` is mandatory: it serves as a unique identifier of the node in the :term:`workflow`. It will be used to define :term:`links` later.
 
-The second field ``task_identifier`` defines which task is used when this node is executed. The identifier can be found in the `Task catalog <https://ewoks.esrf.fr/en/latest/tasks/saxs_waxs.html>`_.
+The second field ``task_identifier`` defines which :term:`task <Task>` is used when this :term:`node <Nodes>` is executed. The identifier can be found in the `Task catalog <https://ewoks.esrf.fr/en/latest/tasks/saxs_waxs.html>`_.
 
-The third field ``task_type`` defines the type of the task defined by the ``task_identifier``. Almost all tasks found in the `Task catalog <https://ewoks.esrf.fr/en/latest/tasks/index.html>`_ are ``class`` task types.
+The third field ``task_type`` defines the type of the :term:`task <Task>` defined by the ``task_identifier``. Almost all :term:`tasks <Task>` found in the `Task catalog <https://ewoks.esrf.fr/en/latest/tasks/index.html>`_ are ``class`` :term:`task <Task>` types.
 
 ----
 
-The second node will be responsible for azimuthal integration using ``IntegrateSinglePattern``:
+The second :term:`node <Nodes>` will be responsible for azimuthal integration using ``IntegrateSinglePattern``:
 
 .. code-block:: python
 
@@ -86,9 +86,9 @@ The second node will be responsible for azimuthal integration using ``IntegrateS
       "task_type": "class"
    }
 
-We set the same fields as before with a different ``id``, since it is another node, and a different ``task_identifier``, since the node uses the ``IntegrateSinglePattern`` task this time.
+We set the same fields as before with a different ``id``, since it is another :term:`node <Nodes>`, and a different ``task_identifier``, since the :term:`node <Nodes>` uses the ``IntegrateSinglePattern`` :term:`task <Task>` this time.
 
-In a similar fashion, we define the last node that will save the data using ``SaveNexusPattern1D``:
+In a similar fashion, we define the last :term:`node <Nodes>` that will save the data using ``SaveNexusPattern1D``:
 
 .. code-block:: python
 
@@ -98,20 +98,20 @@ In a similar fashion, we define the last node that will save the data using ``Sa
       "task_type": "class"
    }
 
-We end up then with the following workflow:
+We end up then with the following :term:`workflow`:
 
 .. image:: /_static/Workflow_no_link.svg
    :alt: Three workflow nodes: one called config, one called integrate and the last called save
 
-We now need to create links to define the node execution order and to pass data from one node to the next.
+We now need to create :term:`links` to define the :term:`node <Nodes>` execution order and to pass data from one :term:`node <Nodes>` to the next.
 
 Defining the links
 ------------------
 
-Similarly to nodes, links are represented as Python ``dict`` with entries defining their characteristics. In our workflow, we need two links:
+Similarly to :term:`nodes`, :term:`links` are represented as Python ``dict`` with entries defining their characteristics. In our workflow, we need two :term:`links`:
 
-- one that connects the configuration node ``config`` (the source) to the integration node ``integrate`` (the target)
-- one that connects the integration node ``integrate`` (the source) to the saving node ``save`` (the target)
+- one that connects the configuration :term:`node <Nodes>` ``config`` (the source) to the integration :term:`node <Nodes>` ``integrate`` (the target)
+- one that connects the integration :term:`node <Nodes>` ``integrate`` (the source) to the saving :term:`node <Nodes>` ``save`` (the target)
 
 .. code-block:: python
 
@@ -125,17 +125,17 @@ Similarly to nodes, links are represented as Python ``dict`` with entries defini
       ]
    }
 
-The ``source`` and ``target`` fields are used to define the source and target nodes via the ``id`` defined in the previous section about nodes.
+The ``source`` and ``target`` fields are used to define the source and target :term:`nodes` via the ``id`` defined in the previous section about :term:`nodes`.
 
-Since the task of the source node has several outputs and the task of the target node has several inputs, we need to specify which output correspond to which input: this is the role of the ``data_mapping`` field.
+Since the :term:`task <Task>` of the source :term:`node <Nodes>` has several outputs and the :term:`task <Task>` of the target :term:`node <Nodes>` has several inputs, we need to specify which output correspond to which input: this is the role of the ``data_mapping`` field.
 
-In a sense, an Ewoks link is composed of several "one-to-one" links that link one output to one input. The ``data_mapping`` field is a list in which each entry defines a "one-to-one" link between a ``source_output``, identified by its output name, and a ``target_input``, identified by its input name. Input and output names are part of the Ewoks task definition and can be found there.
+In a sense, an :term:`Ewoks` :term:`link <Links>` is composed of several "one-to-one" :term:`links` that link one output to one input. The ``data_mapping`` field is a list in which each entry defines a "one-to-one" :term:`link <Links>` between a ``source_output``, identified by its output name, and a ``target_input``, identified by its input name. Input and output names are part of the :term:`Ewoks` :term:`task <Task>` definition and can be found there.
 
-In this case, we link the output named ``detector`` of the ``PyfaiConfig`` task to the input name ``detector`` of the ``IntegrateSinglePattern`` task (and same for ``geometry`` and ``energy``). It just so happens that both have the same name.
+In this case, we link the output named ``detector`` of the ``PyfaiConfig`` :term:`task <Task>` to the input name ``detector`` of the ``IntegrateSinglePattern`` :term:`task <Task>` (and same for ``geometry`` and ``energy``). It just so happens that both have the same name.
 
 ----
 
-Secondly, we need to pass the data produced by the ``integrate`` node to the ``save`` node that will save the data. For this, we will create a second link:
+Secondly, we need to pass the data produced by the ``integrate`` :term:`node <Nodes>` to the ``save`` :term:`node <Nodes>` that will save the data. For this, we will create a second :term:`link <Links>`:
 
 .. code-block:: python
 
@@ -148,12 +148,12 @@ Secondly, we need to pass the data produced by the ``integrate`` node to the ``s
       ]
    }
 
-This time, we link the output named ``radial`` of the ``IntegrateSinglePattern`` task to the input named ``x`` of the ``SaveNexusPattern1D`` task, demonstrating how links can connect outputs and inputs of different names. Similarly, we link the output named ``intensity`` of the integration task to the input named ``y`` of the saving task.
+This time, we link the output named ``radial`` of the ``IntegrateSinglePattern`` :term:`task <Task>` to the input named ``x`` of the ``SaveNexusPattern1D`` :term:`task <Task>`, demonstrating how :term:`links` can connect outputs and inputs of different names. Similarly, we link the output named ``intensity`` of the integration :term:`task <Task>` to the input named ``y`` of the saving :term:`task <Task>`.
 
 Define the workflow
 -------------------
 
-Now that the nodes and link are defined, all is left is to build a Python ``dict`` representing the workflow
+Now that the :term:`nodes` and :term:`link <Links>` are defined, all is left is to build a Python ``dict`` representing the :term:`workflow`
 
 .. code-block:: python
 
@@ -163,7 +163,7 @@ Now that the nodes and link are defined, all is left is to build a Python ``dict
       "graph": {"id": "integrate_save"}
    }
 
-Visually, the workflow now looks like this:
+Visually, the :term:`workflow` now looks like this:
 
 .. image:: /_static/Workflow_with_links.svg
    :alt: Three workflow nodes: one called config, one called integrate and the last called save. There is a link between the config and integrate nodes and another one between the integrate and save nodes.
@@ -172,11 +172,11 @@ Visually, the workflow now looks like this:
 To go further
 =============
 
-We demonstrated here how to create a simple workflow from Python objects. For more complex workflows, you may want to use `EwoksWeb <https://ewoksweb.readthedocs.io>`_ instead, a web-based GUI to design workflows. In *EwoksWeb*, you can drag and drop nodes in a canvas, link them together and EwoksWeb will create the workflow file for you.
+We demonstrated here how to create a simple :term:`workflow` from Python objects. For more complex :term:`workflows <Workflow>`, you may want to use `EwoksWeb <https://ewoksweb.readthedocs.io>`_ instead, a web-based GUI to design :term:`workflows <Workflow>`. In :term:`Ewoksweb`, you can drag and drop :term:`nodes` in a canvas, link them together and :term:`Ewoksweb` will create the :term:`workflow` file for you.
 
-Also, so far, we did not run the workflow. Workflow execution is the focus of another tutorial that can be found in the :doc:`./execute` page.
+Also, so far, we did not run the :term:`workflow`. :term:`workflow` execution is the focus of another tutorial that can be found in the :doc:`./execute` page.
 
-Finally, this tutorial only covers the required fields of the nodes, links and workflow dictionaries to build a working Ewoks workflow. The `Ewoks specification page <https://ewokscore.readthedocs.io/en/stable/reference/specs.html>`_ documents all the possible fields and their explanation.
+Finally, this tutorial only covers the required fields of the :term:`nodes`, :term:`links` and :term:`workflow` dictionaries to build a working :term:`Ewoks` :term:`workflow`. The `Ewoks specification page <https://ewokscore.readthedocs.io/en/stable/reference/specs.html>`_ documents all the possible fields and their explanation.
 
 
 Full code

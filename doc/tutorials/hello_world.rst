@@ -3,7 +3,7 @@
 Hello world
 ===========
 
-This script demonstrates how to define an Ewoks workflow from the ground up. The only thing needed to run
+This script demonstrates how to define an :term:`Ewoks` :term:`Workflow` from the ground up. The only thing needed to run
 it is the ``ewoks`` Python package
 
 .. code-block:: bash
@@ -11,8 +11,8 @@ it is the ``ewoks`` Python package
     pip install ewoks
 
 
-The script defines defines two tasks, one that ask for a name and the other that creates a greeting, creates
-a workflow out of these and executes it.
+The script defines defines two :term:`tasks <Task>`, one that ask for a name and the other that creates a greeting, creates
+a :term:`Workflow` out of these and executes it.
 
 .. code-block:: python
 
@@ -95,10 +95,11 @@ This is the output you should get
 
 .. note::
 
-    Ewoks developers rarely design workflows by hand like this but instead use graphical interfaces to produce
+    :term:`Ewoks` developers rarely design :term:`workflows <Workflow>` by hand like this but instead use graphical interfaces to produce
     the dictionnary (usually stored in JSON). See :ref:`this page about the Ewoks graphical interfaces <gui>`.
 
 .. note::
 
-    For all the fields that can be set when creating the dictionnary representing the workflow, see the
+    For all the fields that can be set when creating the dictionnary representing the :term:`workflow`, see the
     `Ewoks specification <https://ewokscore.readthedocs.io/en/stable/reference/specs.html>`_.
+

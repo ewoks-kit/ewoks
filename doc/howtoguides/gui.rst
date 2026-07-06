@@ -1,9 +1,9 @@
 .. _gui:
 
-Use Ewoks graphical interfaces
-==============================
+Use :term:`Ewoks` graphical interfaces
+======================================
 
-Ewoks comes with two graphical interfaces. You can either of the two to create and edit workflows.
+:term:`Ewoks` comes with two graphical interfaces. You can either of the two to create and edit :term:`workflows <Workflow>`.
 
 .. _ewoksweb:
 
@@ -22,7 +22,7 @@ Start ``ewoksweb``
 
     ewoksweb
 
-``ewoksweb`` will create folders to store the tasks/workflows that you will create when using it.
+``ewoksweb`` will create folders to store the :term:`tasks <Task>` and :term:`workflows <Workflow>` that you will create when using it.
 
 For more information see the `ewoksweb documentation <https://ewoksweb.readthedocs.io/>`_.
 

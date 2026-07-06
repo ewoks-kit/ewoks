@@ -1,10 +1,10 @@
-Execute a task from Python
-==========================
+Execute a :term:`task <Task>` from Python
+=========================================
 
 Walkthrough
 -----------
 
-This page shows to instantiate a task from Python, set its inputs, execute it and retrieve its outputs. It can be useful for debugging a single task for example.
+This page shows to instantiate a :term:`task <Task>` from Python, set its inputs, execute it and retrieve its outputs. It can be useful for debugging a single :term:`task <Task>` for example.
 
 To illustrate it, we will use the `SumTask` below that adds two numbers `a` and `b`, and stores the result in `result`:
 
@@ -22,9 +22,9 @@ To illustrate it, we will use the `SumTask` below that adds two numbers `a` and 
 
 .. admonition:: Tip
 
-    This task can be imported from ``ewokscore.tests.examples.tasks.sumtask``
+    This :term:`task <Task>` can be imported from ``ewokscore.tests.examples.tasks.sumtask``
 
-Task inputs need to be set via the ``inputs`` argument when creating the task before executing via ``execute``:
+:term:`Task` inputs need to be set via the ``inputs`` argument when creating the :term:`task <Task>` before executing via ``execute``:
 
 .. code-block:: python
 
@@ -43,7 +43,7 @@ The results can then be retrieved from ``outputs`` or using ``get_output_value``
 Limitations
 -----------
 
-Inputs cannot be modified once the task is instantiated
+Inputs cannot be modified once the :term:`task <Task>` is instantiated
 
 .. code-block:: python
 
@@ -52,7 +52,7 @@ Inputs cannot be modified once the task is instantiated
      ...
      ewokscore.variable.ReadOnlyVariableError: a
 
-A new task instance needs to be created to execute it with different inputs
+A new :term:`task <Task>` instance needs to be created to execute it with different inputs
 
 .. code-block:: python
 
@@ -61,7 +61,7 @@ A new task instance needs to be created to execute it with different inputs
      >>> task.get_output_value("result")
      20
 
-Outputs will be missing before the task is executed. More specifically, the outputs are set to
+Outputs will be missing before the :term:`task <Task>` is executed. More specifically, the outputs are set to
 `MISSING_DATA <https://ewokscore.readthedocs.io/en/stable/_generated/ewokscore.task.Task.html#ewokscore.task.Task.MISSING_DATA>`_
 until they are set by the execution:
 

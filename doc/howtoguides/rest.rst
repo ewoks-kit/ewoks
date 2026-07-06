@@ -1,5 +1,5 @@
-Set up a REST Ewoks server
-==========================
+Set up a REST :term:`Ewoks` server
+==================================
 
 Install requirements
 

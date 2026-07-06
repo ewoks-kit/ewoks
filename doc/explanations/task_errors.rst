@@ -1,16 +1,16 @@
-Errors raised when executing an Ewoks task
-==========================================
+Errors raised when executing an :term:`Ewoks` :term:`task <Task>`
+=================================================================
 
 .. warning::
 
-    To showcase the errors raised when executing a task, we use the task execution mechanism described in `Execute a task from Python <../howtoguides/task_python>`_. 
+    To showcase the errors raised when executing a :term:`task <Task>`, we use the :term:`task <Task>` execution mechanism described in `Execute a task from Python <../howtoguides/task_python>`_.
     
     Be sure to read `Execute a task from Python <../howtoguides/task_python>`_ before reading this page.
 
-    The principle stays the same when executing a task in a workflow.
+    The principle stays the same when executing a :term:`task <Task>` in a :term:`workflow`.
 
 
-An exception encountered when running an Ewoks task will always be chained with a ``RuntimeError`` telling which task failed:
+An exception encountered when running an :term:`Ewoks` :term:`task <Task>` will always be chained with a ``RuntimeError`` telling which :term:`task <Task>` failed:
 
 .. code-block:: python
 

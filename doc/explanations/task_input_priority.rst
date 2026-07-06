@@ -1,20 +1,20 @@
-Priority of task inputs
-=======================
+Priority of :term:`task <Task>` inputs
+======================================
 
 Details
 -------
 
-A node in a workflow can get inputs from three different sources:
+A :term:`node <Nodes>` in a :term:`workflow` can get inputs from three different sources:
 
-1. Via the ``data_mapping`` link attribute of an incoming link (see `Link attributes <https://ewokscore.readthedocs.io/en/stable/definitions.html#link-attributes>`_)
-2. Via the ``parameters`` CLI argument (or ``inputs`` for Python) when executing/submitting the workflow (see `ewoks execute reference <https://ewoks.readthedocs.io/en/stable/cli.html#ewoks-execute>`_)
-3. Via the ``default_inputs`` node attribute of the node itself (see `Node attributes <https://ewokscore.readthedocs.io/en/stable/definitions.html#node-attributes>`_)
+1. Via the ``data_mapping`` :term:`link <Links>` attribute of an incoming :term:`link <Links>` (see `Link attributes <https://ewokscore.readthedocs.io/en/stable/definitions.html#link-attributes>`_)
+2. Via the ``parameters`` CLI argument (or ``inputs`` for Python) when executing/submitting the :term:`workflow` (see `ewoks execute reference <https://ewoks.readthedocs.io/en/stable/cli.html#ewoks-execute>`_)
+3. Via the ``default_inputs`` :term:`node <Nodes>` attribute of the :term:`node <Nodes>` itself (see `Node attributes <https://ewokscore.readthedocs.io/en/stable/definitions.html#node-attributes>`_)
 
-If the same input is specified by these different sources, *ewoks* applies the following priorities:
+If the same input is specified by these different sources, :term:`Ewoks` applies the following priorities:
 
-- **Data mapping takes precedence over workflow parameters and default inputs**
-- If the input is not specified by the data mapping, **the workflow parameters takes precedence over the default inputs**
-- If the input is not specified by the data mapping nor the workflow parameters, **default inputs are used as last resort**
+- Data mapping takes precedence over :term:`workflow` parameters and default inputs.
+- If the input is not specified by the data mapping, the :term:`workflow` parameters takes precedence over the default inputs.
+- If the input is not specified by the data mapping nor the :term:`workflow` parameters, default inputs are used as last resort.
 
 TL;DR
 -----
@@ -26,7 +26,7 @@ TL;DR
 Example
 -------
 
-Consider the following workflow made of `SumTask` nodes from `ewokscore` (`SumTask` takes two inputs `a` and `b` and sums them):
+Consider the following :term:`workflow` made of `SumTask` :term:`nodes` from `ewokscore` (`SumTask` takes two inputs `a` and `b` and sums them):
 
 .. code-block:: python
 
@@ -56,11 +56,11 @@ If we execute the workflow with no parameters/inputs:
     >>> execute_graph(graph=wf)
     {'result': 3}
 
-There is no incoming link with data mapping, no workflow inputs, the two default inputs are summed to get ``3``.
+There is no incoming :term:`link <Links>` with data mapping, no :term:`workflow` inputs, the two default inputs are summed to get ``3``.
 
 ---
 
-If we specify a value for ``b`` when executing the workflow:
+If we specify a value for ``b`` when executing the :term:`workflow`:
 
 .. code-block:: python-console
 
@@ -76,11 +76,11 @@ If we specify a value for ``b`` when executing the workflow:
     ... )
     {'result': 21}
 
-``a`` is still ``1`` but the default value of ``b`` was replaced by the workflow input value (``20``), changing to result to ``21``.
+``a`` is still ``1`` but the default value of ``b`` was replaced by the :term:`workflow` input value (``20``), changing to result to ``21``.
 
 ---
 
-If we change our workflow to include a ``SumTask`` before our ``sum_node`` with an incoming data mapping that sets ``b`` value to its result (in this case ``200``):
+If we change our :term:`workflow` to include a ``SumTask`` before our ``sum_node`` with an incoming data mapping that sets ``b`` value to its result (in this case ``200``):
 
 .. code-block:: python
 
@@ -109,7 +109,7 @@ If we change our workflow to include a ``SumTask`` before our ``sum_node`` with 
         ],
     }
 
-Then, if we execute as before (with the workflow input):
+Then, if we execute as before (with the :term:`workflow` input):
 
 .. code-block:: python-console
 
@@ -125,4 +125,4 @@ Then, if we execute as before (with the workflow input):
     ... )
     {'result': 201}
 
-We see that both the default input and the workflow input for ``b`` of ``sum_node`` are ignored, the data mapping taking precedence to change the result to ``201``.
+We see that both the default input and the :term:`workflow` input for ``b`` of ``sum_node`` are ignored, the data mapping taking precedence to change the result to ``201``.

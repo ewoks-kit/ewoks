@@ -1,10 +1,10 @@
-Inspect Workflow Inputs
-=======================
+Inspect :term:`Workflow` Inputs
+===============================
 
-Ewoks workflows use input parameters that can be configured for each node.
+:term:`Ewoks` :term:`workflows <Workflow>` use input parameters that can be configured for each :term:`node <Nodes>`.
 This tutorial demonstrates how to inspect and verify these input parameters using several methods.
 
-We'll use the `demo` workflow from the Ewoks test suite as an example.
+We'll use the `demo` :term:`workflow` from the :term:`Ewoks` test suite as an example.
 Convert it to JSON format with the following command:
 
 .. code-block:: bash
@@ -14,13 +14,13 @@ Convert it to JSON format with the following command:
 Command-Line Inspection
 -----------------------
 
-To view the input parameters defined in a workflow, use the `ewoks show` command:
+To view the input parameters defined in a :term:`workflow`, use the `ewoks show` command:
 
 .. code-block:: bash
 
     ewoks show example.json
 
-This displays all input parameters, their values, and the workflow node they belong to:
+This displays all input parameters, their values, and the :term:`workflow` :term:`node <Nodes>` they belong to:
 
 .. code-block:: bash
 
@@ -99,12 +99,12 @@ Parameters with `<MISSING_DATA>` do not have a value. If a missing parameter is 
     ╘════════╧════════════════╧═══════════════════╧═══════╛
     ⁽*⁾ Value is required for execution.
 
-In this case, the `a` parameter for task `SumTask` at node `task2` is required and must be provided before execution.
+In this case, the `a` parameter for :term:`task <Task>` `SumTask` at :term:`node <Nodes>` `task2` is required and must be provided before execution.
 
-Workflow nodes can be identified by:
+:term:`Workflow` :term:`nodes` can be identified by:
 
 - **Task identifier** – the identifier of the code to be executed.
-- **Id** – the unique identifier of the node within the workflow.
+- **Id** – the unique identifier of the :term:`node <Nodes>` within the :term:`workflow`.
 - **Label** (if present) – a human-readable tag, which may not be unique.
 
 If no labels are defined, the `Label` column is omitted from the output.
@@ -112,13 +112,13 @@ If no labels are defined, the `Label` column is omitted from the output.
 Validating Execution Arguments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Workflow parameters can be overridden at execution time using one of the following options:
+:term:`Workflow` parameters can be overridden at execution time using one of the following options:
 
-* ``-pt TASK_ID:NAME=VALUE`` — apply to all nodes with the specified task identifier
-* ``-pn NODE_ID:NAME=VALUE`` — apply to the node with the specified node id
-* ``-pl LABEL:NAME=VALUE`` — apply to all nodes with the specified label
-* ``-ps NAME=VALUE`` — apply to all start nodes
-* ``-pa NAME=VALUE`` — apply to all nodes
+* ``-pt TASK_ID:NAME=VALUE`` — apply to all :term:`nodes` with the specified :term:`task <Task>` identifier
+* ``-pn NODE_ID:NAME=VALUE`` — apply to the :term:`node <Nodes>` with the specified :term:`node <Nodes>` id
+* ``-pl LABEL:NAME=VALUE`` — apply to all :term:`nodes` with the specified label
+* ``-ps NAME=VALUE`` — apply to all start :term:`nodes`
+* ``-pa NAME=VALUE`` — apply to all :term:`nodes`
 
 For example, to target a specific task identifier:
 
@@ -126,7 +126,7 @@ For example, to target a specific task identifier:
 
     ewoks execute example.json -pt SumTask:delay=99
 
-Before executing the workflow, you can verify that your arguments are applied as intended using `ewoks show` with the same arguments:
+Before executing the :term:`workflow`, you can verify that your arguments are applied as intended using `ewoks show` with the same arguments:
 
 .. code-block:: bash
 
@@ -171,7 +171,7 @@ The output will reflect the overridden `delay` values:
     │ b      │ 6              │ SumTask           │ task6 │
     ╘════════╧════════════════╧═══════════════════╧═══════╛
 
-The `-pt` flag uses the task identifier as the target prefix in the format `<taskid>:<parameter>=<value>`, so `-pt SumTask:delay=99` applies `delay=99` to all nodes whose task identifier is `SumTask`.
+The `-pt` flag uses the :term:`task <Task>` identifier as the target prefix in the format `<taskid>:<parameter>=<value>`, so `-pt SumTask:delay=99` applies `delay=99` to all :term:`nodes` whose :term:`task <Task>` identifier is `SumTask`.
 
 Graphical Interfaces
 --------------------
@@ -197,7 +197,7 @@ Web GUI
 
 To inspect parameters via the :ref:`web interface <ewoksweb>`:
 
-1. Convert the workflow while applying overrides:
+1. Convert the :term:`workflow` while applying overrides:
 
     .. code-block:: bash
 
@@ -215,12 +215,12 @@ To inspect parameters via the :ref:`web interface <ewoksweb>`:
 
         INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 
-3. Open the workflow file in your browser:
+3. Open the :term:`workflow` file in your browser:
 
     .. image:: images/inspect_web_open.png
         :alt: Open the workflow file from disk in the web UI.
 
-4. Click on a node to view or edit its parameters:
+4. Click on a :term:`node <Nodes>` to view or edit its parameters:
 
     .. image:: images/inspect_web_node.png
         :alt: Click on each node to inspect input parameters.
