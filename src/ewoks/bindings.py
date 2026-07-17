@@ -241,7 +241,7 @@ def _print_graph(
     if rows:
         print(tabulate(rows, headers=column_names, tablefmt="fancy_grid"))
     else:
-        print("No workflow inputs parameters detected!")
+        print("No workflow input parameters detected!")
     for footnote in footnotes:
         print(footnote)
 
