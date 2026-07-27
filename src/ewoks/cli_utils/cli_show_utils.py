@@ -6,7 +6,7 @@ from ewoksutils.cli_utils import cli_log_utils
 from ewoksutils.cli_utils import cli_parse
 from ewoksutils.cli_utils.cli_spec import CLIArg
 
-from .._engines import get_graph_representations
+from .cli_arguments import ewoks_load_arguments
 
 
 def show_arguments(
@@ -19,22 +19,7 @@ def show_arguments(
 
     args_list += cli_arguments.workflow_arguments("show")
     args_list += cli_arguments.ewoks_inputs_arguments()
-    args_list += [
-        CLIArg(
-            "source_representation",
-            ["--src-format"],
-            type=str.lower,
-            choices=get_graph_representations(),
-            help="Source format.",
-        ),
-        CLIArg(
-            "load_options",
-            ["-o", "--load-option"],
-            action="append",
-            metavar="OPTION=VALUE",
-            help="Load options.",
-        ),
-    ]
+    args_list += ewoks_load_arguments()
     return args_list
 
 
