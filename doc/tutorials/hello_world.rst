@@ -96,10 +96,10 @@ This is the output you should get
 .. note::
 
     :term:`Ewoks` developers rarely design :term:`workflows <Workflow>` by hand like this but instead use graphical interfaces to produce
-    the dictionnary (usually stored in JSON). See :ref:`this page about the Ewoks graphical interfaces <gui>`.
+    the dictionary (usually stored in JSON). See :ref:`this page about the Ewoks graphical interfaces <gui>`.
 
 .. note::
 
-    For all the fields that can be set when creating the dictionnary representing the :term:`workflow`, see the
+    For all the fields that can be set when creating the dictionary representing the :term:`workflow`, see the
     `Ewoks specification <https://ewokscore.readthedocs.io/en/stable/reference/specs.html>`_.
 

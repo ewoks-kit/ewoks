@@ -56,7 +56,7 @@ An :term:`Ewoks` :term:`workflow` is represented in Python by a Python ``dict`` 
 Defining the nodes
 ------------------
 
-:term:`Ewoks` :term:`nodes` are represented as Python ``dict``. Each entry of the dictionnary defines a characteristic of the :term:`node <Nodes>`. Lets illustrate this with the first :term:`node <Nodes>` that will define the detector geometry:
+:term:`Ewoks` :term:`nodes` are represented as Python ``dict``. Each entry of the dictionary defines a characteristic of the :term:`node <Nodes>`. Lets illustrate this with the first :term:`node <Nodes>` that will define the detector geometry:
 
 .. code-block:: python
 
