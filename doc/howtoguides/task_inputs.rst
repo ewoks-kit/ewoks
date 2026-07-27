@@ -1,7 +1,7 @@
-Define Task class inputs
-========================
+Define :term:`Task` class inputs
+================================
 
-There are two ways of defining task inputs in Ewoks when using the `Task` class:
+There are two ways of defining :term:`task <Task>` inputs in :term:`Ewoks` when using the `Task` class:
 
 - :ref:`Input names`: inputs are defined by their names, given as lists of strings
 - :ref:`Input model`: inputs are defined by a `Pydantic model <https://docs.pydantic.dev/latest/concepts/models/>`_
@@ -15,7 +15,7 @@ Input names
 
 Required input names are given as a list of strings via the ``input_names`` subclass argument of ``Task``. 
 
-They can then be retrieved in the task via ``self.inputs`` or ``self.get_input_value``:
+They can then be retrieved in the :term:`task <Task>` via ``self.inputs`` or ``self.get_input_value``:
 
 .. code-block:: python
 
@@ -36,7 +36,7 @@ For demonstration purposes, we can `execute a task from Python <./task_python.rs
     >>> task.run()
     a=1 b=2
 
-Since these are **required** input names, Ewoks will throw a ``TaskInputError`` if one is missing
+Since these are **required** input names, :term:`Ewoks` will throw a ``TaskInputError`` if one is missing
 
 .. code-block:: python-console
 
@@ -94,7 +94,7 @@ Default values can be given thanks to ``get_input_value``
 Subclassing
 ^^^^^^^^^^^
 
-Subclasses of a task will inherit the input names from the base class and any additional input name will be added to those:
+Subclasses of a :term:`task <Task>` will inherit the input names from the base class and any additional input name will be added to those:
 
 .. code-block:: python
 
@@ -118,9 +118,9 @@ Input model
 
 Instead of input names, it is possible to provide a `Pydantic model <https://docs.pydantic.dev/latest/concepts/models/>`_ for inputs. 
 
-The model needs to derive from ``ewoks.BaseInputModel`` and must be provided via ``input_model`` to the task.
+The model needs to derive from ``ewoks.BaseInputModel`` and must be provided via ``input_model`` to the :term:`task <Task>`.
 
-Inputs can then be retrieved in the task via ``self.inputs`` or ``self.get_input_value``:
+Inputs can then be retrieved in the :term:`task <Task>` via ``self.inputs`` or ``self.get_input_value``:
 
 .. code-block:: python
 
@@ -227,7 +227,7 @@ For example, we can add an optional input to our model by giving it a default va
 Subclassing
 ^^^^^^^^^^^
 
-Subclasses of tasks with input models will inherit the model if they do not implement a model themselves
+Subclasses of :term:`tasks <Task>` with input models will inherit the model if they do not implement a model themselves
 
 .. code-block:: python
 
@@ -275,5 +275,5 @@ Incompatibility between methods
     
     But also, **a subclass must use the same input definition method as its base class**:
 
-    - If the base class task uses ``input_names``/``optional_input_names``, the subclass must use ``input_names``/``optional_input_names`` as well.
-    - If the base class task uses ``input_model``, the subclass must use an ``input_model`` that subclasses the model of the base task (see :ref:`above <Subclassing models>`).
+    - If the base class :term:`task <Task>` uses ``input_names``/``optional_input_names``, the subclass must use ``input_names``/``optional_input_names`` as well.
+    - If the base class :term:`task <Task>` uses ``input_model``, the subclass must use an ``input_model`` that subclasses the model of the base :term:`task <Task>` (see :ref:`above <Subclassing models>`).

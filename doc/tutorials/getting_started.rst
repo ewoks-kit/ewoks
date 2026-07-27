@@ -1,7 +1,7 @@
 Getting started
 ===============
 
-Install the Ewoks core libraries suite using ``pip``:
+Install the :term:`Ewoks` core libraries suite using ``pip``:
 
 .. code-block:: bash
 
@@ -12,15 +12,15 @@ This will include all core tools and example workflows.
 Run an Example Workflow
 -----------------------
 
-The ``ewoks`` package includes several demo workflows. To run the ``demo`` workflow from the command line:
+The ``ewoks`` package includes several demo workflows. To run the ``demo`` :term:`workflow` from the command line:
 
 .. code-block:: bash
 
    ewoks execute demo -p a=10 -p b=3 --test --outputs=all
 
 - ``-p a=10 -p b=3``: Set input parameters
-- ``--test``: Load the ``demo`` workflow from Ewoks test suite
-- ``--outputs=all``: Print outputs of all workflow nodes
+- ``--test``: Load the ``demo`` :term:`workflow` from Ewoks test suite
+- ``--outputs=all``: Print outputs of all :term:`workflow` nodes
 
 For full CLI options, run:
 
@@ -33,7 +33,7 @@ Or refer to the `Command-line reference <../reference/cli.html>`_.
 Inspect Workflow Parameters
 ----------------------------
 
-Before executing a workflow, you can inspect its parameters using:
+Before executing a :term:`workflow`, you can inspect its parameters using:
 
 .. code-block:: bash
 

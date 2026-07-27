@@ -1,9 +1,9 @@
 How-to Guides
 =============
 
-*Ewoks* is versatile with respect to workflow creation, edition, and execution
+:term:`Ewoks` is versatile with respect to :term:`workflow` creation, edition, and execution
 across different environments and interfaces. This guide presents several possible
-ways of handling workflows with *Ewoks*, whether through command-line tools,
+ways of handling :term:`workflows <Workflow>` with :term:`Ewoks`, whether through command-line tools,
 Python APIs, graphical interfaces, or REST services.
 
 Getting started

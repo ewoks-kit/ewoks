@@ -1,7 +1,7 @@
-Infrastructure for workflow management
-======================================
+Infrastructure for :term:`workflow` management
+==============================================
 
-Documentation related to workflow infrastructure (servers, message brokers):
+Documentation related to :term:`workflow` infrastructure (servers, message brokers):
 
-* `ewoksjob <https://ewoksjob.readthedocs.io/>`_: job scheduling for Ewoks workflows
-* `ewoksserver <https://ewoksserver.readthedocs.io/>`_: REST server to manage and execute workflows
+* `ewoksjob <https://ewoksjob.readthedocs.io/>`_: job scheduling for :term:`Ewoks` :term:`workflows <Workflow>`
+* `ewoksserver <https://ewoksserver.readthedocs.io/>`_: REST server to manage and execute :term:`workflows <Workflow>`

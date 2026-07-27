@@ -8,3 +8,4 @@ Command-Line Interface (CLI) and Python API reference.
 
     reference/cli
     reference/api
+    reference/glossary

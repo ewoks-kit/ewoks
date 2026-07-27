@@ -1,18 +1,18 @@
 Choosing an engine for execution
 =================================
 
-Ewoks workflows can be executed using several engines, each with its own capabilities:
+:term:`Ewoks` :term:`workflows <Workflow>` can be executed using several :term:`execution engines <Execution engine>`, each with its own capabilities:
 
 - `Dask <https://www.dask.org/>`_: Distributed and parallel computing framework.
-- `Pypushflow <https://pypushflow.readthedocs.io/>`_: Scheduler for acyclic and cyclic task graphs.
+- `Pypushflow <https://pypushflow.readthedocs.io/>`_: Scheduler for acyclic and cyclic :term:`task <Task>` graphs.
 - `Orange <https://orangedatamining.com/>`_: Visual programming and data visualization platform.
 
-New engines can be added following the :doc:`./new_engine` procedure.
+New :term:`execution engines <Execution engine>` can be added following the :doc:`./new_engine` procedure.
 
 Using a Supported Engine
 ------------------------
 
-To run workflows with a specific engine, install the appropriate extra:
+To run :term:`workflows <Workflow>` with a specific :term:`execution engine <Execution engine>`, install the appropriate extra:
 
 .. code-block:: bash
 
@@ -20,9 +20,9 @@ To run workflows with a specific engine, install the appropriate extra:
    pip install ewoks[ppf]      # For Pypushflow
    pip install ewoks[orange]   # For Orange
 
-If no engine is installed, Ewoks defaults to a basic sequential engine (``"core"``).
+If no :term:`execution engine <Execution engine>` is installed, :term:`Ewoks` defaults to a basic sequential :term:`execution engine <Execution engine>` (``"core"``).
 
-To specify the engine explicitly, use the ``--engine`` option:
+To specify the :term:`execution engine <Execution engine>` explicitly, use the ``--engine`` option:
 
 .. code-block:: bash
 
@@ -38,11 +38,11 @@ To specify the engine explicitly, use the ``--engine`` option:
 
       ewoks execute --test demo --engine orange
 
-   ...will open the Orange GUI, where you can edit the workflow.
+   ...will open the Orange GUI, where you can edit the :term:`workflow`.
 
    To execute it:
 
-   - Double-click on ``task0`` in the workflow.
+   - Double-click on ``task0`` in the :term:`workflow`.
    - Use the **Trigger** button in the **Task** widget.
 
    For guidance, see `Orange's getting started docs <https://orangedatamining.com/getting-started/>`_.
@@ -51,7 +51,7 @@ To specify the engine explicitly, use the ``--engine`` option:
 Engine Feature Comparison
 -------------------------
 
-Some engines support more advanced features, like loops or GUI interaction:
+Some :term:`execution engines <Execution engine>` support more advanced features, like loops or GUI interaction:
 
 .. raw:: html
  
@@ -106,9 +106,8 @@ Some engines support more advanced features, like loops or GUI interaction:
 
 .. note::
 
-   **Native support** means that Ewoks tasks can be executed without modification.
+   **Native support** means that :term:`Ewoks` :term:`tasks <Task>` can be executed without modification.
 
-   For Orange, you must wrap each Ewoks task in a corresponding Orange widget. See the
+   For Orange, you must wrap each :term:`Ewoks` :term:`task <Task>` in a corresponding Orange widget. See the
    `Orange widget tutorial <https://ewoksorange.readthedocs.io/en/stable/tutorials/my_first_widget.html>`_
    in the ``ewoksorange`` documentation.
-
