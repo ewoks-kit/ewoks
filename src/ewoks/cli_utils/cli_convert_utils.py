@@ -7,6 +7,7 @@ from ewoksutils.cli_utils import cli_parse
 from ewoksutils.cli_utils.cli_spec import CLIArg
 
 from .._engines import get_graph_representations
+from .cli_arguments import ewoks_load_arguments
 from .cli_parse import parse_destinations
 
 
@@ -20,6 +21,7 @@ def convert_arguments(
 
     args_list += cli_arguments.workflow_arguments("convert")
     args_list += cli_arguments.ewoks_inputs_arguments()
+    args_list += ewoks_load_arguments()
     args_list += [
         CLIArg(
             "destination",
@@ -28,25 +30,11 @@ def convert_arguments(
             help="Destination of the conversion (e.g., JSON filename).",
         ),
         CLIArg(
-            "source_representation",
-            ["--src-format"],
-            type=str.lower,
-            choices=get_graph_representations(),
-            help="Source format.",
-        ),
-        CLIArg(
             "destination_representation",
             ["--dst-format"],
             type=str.lower,
             choices=get_graph_representations(),
             help="Destination format.",
-        ),
-        CLIArg(
-            "load_options",
-            ["-o", "--load-option"],
-            action="append",
-            metavar="OPTION=VALUE",
-            help="Load options.",
         ),
         CLIArg(
             "save_options",
