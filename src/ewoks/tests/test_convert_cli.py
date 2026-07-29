@@ -102,11 +102,16 @@ def test_convert_to_ows(graph_name, tmpdir):
         "--test",
     ]
 
-    DAGs = ["acyclic1", "demo", "empty"]
-    if graph_name not in DAGs:
+    not_DAGs = ["acyclic2", "acyclic3", "cyclic1", "self_trigger", "triangle1"]
+
+    if graph_name in not_DAGs:
         with pytest.raises(RuntimeError):
             main(argv=argv, shell=False)
         return
+
+    known_DAGs = ["acyclic1", "demo", "empty", "with_schema"]
+    if graph_name not in known_DAGs:
+        pytest.skip(f"unknown worklfow {graph_name!r}")
 
     # Run `convert`
     with no_widget_registry():
