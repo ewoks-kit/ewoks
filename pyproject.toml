@@ -47,8 +47,12 @@ test = [
     "importlib_resources",
     "pyqt5",
     "pytest-venv",
+    "defusedxml",
 ]
-dev = ["ewoks[test]", "ruff"]
+dev = [
+    "ewoks[test]",
+    "ruff>=0.16.0"
+]
 doc = [
     "ewoks[test]",
     "sphinx >=4.5",
@@ -78,12 +82,21 @@ ewoks = "ewoks.__main__:main"
 "ewoks.tests.notebooks" = ["*.ipynb"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
-ignore = ["E501"]
+select = [
+    "E", # pycodestyle errors
+    "F", # pyflakes
+    "I", # isort
+    "S", # flake8-bandit
+]
+ignore = [
+    "E501", # line too long
+]
 
 [tool.ruff.lint.per-file-ignores]
-# Ignore `S101` (assert used violations) in all test files
-"src/ewoks/tests/*.py" = ["S101"]
+"src/ewoks/tests/*.py" = [
+    "S101"  # allow asserts
+]
 
 [tool.ruff.lint.isort]
 force-single-line = true
+known-first-party = ["ewoks"]

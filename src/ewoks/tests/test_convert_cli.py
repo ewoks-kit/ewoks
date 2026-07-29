@@ -1,8 +1,8 @@
 import os
 import sys
-from xml.etree import ElementTree
 
 import pytest
+from defusedxml import ElementTree
 from ewokscore import load_graph
 from ewokscore.graph import TaskGraph
 from ewokscore.task import Task

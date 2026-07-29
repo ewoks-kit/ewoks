@@ -8,8 +8,8 @@ def test_install(venv):
     with pytest.raises(Exception, match="package is not installed"):
         venv.get_version("ewoksdata")
 
-    subprocess.check_call(
-        [
+    subprocess.check_call(  # noqa: S603
+        [  # noqa: S607
             "ewoks",
             "install",
             "--yes",
@@ -41,8 +41,8 @@ def test_install_with_extract(venv):
 
     graph = {"graph": {"id": "test_install"}, "nodes": nodes}
 
-    subprocess.check_call(
-        [
+    subprocess.check_call(  # noqa: S603
+        [  # noqa: S607
             "ewoks",
             "install",
             "--yes",
