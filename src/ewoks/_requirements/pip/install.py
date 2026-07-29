@@ -12,4 +12,6 @@ def pip_install(requirements: Sequence[str], python_path: str) -> int:
     for warning in warnings:
         logger.warning(warning)
     # https://pip.pypa.io/en/stable/user_guide/#using-pip-from-your-program
-    return subprocess.check_call([python_path, "-m", "pip", "install", *requirements])
+    return subprocess.check_call(  # noqa: S603
+        [python_path, "-m", "pip", "install", *requirements]
+    )
