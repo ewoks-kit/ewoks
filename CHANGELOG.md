@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0rc1] - 2026-08-02
+
+### Changed
+
+- Upgrade `ewoksutils` to 2.*
+- Upgrade `ewoksorange` to 6.*
+
 ## [6.0.0] - 2026-07-01
 
 ### Changed
@@ -213,7 +220,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoksppf` dependency.
 - Command-line interface.
 
-[unreleased]: https://github.com/ewoks-kit/ewoks/compare/v6.0.0...HEAD
+[unreleased]: https://github.com/ewoks-kit/ewoks/compare/v6.0.0rc1...HEAD
+[7.0.0rc1]: https://github.com/ewoks-kit/ewoks/compare/v6.0.0...v7.0.0rc1
 [6.0.0]: https://github.com/ewoks-kit/ewoks/compare/v5.0.0...v6.0.0
 [5.0.0]: https://github.com/ewoks-kit/ewoks/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/ewoks-kit/ewoks/compare/v3.0.0...v4.0.0
