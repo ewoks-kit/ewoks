@@ -70,11 +70,11 @@ class CondaManager(BaseManager):
         try:
             _ = self._check_output_raw("mamba", "--version")
             return ("mamba",)
-        except Exception:
+        except Exception:  # noqa S110
             pass
         try:
             _ = self._check_output_raw("micromamba", "--version")
             return ("micromamba",)
-        except Exception:
+        except Exception:  # noqa S110
             pass
         return ("conda",)

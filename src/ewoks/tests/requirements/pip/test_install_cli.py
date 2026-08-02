@@ -1,5 +1,6 @@
 import json
 import subprocess
+import sys
 
 import pytest
 
@@ -20,18 +21,19 @@ def test_install_pip_with_freeze(venv):
         }
     }
 
-    subprocess.check_call(
-        [
-            "ewoks",
-            "install",
-            "--yes",
-            json.dumps(graph),
-            "--package-manager-name",
-            "pip",
-            "--package-manager-command",
-            f"{venv.python} -m pip",
-        ]
-    )
+    argv = [
+        sys.executable,
+        "-m",
+        "ewoks",
+        "install",
+        "--yes",
+        json.dumps(graph),
+        "--package-manager-name",
+        "pip",
+        "--package-manager-command",
+        f"{venv.python} -m pip",
+    ]
+    subprocess.check_call(argv)  # noqa: S603 - Trusted test command;
 
     assert venv.get_version("ewoksdata")
 
@@ -53,18 +55,19 @@ def test_install_pip_without_freeze(venv):
         }
     }
 
-    subprocess.check_call(
-        [
-            "ewoks",
-            "install",
-            "--yes",
-            json.dumps(graph),
-            "--package-manager-name",
-            "pip",
-            "--package-manager-command",
-            f"{venv.python} -m pip",
-        ]
-    )
+    argv = [
+        sys.executable,
+        "-m",
+        "ewoks",
+        "install",
+        "--yes",
+        json.dumps(graph),
+        "--package-manager-name",
+        "pip",
+        "--package-manager-command",
+        f"{venv.python} -m pip",
+    ]
+    subprocess.check_call(argv)  # noqa: S603 - Trusted test command;
 
     assert venv.get_version("ewoksdata")
 
@@ -82,18 +85,19 @@ def test_install_legacy_pip_freeze(venv):
         }
     }
 
-    subprocess.check_call(
-        [
-            "ewoks",
-            "install",
-            "--yes",
-            json.dumps(graph),
-            "--package-manager-name",
-            "pip",
-            "--package-manager-command",
-            f"{venv.python} -m pip",
-        ]
-    )
+    argv = [
+        sys.executable,
+        "-m",
+        "ewoks",
+        "install",
+        "--yes",
+        json.dumps(graph),
+        "--package-manager-name",
+        "pip",
+        "--package-manager-command",
+        f"{venv.python} -m pip",
+    ]
+    subprocess.check_call(argv)  # noqa: S603 - Trusted test command;
 
     assert venv.get_version("ewoksdata")
 
@@ -120,17 +124,18 @@ def test_install_without_requirements(venv):
         "nodes": nodes,
     }
 
-    subprocess.check_call(
-        [
-            "ewoks",
-            "install",
-            "--yes",
-            json.dumps(graph),
-            "--package-manager-name",
-            "pip",
-            "--package-manager-command",
-            f"{venv.python} -m pip",
-        ]
-    )
+    argv = [
+        sys.executable,
+        "-m",
+        "ewoks",
+        "install",
+        "--yes",
+        json.dumps(graph),
+        "--package-manager-name",
+        "pip",
+        "--package-manager-command",
+        f"{venv.python} -m pip",
+    ]
+    subprocess.check_call(argv)  # noqa: S603 - Trusted test command;
 
     assert venv.get_version("ewoksdata")

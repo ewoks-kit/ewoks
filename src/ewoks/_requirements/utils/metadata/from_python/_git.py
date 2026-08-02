@@ -63,7 +63,7 @@ def _find_remote_for_commit(path: Path, commit: str) -> Optional[str]:
 
 
 def _git(cmd: List[str], repo: Path) -> str:
-    return subprocess.check_output(
+    return subprocess.check_output(  # noqa: S603 - Internal git helper
         ["git"] + cmd, cwd=repo, stderr=subprocess.DEVNULL, text=True
     ).strip()
 

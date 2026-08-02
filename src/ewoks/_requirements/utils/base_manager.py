@@ -158,14 +158,14 @@ class BaseManager:
     @staticmethod
     def _check_output_raw(*args: str) -> str:
         try:
-            return subprocess.check_output(args, text=True)
+            return subprocess.check_output(args, text=True)  # noqa: S603 - Internal manager call
         except Exception as ex:
             raise RuntimeError(f"Command failed: {args}") from ex
 
     @staticmethod
     def _check_call_raw(*args: str) -> int:
         try:
-            return subprocess.check_call(args)
+            return subprocess.check_call(args)  # noqa: S603 - Internal manager call
         except Exception as ex:
             raise RuntimeError(f"Command failed: {args}") from ex
 
