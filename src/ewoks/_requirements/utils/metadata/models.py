@@ -1,0 +1,39 @@
+from typing import Dict
+from typing import Optional
+
+from pydantic import BaseModel
+from pydantic import Field
+
+
+class SystemInfo(BaseModel):
+    system: str
+    release: str
+    version: str
+    machine: str
+    processor: str
+
+
+class PythonInfo(BaseModel):
+    version: str
+    implementation: str
+    compiler: str
+    build: str
+
+
+class GitInfo(BaseModel):
+    commit: str
+    remote: Optional[str] = None
+    uncommitted_changes: bool = Field(default=False, description="Uncommited changes")
+
+
+class ArchiveInfo(BaseModel):
+    url: str
+    hashes: Dict[str, str]
+
+
+class Distribution(BaseModel):
+    name: str
+    version: str
+    git: Optional[GitInfo] = None
+    archive: Optional[ArchiveInfo] = None
+    installer: Optional[str] = None
