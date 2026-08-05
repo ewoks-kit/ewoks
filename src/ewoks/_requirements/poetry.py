@@ -25,6 +25,7 @@ class PoetryManager(BaseManager):
     NAME = "poetry"
     PRIORITY = 2
     REQUIREMENTS_MODEL = PoetryRequirements
+    COMMAND_EXAMPLE = "python -m poetry"
 
     def __init__(self, *command: str) -> None:
         if not command:

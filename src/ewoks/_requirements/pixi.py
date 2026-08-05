@@ -22,6 +22,7 @@ class PixiManager(BaseManager):
     NAME = "pixi"
     PRIORITY = 5
     REQUIREMENTS_MODEL = PixiRequirements
+    COMMAND_EXAMPLE = "pixi"
 
     def __init__(self, *command: str) -> None:
         if not command:

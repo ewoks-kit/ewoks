@@ -57,6 +57,7 @@ class BaseManager:
     NAME = NotImplemented
     PRIORITY = NotImplemented
     REQUIREMENTS_MODEL = NotImplemented
+    COMMAND_EXAMPLE = NotImplemented  # example of an associated shell command
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -114,7 +115,7 @@ class BaseManager:
     def _install_requirements(self, requirements: BaseRequirements) -> None:
         reraise = None
 
-        if isinstance(requirements, self.REQUIREMENTS_MODEL):
+        if self._is_native(requirements):
             try:
                 if self._install_native_requirements(requirements):
                     return
@@ -136,6 +137,10 @@ class BaseManager:
         if reraise:
             raise reraise
         raise ValueError("No distibutions provided to install")
+
+    def _is_native(self, requirements: BaseRequirements) -> bool:
+        """Requirements can be installed with the manager-specific method."""
+        return isinstance(requirements, self.REQUIREMENTS_MODEL)
 
     @abstractmethod
     def _gather_requirements(self) -> Dict[str, Any]:

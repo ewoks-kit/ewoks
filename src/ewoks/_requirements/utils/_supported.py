@@ -3,20 +3,20 @@ from typing import Dict
 from typing import Type
 
 from ..pip import PipManager
+from ..uv import UvManager
 from .base_manager import BaseManager
 
 # from ..conda import CondaManager
 # from ..pipenv import PipenvManager
 # from ..pixi import PixiManager
 # from ..poetry import PoetryManager
-# from ..uv import UvManager
 
 
 @lru_cache(1)
 def get_supported_managers() -> Dict[str, Type[BaseManager]]:
     managers = [
         PipManager,
-        # UvManager,
+        UvManager,
         # PoetryManager,
         # PipenvManager,
         # CondaManager,

@@ -1,37 +1,34 @@
 import importlib.metadata
-import logging
 import sys
-from typing import Any
-from typing import Dict
 from typing import List
 from typing import Literal
 from typing import Optional
 
-from .utils import pip_freeze
-from .utils.base_manager import BaseManager
-from .utils.base_manager import BaseManagerInfo
-from .utils.base_manager import BaseRequirements
-
-logger = logging.getLogger(__name__)
+from .utils.freeze_manager import FreezeManager
+from .utils.freeze_manager import FreezeManagerInfo
+from .utils.freeze_manager import FreezeRequirements
 
 
-class PipManagerInfo(BaseManagerInfo):
+class PipManagerInfo(FreezeManagerInfo):
     name: Literal["pip"] = "pip"
-    freeze: List[str]
 
 
-class PipRequirements(BaseRequirements):
+class PipRequirements(FreezeRequirements):
     manager: PipManagerInfo
 
-    def __info__(self) -> str:
-        freeze = "\n  ".join(self.manager.freeze)
-        return f"{super().__info__()}\nRequirements:\n  {freeze}"
 
+class PipManager(FreezeManager):
+    """Uses the `pip` module of a python interpreter.
 
-class PipManager(BaseManager):
+    The command selects the target environment. For example
+    `PipManager("/path/to/python", "-m", "pip")`. The current python
+    environment is the target when no command is provided.
+    """
+
     NAME = "pip"
     PRIORITY = 0
     REQUIREMENTS_MODEL = PipRequirements
+    COMMAND_EXAMPLE = "python -m pip"
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -49,44 +46,8 @@ class PipManager(BaseManager):
         """Manager is explicitly active."""
         return False
 
-    def _gather_requirements(self) -> Dict[str, Any]:
-        freeze_output = self._check_output("freeze").strip().splitlines()
+    def _freeze(self) -> str:
+        return self._check_output("freeze")
 
-        return {"freeze": freeze_output}
-
-    def _install_native_requirements(self, requirements: PipRequirements) -> bool:
-        freeze = requirements.manager.freeze
-
-        if not freeze:
-            return False
-
-        arguments = self._arguments(freeze)
+    def _install(self, arguments: List[str]) -> None:
         self._check_call("install", "--no-cache-dir", *arguments)
-        return True
-
-    def _install_base_requirements(self, requirements: BaseRequirements) -> bool:
-        freeze = self._freeze_distributions(requirements)
-        if not freeze:
-            return False
-
-        arguments = self._arguments(freeze)
-        self._check_call("install", "--no-cache-dir", *arguments)
-        return True
-
-    def _freeze_distributions(self, requirements: BaseRequirements) -> List[str]:
-        """
-        Pip freeze argument from list of distributions.
-        """
-        freeze = []
-        for dist in requirements.distributions:
-            lines, warnings = pip_freeze.freeze_distribution(dist)
-            for warning in warnings:
-                logger.warning(warning)
-            freeze.extend(lines)
-        return freeze
-
-    def _arguments(self, freeze: List[str]) -> List[str]:
-        arguments, warnings = pip_freeze.sanitize_freeze(freeze)
-        for warning in warnings:
-            logger.warning(warning)
-        return arguments

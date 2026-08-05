@@ -1,6 +1,6 @@
 import pytest
 
-from ...._requirements.utils.pip_freeze import sanitize_freeze
+from ..._requirements.utils.pip_freeze import sanitize_freeze
 
 
 def test_normal_requirement():

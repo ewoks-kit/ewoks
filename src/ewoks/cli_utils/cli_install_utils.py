@@ -7,6 +7,8 @@ from ewoksutils.cli_utils import cli_log_utils
 from ewoksutils.cli_utils import cli_parse
 from ewoksutils.cli_utils.cli_spec import CLIArg
 
+from .cli_arguments import package_manager_arguments
+
 logger = logging.getLogger(__name__)
 
 
@@ -26,19 +28,8 @@ def install_arguments(
             action="store_true",
             help="Automatically accept installation prompts.",
         ),
-        CLIArg(
-            "package_manager_name",
-            ["--package-manager-name"],
-            type=str,
-            help='Package manager name. For example "pip"',
-        ),
-        CLIArg(
-            "package_manager_command",
-            ["--package-manager-command"],
-            type=str,
-            help='Package manager command. For example "python -m pip"',
-        ),
     ]
+    args_list += package_manager_arguments("install")
     return args_list
 
 

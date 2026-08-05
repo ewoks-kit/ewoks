@@ -30,6 +30,7 @@ class PipenvManager(BaseManager):
     NAME = "pipenv"
     PRIORITY = 3
     REQUIREMENTS_MODEL = PipenvRequirements
+    COMMAND_EXAMPLE = "python -m pipenv"
 
     def __init__(self, *command: str) -> None:
         if not command:

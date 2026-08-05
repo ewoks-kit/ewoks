@@ -29,6 +29,7 @@ class CondaManager(BaseManager):
     NAME = "conda"
     PRIORITY = 4
     REQUIREMENTS_MODEL = CondaRequirements
+    COMMAND_EXAMPLE = "conda"
 
     def __init__(self, *command: str) -> None:
         if not command:

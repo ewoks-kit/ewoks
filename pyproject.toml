@@ -46,7 +46,7 @@ test = [
     "ipykernel",
     "importlib_resources",
     "pyqt5",
-    "pytest-venv",
+    "uv",
     "defusedxml",
 ]
 dev = [

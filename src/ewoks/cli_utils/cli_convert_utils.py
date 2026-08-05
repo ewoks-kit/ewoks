@@ -8,6 +8,7 @@ from ewoksutils.cli_utils.cli_spec import CLIArg
 
 from .._engines import get_graph_representations
 from .cli_arguments import ewoks_load_arguments
+from .cli_arguments import package_manager_arguments
 from .cli_parse import parse_destinations
 
 
@@ -49,19 +50,8 @@ def convert_arguments(
             action="store_true",
             help="Do not include the packages of the current Python environment as requirements in the destination workflow.",
         ),
-        CLIArg(
-            "package_manager_name",
-            ["--package-manager-name"],
-            type=str,
-            help='Package manager name to generate requirements. For example "pip"',
-        ),
-        CLIArg(
-            "package_manager_command",
-            ["--package-manager-command"],
-            type=str,
-            help='Package manager command to generate requirements. For example "python -m pip"',
-        ),
     ]
+    args_list += package_manager_arguments("generate")
     return args_list
 
 

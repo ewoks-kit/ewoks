@@ -1,6 +1,7 @@
 """Workflow requirements."""
 
 import logging
+from typing import Dict
 from typing import Optional
 from typing import Tuple
 from typing import Union
@@ -8,11 +9,20 @@ from typing import Union
 from ewokscore.graph import TaskGraph
 
 from .utils import parse
+from .utils._supported import get_supported_managers
 from .utils.base_manager import BaseRequirements
 from .utils.detect import get_manager
 from .utils.metadata import last_resort
 
 logger = logging.getLogger(__file__)
+
+
+def supported_managers() -> Dict[str, str]:
+    """Names of the supported package managers with an example command for each."""
+    return {
+        name: manager_cls.COMMAND_EXAMPLE
+        for name, manager_cls in get_supported_managers().items()
+    }
 
 
 def add_requirements(
