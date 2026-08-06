@@ -44,7 +44,7 @@ def _select_manager(manager_name: str, manager_command: Tuple[str, ...]) -> Base
         raise ValueError(f"Package manager {manager_name!r} is not supported")
 
     manager = manager_cls(*manager_command)
-    if not manager.version:
+    if manager.version() is None:
         raise ValueError(f"Package manager {manager_name!r} is not available")
 
     return manager
