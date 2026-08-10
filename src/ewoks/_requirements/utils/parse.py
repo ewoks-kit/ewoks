@@ -3,13 +3,13 @@ from typing import Union
 
 from ._supported import get_supported_managers
 from .base_manager import BaseRequirements
-from .metadata.from_pip_freeze import pip_freeze_requirements
+from .metadata.from_requirements_txt import requirements_txt_metadata
 
 
 def parse_requirements(requirements: Union[dict, List[str]]) -> BaseRequirements:
     if isinstance(requirements, list):
         # Legacy 'pip freeze' list
-        requirements = pip_freeze_requirements(requirements)
+        requirements = requirements_txt_metadata(requirements)
 
     if not isinstance(requirements, dict):
         raise TypeError(

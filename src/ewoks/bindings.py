@@ -7,6 +7,7 @@ import sys
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
+from typing import Callable
 from typing import Dict
 from typing import Generator
 from typing import List
@@ -25,6 +26,7 @@ from tabulate import tabulate
 from . import _engines
 from . import _requirements
 from . import graph_cache
+from ._requirements.utils.environment import Environment
 from .errors import AbortException
 
 try:
@@ -203,7 +205,11 @@ def convert_graph(
     save_requirements: bool = True,
     package_manager_name: Optional[str] = None,
     package_manager_command: Union[None, str, Tuple[str, ...]] = None,
+    on_requirements: Optional[Callable[[Optional[str]], None]] = None,
 ) -> Union[str, dict]:
+    """`on_requirements` is called with the name of the package manager that
+    generated the requirements, or `None` when they are not saved.
+    """
     if load_options is None:
         load_options = dict()
     if save_options is None:
@@ -216,14 +222,19 @@ def convert_graph(
         elif isinstance(package_manager_command, str):
             package_manager_command = _split_command(package_manager_command)
 
-        try:
-            _requirements.add_requirements(
-                graph,
-                manager_name=package_manager_name,
-                manager_command=package_manager_command,
-            )
-        except Exception:
-            logger.exception("Continue after failure to add workflow requirements")
+        manager_name = _requirements.add_requirements(
+            graph,
+            manager_name=package_manager_name,
+            manager_command=package_manager_command,
+        )
+        logger.info("Requirements generated with the %r package manager", manager_name)
+    else:
+        manager_name = None
+        logger.info("Requirements not saved")
+
+    if on_requirements is not None:
+        on_requirements(manager_name)
+
     return save_graph(graph, destination, **save_options)
 
 
@@ -267,39 +278,65 @@ def _print_graph(
 def install_graph(
     source,
     skip_prompt: bool = False,
+    in_place: bool = False,
+    env_name: Optional[str] = None,
+    env_root: Optional[Union[str, Path]] = None,
+    python_version: Optional[str] = None,
+    ensure_ewoks: bool = False,
+    clean: bool = False,
     package_manager_name: Optional[str] = None,
     package_manager_command: Union[None, str, Tuple[str, ...]] = None,
     load_options: Optional[dict] = None,
-) -> None:
+) -> Environment:
+    """Install the requirements of a workflow in a python environment named
+    `env_name` (the workflow identifier by default), created inside `env_root` or
+    inside the root directory of the package manager. With `in_place` the
+    requirements are installed in the current python environment instead.
+    `ensure_ewoks` adds ewoks itself when the requirements do not contain it. `clean`
+    removes the environment when it already exists. Unless `skip_prompt`, every
+    installation and removal must be confirmed.
+
+    :raises ValueError: `in_place` with an environment name, root or `clean`
+    :raises AbortException: installation not confirmed
+    """
+    if in_place and (env_name or env_root or clean):
+        raise ValueError(
+            "Installing in the current python environment does not create an "
+            "environment"
+        )
     if load_options is None:
         load_options = dict()
     graph = load_graph(source, **load_options)
 
     requirements = _requirements.get_requirements(graph)
 
+    if not in_place and env_name is None:
+        env_name = _requirements.environment_name(graph)
+
     if not package_manager_command:
         package_manager_command = tuple()
     elif isinstance(package_manager_command, str):
         package_manager_command = _split_command(package_manager_command)
 
-    if skip_prompt:
-        _requirements.install_requirements(
-            requirements,
-            manager_name=package_manager_name,
-            manager_command=package_manager_command,
-        )
-        return
-
-    answer = input(
-        f"{requirements.__info__()}\n\nThis will install the packages above. Do you want to proceed (y/N)?"
+    return _requirements.install_requirements(
+        requirements,
+        env_name=env_name,
+        env_root=env_root,
+        manager_name=package_manager_name,
+        manager_command=package_manager_command,
+        python_version=python_version,
+        ensure_ewoks=ensure_ewoks,
+        clean=clean,
+        confirm=None if skip_prompt else _confirm_installation,
     )
-    if answer.lower() == "y" or answer.lower() == "yes":
-        _requirements.install_requirements(
-            requirements,
-            manager_name=package_manager_name,
-            manager_command=package_manager_command,
-        )
-    else:
+
+
+def _confirm_installation(description: str) -> None:
+    """
+    :raises AbortException: installation not confirmed
+    """
+    answer = input(f"{description}\nDo you want to proceed (y/N)?")
+    if answer.lower() not in ("y", "yes"):
         raise AbortException()
 
 

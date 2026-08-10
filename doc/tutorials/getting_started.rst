@@ -87,6 +87,16 @@ To inspect or modify a workflow, convert it to a JSON file:
 
    ewoks convert demo demo.json --test
 
+The JSON file also stores the python environment the :term:`workflow` needs, so it can be
+recreated later:
+
+.. code-block:: bash
+
+   ewoks install demo.json --yes
+   ewoks execute --env ~/.ewoks/envs/demo demo.json --outputs=all
+
+See the `Install and execute a workflow tutorial <./install.html>`_.
+
 Learn More
 ==========
 

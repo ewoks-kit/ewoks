@@ -18,9 +18,27 @@ ewoks install
 
     If no ``requirements`` field exist, **ewoks install** will try to extract requirements from the :term:`tasks <Task>` in the :term:`workflows <Workflow>` before installing them.
 
-    Unless ``--yes`` is provided, **ewoks install** will ask for confirmation before installing the packages.
+    **ewoks install** installs the files of the :term:`package manager` that generated the ``requirements``.
+    When the ``requirements`` do not contain those files, or installing them fails, the Python ``distributions`` they contain are installed instead.
 
-    By default, packages are installed in the current Python environment: if **ewoks install** is run in a virtual environment, the packages will be installed in this virtual environment.
+    Unless ``--yes`` is provided, **ewoks install** will ask for confirmation before each installation and before removing an existing environment.
+
+    By default, packages are installed in a new Python environment named after the workflow identifier, which is the ``id`` field of its ``graph`` field.
+    The environment is created where the :term:`package manager` creates named environments (``~/.ewoks/envs`` for package managers that do not have such a directory).
+    Use ``--env-root`` for another directory to create the environment in and ``--env-name`` for another name than the workflow identifier.
+    An environment that already exists is installed in, unless ``--clean`` is provided to remove it first.
+    The :term:`workflow` can be executed in that environment when it contains **ewoks** itself, which is the case when the ``requirements`` contain it.
+    Use ``--with-ewoks`` to add **ewoks** when the ``requirements`` do not contain it, without changing any of the versions they do contain:
+
+    .. code-block:: bash
+
+        ewoks install myworkflow.json --yes --with-ewoks
+        ewoks execute --env ~/.ewoks/envs/myworkflow myworkflow.json
+
+    Use ``--in-place`` to install in the current Python environment instead. This is not supported by all package managers.
+
+    The package manager that generated the ``requirements`` is used to reproduce the environment when it is available.
+    Provide ``--package-manager-name`` (and optionally ``--package-manager-command``) to use another one: the ``requirements`` always contain the list of installed Python distributions as a fallback.
 
 ewoks convert
 -------------

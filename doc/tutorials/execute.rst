@@ -13,6 +13,17 @@ The :ref:`python interface <execute_python>` for executing :term:`workflows <Wor
 
 The equivalent exists for the :ref:`command-line <cli>`.
 
+A :term:`workflow` can also be executed in a python environment created from the
+:term:`workflow` itself
+
+.. code-block:: bash
+
+    ewoks install /path/to/graph.json --yes
+    ewoks execute --env ~/.ewoks/envs/mygraph /path/to/graph.json
+
+See :ref:`this tutorial <install_tutorial>` and
+:ref:`this how-to guide <requirements>`.
+
 The :code:`engine=None` argument selects the default :term:`execution engine <Execution engine>`. Documentation on different :term:`execution engines <Execution engine>`:
 
 * `ewoksppf <https://ewoksppf.readthedocs.io/>`_ : execute cyclic :term:`workflows <Workflow>`
