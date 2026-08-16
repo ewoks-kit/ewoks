@@ -4,13 +4,13 @@ pip and venv
 ============
 
 End-to-end walk-through with ``pip`` and ``venv``. Both are part of a python installation, so
-there is no :term:`package manager` to install.
+there is no other :term:`package manager` to install.
 
 Producer side
 -------------
 
 Create an environment, install :term:`ewoks` in it and store a :term:`workflow` with the
-packages of that environment as its ``requirements``
+packages of that environment as its ``requirements``.
 
 .. tabs::
 
