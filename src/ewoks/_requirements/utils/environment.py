@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 ENVIRONMENT_SUBDIRS: Tuple[str, ...] = (
     "",  # environment prefix, for example created by `python -m venv`
+    ".venv",  # uv project
 )
 
 

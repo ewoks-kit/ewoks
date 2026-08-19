@@ -26,7 +26,7 @@ them in a directory of their own."""
 class BaseManagerInfo(models.BaseModel):
     name: str = Field(
         description="Package manager that generated the requirements.",
-        examples=["pip-venv"],
+        examples=["pip-venv", "uv"],
     )
     version: str = Field(
         description="Version of the package manager.", examples=["25.0.1"]
@@ -35,8 +35,9 @@ class BaseManagerInfo(models.BaseModel):
         default_factory=dict,
         description=(
             "Content of the files the package manager needs to reproduce the "
-            "environment: 'requirements.txt' for pip-venv. Empty when the package "
-            "manager could not generate them."
+            "environment: 'requirements.txt' for pip-venv, 'pyproject.toml' and "
+            "'uv.lock' for uv. Empty when the package manager could not generate "
+            "them."
         ),
         examples=[{"requirements.txt": "ewoks==7.0.0\nnetworkx==3.4.2\n"}],
     )
@@ -184,8 +185,8 @@ class BaseManager:
 
     def environments_root(self) -> Path:
         """Root directory in which the package manager creates named environments.
-        Package managers that create an environment wherever they are told to (venv)
-        use a directory of ewoks.
+        Package managers that create an environment wherever they are told to (venv
+        and uv) use a directory of ewoks.
         """
         return EWOKS_ENVIRONMENTS_ROOT
 

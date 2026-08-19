@@ -82,5 +82,5 @@ class Distribution(BaseModel):
     installer: Optional[str] = Field(
         default=None,
         description="Tool that installed the distribution.",
-        examples=["pip"],
+        examples=["pip", "uv"],
     )

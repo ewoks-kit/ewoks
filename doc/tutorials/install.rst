@@ -14,12 +14,14 @@ There are two sides to this
 * the *re-producer* receives the :term:`workflow`, recreates the environment and executes the
   :term:`workflow` in it.
 
-Both sides use a :term:`package manager`. The walk-through below does both sides
+Both sides use a :term:`package manager`. The walk-throughs below do the same thing with each
+of the supported ones
 
 .. toctree::
     :maxdepth: 1
 
     install/pip_venv
+    install/uv
 
 The producer and the re-producer do not need the same :term:`package manager`: the
 requirements contain the installed python packages, which any :term:`package manager` can
@@ -68,7 +70,7 @@ and the command to remove it again
       Remove : rm -rf ewoks_envs/demo
 
 Without ``--yes`` you are asked to confirm after the packages have been listed. The
-walk-through uses ``--env-root`` to create the environment in the working directory. Without
+walk-throughs use ``--env-root`` to create the environment in the working directory. Without
 it the environment is created where the :term:`package manager` creates named environments.
 
 Execute the workflow
