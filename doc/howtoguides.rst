@@ -15,6 +15,7 @@ Getting started
     howtoguides/inspect_workflows
     howtoguides/gui
     howtoguides/python
+    howtoguides/requirements
     howtoguides/engines
 
 Automation

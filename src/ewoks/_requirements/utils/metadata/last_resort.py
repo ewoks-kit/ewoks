@@ -5,7 +5,7 @@ from typing import Set
 
 from ewokscore.graph import TaskGraph
 
-from .from_pip_freeze import pip_freeze_requirements
+from .from_requirements_txt import requirements_txt_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +14,7 @@ def last_resort_requirements(graph: TaskGraph) -> Dict[str, Any]:
     """Last resort when installing a workflow that does not have requirements:
     guess the requirements from the workflow nodes.
     """
-    freeze: Set[str] = set()
-    distributions: Set[str] = set()
+    requirements: Set[str] = set()
 
     for node_id, node in graph.graph.nodes.items():
         task_identifier = node["task_identifier"]
@@ -29,14 +28,13 @@ def last_resort_requirements(graph: TaskGraph) -> Dict[str, Any]:
                 )
                 continue
 
-            freeze.add(package)
-            distributions.add(package)
+            requirements.add(package)
 
         elif task_type == "notebook":
             logger.warning(
                 f"Requirement extraction may be incomplete for node {node_id}: {task_type} is only partially supported."
             )
-            freeze.add("ewokscore[notebook]")
+            requirements.add("ewokscore[notebook]")
 
         elif task_type == "script":
             logger.warning(
@@ -47,8 +45,4 @@ def last_resort_requirements(graph: TaskGraph) -> Dict[str, Any]:
                 f"Could not extract requirements for node {node_id}: unsupported task type {task_type}."
             )
 
-    requirements = pip_freeze_requirements(sorted(freeze))
-    requirements["distributions"] = [
-        {"name": name, "version": ""} for name in sorted(distributions)
-    ]
-    return requirements
+    return requirements_txt_metadata(sorted(requirements))

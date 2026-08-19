@@ -95,3 +95,21 @@ def test_execute_with_convert_destination_inputs_all(tmpdir):
         assert has_default_input(node, "b", 42)
 
     assert_in_graph_requirements(graph, "ewokscore")
+
+
+def test_execute_in_environment(tmpdir):
+    """The workflow is executed by the python interpreter of another environment."""
+    destination = str(tmpdir / "convert.json")
+    argv = [
+        sys.executable,
+        "execute",
+        "demo",
+        "--test",
+        "--env",
+        sys.prefix,
+        "-o",
+        f"convert_destination={destination}",
+    ]
+
+    assert main(argv=argv, shell=False) == 0
+    assert os.path.exists(destination)

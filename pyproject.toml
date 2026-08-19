@@ -46,7 +46,6 @@ test = [
     "ipykernel",
     "importlib_resources",
     "pyqt5",
-    "pytest-venv",
     "defusedxml",
 ]
 dev = [
@@ -64,6 +63,7 @@ doc = [
     "pydata-sphinx-theme",
     "sphinx-argparse",
     "sphinx-copybutton",
+    "sphinx-tabs",
 ]
 
 [tool.setuptools]

@@ -9,6 +9,7 @@ from ewokscore.tests.examples.graphs import graph_names
 from ewoksutils.import_utils import import_qualname
 from orangewidget.widget import OWBaseWidget
 
+from .. import _requirements
 from ..__main__ import main
 from .requirements.utils import assert_in_graph_requirements
 from .utils import has_default_input
@@ -79,6 +80,27 @@ def test_convert_with_taskid_inputs(tmpdir):
     for node in graph.graph.nodes.values():
         if node["task_identifier"] == taskid:
             assert has_default_input(node, "value", "test")
+
+
+def test_convert_requirements_failure(tmpdir, monkeypatch):
+    def add_requirements(*args, **kwargs) -> None:
+        raise RuntimeError("no package manager")
+
+    monkeypatch.setattr(_requirements, "add_requirements", add_requirements)
+
+    destination = str(tmpdir / "demo.json")
+    argv = [
+        sys.executable,
+        "convert",
+        "demo",
+        destination,
+        "--test",
+    ]
+
+    with pytest.raises(RuntimeError, match="no package manager"):
+        main(argv=argv, shell=False)
+
+    assert not os.path.exists(destination)
 
 
 @pytest.mark.parametrize("graph_name", graph_names())

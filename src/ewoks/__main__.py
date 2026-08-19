@@ -1,8 +1,10 @@
+import subprocess
 import sys
 import traceback
 from argparse import ArgumentDefaultsHelpFormatter
 from argparse import ArgumentParser
 from argparse import Namespace
+from pathlib import Path
 from pprint import pprint
 from subprocess import CalledProcessError
 from typing import Any
@@ -16,12 +18,14 @@ from ewoksutils.cli_utils import cli_execute_utils
 from ewoksutils.cli_utils import cli_submit_utils
 from ewoksutils.cli_utils.cli_argparse import add_to_parser
 
+from ._requirements.utils.environment import Environment
 from .bindings import _load_graph
 from .bindings import convert_graph
 from .bindings import execute_graph
 from .bindings import install_graph
 from .bindings import lint_graph
 from .bindings import show_graph
+from .cli_utils import cli_arguments
 from .cli_utils import cli_convert_utils
 from .cli_utils import cli_install_utils
 from .cli_utils import cli_lint_utils
@@ -79,7 +83,11 @@ def create_argument_parser(shell: bool = False) -> ArgumentParser:
         help="Check that a workflow follows the Ewoks specification",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
-    add_to_parser(execute, cli_execute_utils.execute_arguments(shell=shell))
+    add_to_parser(
+        execute,
+        cli_execute_utils.execute_arguments(shell=shell)
+        + cli_arguments.environment_arguments(),
+    )
     add_to_parser(submit, cli_submit_utils.submit_arguments(shell=shell))
     add_to_parser(cancel, cli_cancel_utils.cancel_arguments(shell=shell))
     add_to_parser(convert, cli_convert_utils.convert_arguments(shell=shell))
@@ -154,8 +162,21 @@ def command_convert(
     for workflow, graph, destination in zip(
         cli_args.workflows, cli_args.graphs, cli_args.destinations
     ):
-        convert_graph(graph, destination, **cli_args.convert_options)
+        # The package manager is only known when the requirements are generated
+        manager_names: List[Optional[str]] = []
+        convert_graph(
+            graph,
+            destination,
+            on_requirements=manager_names.append,
+            **cli_args.convert_options,
+        )
         print(f"Converted {workflow} -> {destination}")
+        if manager_names[0] is None:
+            print("  Requirements: not saved")
+        else:
+            print(
+                f"  Requirements: generated with the {manager_names[0]!r} package manager"
+            )
     if shell:
         return 0
     return None
@@ -165,23 +186,73 @@ def command_install(
     cli_args: Namespace, shell: bool = False
 ) -> Optional[Literal[0, 1]]:
     cli_install_utils.parse_install_arguments(cli_args, shell=shell)
-    for workflow, graph in zip(cli_args.workflows, cli_args.graphs):
+    for workflow, source in zip(cli_args.workflows, cli_args.graphs):
         try:
-            install_graph(
-                graph,
+            environment = install_graph(
+                source,
                 skip_prompt=cli_args.yes,
+                in_place=cli_args.in_place,
+                env_name=cli_args.env_name,
+                env_root=cli_args.env_root,
+                python_version=cli_args.python_version,
+                ensure_ewoks=cli_args.with_ewoks,
+                clean=cli_args.clean,
                 package_manager_name=cli_args.package_manager_name,
                 package_manager_command=cli_args.package_manager_command,
             )
-        except CalledProcessError as e:
-            print(f"Install failed for {workflow}: {e}")
+        except (CalledProcessError, RuntimeError, ValueError):
+            traceback.print_exc()
+            print(f"Install failed for {workflow}")
         except AbortException:
             print(f"Install aborted for {workflow}")
         else:
             print(f"Installed requirements for {workflow}")
+            if not cli_args.in_place:
+                location = environment.location
+                print(f"  Python : {environment.python}")
+                if environment.distribution_version("ewoks"):
+                    print(f"  Execute: ewoks execute --env {location} {workflow}")
+                else:
+                    print(
+                        "  Execute: the environment has no ewoks to execute the "
+                        "workflow with (use '--with-ewoks')"
+                    )
+                print(f"  Remove : {_remove_command(location)}")
     if shell:
         return 0
     return None
+
+
+def _remove_command(location: Path) -> str:
+    """Shell command that removes a python environment."""
+    if sys.platform == "win32":
+        return f'rmdir /s /q "{location}"'
+    return f"rm -rf {location}"
+
+
+def command_in_environment(
+    location: str, argv: List[str], shell: bool = False
+) -> Literal[0, 1]:
+    """Run the command in another python environment."""
+    environment = Environment.from_location(location)
+    arguments = _remove_option(argv[1:], "--env")
+    return subprocess.call(  # noqa: S603 - Arguments of this command
+        [environment.python, "-m", "ewoks", *arguments]
+    )
+
+
+def _remove_option(arguments: List[str], name: str) -> List[str]:
+    """Remove an option and its value from CLI arguments."""
+    keep = []
+    skip = False
+    for argument in arguments:
+        if skip:
+            skip = False
+        elif argument == name:
+            skip = True
+        elif not argument.startswith(f"{name}="):
+            keep.append(argument)
+    return keep
 
 
 def command_show(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0, 1]]:
@@ -216,6 +287,9 @@ def main(argv=None, shell: bool = True) -> Union[Any, Literal[0, 1]]:
     if argv is None:
         argv = sys.argv
     cli_args = parser.parse_args(argv[1:])
+
+    if getattr(cli_args, "env", None):
+        return command_in_environment(cli_args.env, argv, shell=shell)
 
     if cli_args.command == "execute":
         return command_execute(cli_args, shell=shell)

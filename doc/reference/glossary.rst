@@ -28,5 +28,8 @@ Glossary
     Execution engine
         An execution engine is the underlying software used to execute the :term:`workflow`. :term:`Ewoks` supports multiple execution engines: pypushflow, orange, dask and the ewoks internal excution engine.
 
+    Package manager
+        A package manager creates python environments and installs packages in them. :term:`Ewoks` uses package managers to store the environment in which a :term:`workflow` was created and to recreate it: pip with venv.
+
     blissdata
         `Blissdata <https://bliss.gitlab-pages.esrf.fr/blissdata>`_ is an API for accessing data from BLISS in memory.

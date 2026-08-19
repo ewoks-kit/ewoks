@@ -24,6 +24,7 @@ extensions = [
     "nbsphinx",
     "nbsphinx_link",
     "sphinx_copybutton",
+    "sphinx_tabs.tabs",
 ]
 templates_path = ["_templates"]
 exclude_patterns = ["build", "**.ipynb_checkpoints"]
