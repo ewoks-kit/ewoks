@@ -1,5 +1,6 @@
 """Dependencies of a TOML manifest: `name = spec` entries in which the
-specification is a version constraint, an URL or a git reference.
+specification is a version constraint, an URL or a git reference. Poetry and pixi
+use the same syntax.
 """
 
 import json
