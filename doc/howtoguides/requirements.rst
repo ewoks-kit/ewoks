@@ -19,7 +19,7 @@ What is stored
   :term:`package manager` can recreate the environment from this list.
 * ``manager``: the :term:`package manager` that generated the requirements, with the content
   of the files it needs to recreate the environment: ``requirements.txt`` for pip-venv,
-  ``pyproject.toml`` and ``uv.lock`` for uv.
+  ``pyproject.toml`` and ``uv.lock`` for uv, ``pixi.toml`` and ``pixi.lock`` for pixi.
 
 Use ``--exclude-requirements`` to store nothing.
 
@@ -85,27 +85,30 @@ The default name is the identifier of the :term:`workflow`, which is the ``id`` 
 ``graph`` field. A :term:`workflow` without an identifier gets a name derived from its
 content.
 
-Without ``--env-root`` the :term:`package manager` decides where the environment goes. venv
-and uv create an environment wherever they are told to, so for pip-venv and uv ewoks uses
-``~/.ewoks/envs``.
+Without ``--env-root`` the :term:`package manager` decides where the environment goes. venv,
+uv and pixi create an environment wherever they are told to, so for pip-venv, uv and pixi
+ewoks uses ``~/.ewoks/envs``.
 
 An environment that already exists is installed in, which adds the requirements to what is
 already there. Use ``--clean`` to remove it first. Only a directory that contains a python
 environment is removed.
 
 The environment of a :term:`workflow` is a directory: for pip-venv it is a virtual
-environment and for uv a project with the environment in ``.venv``. ``ewoks execute --env``
-takes that directory, not the python interpreter inside it.
+environment, for uv a project with the environment in ``.venv`` and for pixi a workspace with
+the environment in ``.pixi/envs/default``. ``ewoks execute --env`` takes that directory, not
+the python interpreter inside it.
 
 Limitations
 -----------
 
-* ``--python-version`` is a request: uv can provide any python version but pip-venv can only
-  use the version of the python interpreter that creates the environment. A warning is emitted
-  when the version cannot be provided.
-* uv resolves the ``distributions`` into a lock file, which requires access to the package
-  index. When that fails, a warning is emitted and the requirements are stored without files:
-  the environment is then recreated from the ``distributions`` list.
+* ``--in-place`` is only supported by pip-venv and uv. The other package managers only install
+  in an environment they created themselves.
+* ``--python-version`` is a request: uv can provide any python version, pixi provides the patch
+  versions built by its channel and pip-venv can only use the version of the python interpreter
+  that creates the environment. A warning is emitted when the version cannot be provided.
+* uv and pixi resolve the ``distributions`` into a lock file, which requires access to the
+  package index. When that fails, a warning is emitted and the requirements are stored without
+  files: the environment is then recreated from the ``distributions`` list.
 * A lock file is only read by a :term:`package manager` that understands its format version, so
   reproducing an environment can require a version of the tool that is at least as recent as
   the one that generated the requirements.
