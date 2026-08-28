@@ -22,6 +22,7 @@ of the supported ones
 
     install/pip_venv
     install/uv
+    install/poetry
     install/conda
     install/pixi
 

@@ -51,6 +51,7 @@ def _home_variables(home: Path) -> Dict[str, Path]:
         "CONDA_PKGS_DIRS": home / "conda" / "pkgs",
         # Directories in which package managers create named environments
         "CONDA_ENVS_DIRS": home / "conda" / "envs",
+        "POETRY_VIRTUALENVS_PATH": home / "poetry" / "virtualenvs",
         # Channels are no longer provided by the home directory of the user
         "CONDARC": condarc,
     }
