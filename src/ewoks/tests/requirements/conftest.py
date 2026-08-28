@@ -92,6 +92,13 @@ def fast_environment(fast_manager_case, tmp_path) -> Iterator[Environment]:
     yield from _environment(fast_manager_case, tmp_path)
 
 
+@pytest.fixture(params=FAST_MANAGER_CASES, ids=_FAST_IDS)
+def source_manager_case(request) -> ManagerCase:
+    """Repeats the test for every package manager that could have generated the
+    requirements to be installed."""
+    return _manager_case(request)
+
+
 def _manager_case(request) -> ManagerCase:
     case: ManagerCase = request.param
     if case.manager().version() is None:

@@ -15,6 +15,7 @@ from ..._requirements.pip_venv import PipVenvManager
 from ..._requirements.utils.base_manager import BaseManager
 from ..._requirements.utils.metadata import models
 from ..._requirements.utils.requirements_txt import REQUIREMENTS_FILENAME
+from ..._requirements.uv import UvManager
 
 
 class ManagerCase:
@@ -62,8 +63,24 @@ class PipVenvCase(ManagerCase):
         return {REQUIREMENTS_FILENAME: requirements}
 
 
+class UvCase(ManagerCase):
+    NAME = "uv"
+    MANAGER_CLS = UvManager
+    INSTALLER = "uv"
+
+    def native_files(
+        self, distributions: Sequence[models.Distribution], python_version: str
+    ) -> Dict[str, str]:
+        # Resolving a lock file requires the package index
+        try:
+            return UvManager()._files_from_distributions(distributions, python_version)
+        except RuntimeError:
+            return dict()
+
+
 MANAGER_CASES: List[ManagerCase] = [
     PipVenvCase(),
+    UvCase(),
 ]
 
 FAST_MANAGER_CASES: List[ManagerCase] = [

@@ -8,6 +8,7 @@ from ..._requirements import install_requirements
 from ..._requirements.utils import base_manager
 from ..._requirements.utils import detect
 from ..._requirements.utils._supported import get_supported_managers
+from ..._requirements.utils.detect import get_in_place_installer
 from ..._requirements.utils.detect import get_manager
 from ..._requirements.utils.environment import Environment
 from ..._requirements.utils.parse import parse_requirements
@@ -204,6 +205,17 @@ def test_install_in_place_not_supported(manager_case, monkeypatch):
 
     with pytest.raises(ValueError, match="cannot install in the current"):
         install_requirements(requirements, manager_name=manager_case.NAME)
+
+
+def test_in_place_installer(manager_case, monkeypatch):
+    """A package manager that cannot install in the current environment is not
+    used to do so."""
+    monkeypatch.setattr(manager_case.MANAGER_CLS, "CAN_INSTALL_IN_PLACE", False)
+
+    manager = get_in_place_installer()
+
+    assert manager.CAN_INSTALL_IN_PLACE
+    assert not isinstance(manager, manager_case.MANAGER_CLS)
 
 
 def test_ewoks_already_installed(manager, manager_case):
