@@ -11,8 +11,10 @@ from typing import Sequence
 from typing import Tuple
 from typing import Type
 
+from ..._requirements.conda import CondaManager
 from ..._requirements.pip_venv import PipVenvManager
 from ..._requirements.pixi import PixiManager
+from ..._requirements.utils import conda_channel
 from ..._requirements.utils.base_manager import BaseManager
 from ..._requirements.utils.metadata import models
 from ..._requirements.utils.requirements_txt import REQUIREMENTS_FILENAME
@@ -82,6 +84,30 @@ class UvCase(ManagerCase):
             return dict()
 
 
+class CondaCase(ManagerCase):
+    NAME = "conda"
+    MANAGER_CLS = CondaManager
+    INSTALLER = "conda"
+    SLOW = True
+    CHANNEL_PYTHON = True
+
+    def native_files(
+        self, distributions: Sequence[models.Distribution], python_version: str
+    ) -> Dict[str, str]:
+        pip_dependencies = "".join(
+            f"    - {dist.name}=={dist.version}\n" for dist in distributions
+        )
+        return {
+            "environment.yml": f"""channels:
+  - conda-forge
+dependencies:
+  - python={conda_channel.python_specifier(python_version)}
+  - pip
+  - pip:
+{pip_dependencies}"""
+        }
+
+
 class PixiCase(ManagerCase):
     NAME = "pixi"
     MANAGER_CLS = PixiManager
@@ -104,6 +130,7 @@ class PixiCase(ManagerCase):
 MANAGER_CASES: List[ManagerCase] = [
     PipVenvCase(),
     UvCase(),
+    CondaCase(),
     PixiCase(),
 ]
 

@@ -102,7 +102,7 @@ def python_executable(prefix: Path) -> Path:
 def _interpreters() -> Tuple[Path, ...]:
     """Interpreter locations inside an environment prefix, the first one being where
     a virtual environment has it. On Windows the other environments (a python
-    installation and pixi) have it in the prefix itself.
+    installation, conda and pixi) have it in the prefix itself.
     """
     if sys.platform == "win32":
         return (Path("Scripts", "python.exe"), Path("python.exe"))
