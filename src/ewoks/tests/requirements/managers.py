@@ -14,6 +14,7 @@ from typing import Type
 from ..._requirements.conda import CondaManager
 from ..._requirements.pip_venv import PipVenvManager
 from ..._requirements.pixi import PixiManager
+from ..._requirements.poetry import PoetryManager
 from ..._requirements.utils import conda_channel
 from ..._requirements.utils.base_manager import BaseManager
 from ..._requirements.utils.metadata import models
@@ -84,6 +85,23 @@ class UvCase(ManagerCase):
             return dict()
 
 
+class PoetryCase(ManagerCase):
+    NAME = "poetry"
+    MANAGER_CLS = PoetryManager
+    INSTALLER = "Poetry 1.8.5"  # poetry adds its version
+
+    def native_files(
+        self, distributions: Sequence[models.Distribution], python_version: str
+    ) -> Dict[str, str]:
+        # Resolving a lock file requires the package index
+        try:
+            return PoetryManager()._files_from_distributions(
+                distributions, python_version
+            )
+        except RuntimeError:
+            return dict()
+
+
 class CondaCase(ManagerCase):
     NAME = "conda"
     MANAGER_CLS = CondaManager
@@ -130,6 +148,7 @@ class PixiCase(ManagerCase):
 MANAGER_CASES: List[ManagerCase] = [
     PipVenvCase(),
     UvCase(),
+    PoetryCase(),
     CondaCase(),
     PixiCase(),
 ]
