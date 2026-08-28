@@ -3,7 +3,7 @@
 uv
 ==
 
-End-to-end walk-through with `uv <https://docs.astral.sh/uv/>`_.
+End-to-end walk-through of `workflow installation and execution <../install.rst>`_ with `uv <https://docs.astral.sh/uv/>`_.
 
 Install uv
 ----------
@@ -14,7 +14,7 @@ Install uv
 
         .. code-block:: bash
 
-            export UV_INSTALL_DIR=$HOME/.local/uv/bin
+            export UV_INSTALL_DIR=$HOME/.local/uv/bin  # default location
             curl -LsSf https://astral.sh/uv/install.sh | INSTALLER_NO_MODIFY_PATH=1 sh
             export PATH=$UV_INSTALL_DIR:$PATH
 
@@ -22,7 +22,7 @@ Install uv
 
         .. code-block:: bash
 
-            export UV_INSTALL_DIR=$HOME/.local/uv/bin
+            export UV_INSTALL_DIR=$HOME/.local/uv/bin  # default location
             curl -LsSf https://astral.sh/uv/install.sh | INSTALLER_NO_MODIFY_PATH=1 sh
             export PATH=$UV_INSTALL_DIR:$PATH
 
@@ -30,7 +30,7 @@ Install uv
 
         .. code-block:: powershell
 
-            $env:UV_INSTALL_DIR = "$env:USERPROFILE\.local\uv\bin"
+            $env:UV_INSTALL_DIR = "$env:USERPROFILE\.local\uv\bin"  # default location
             irm https://astral.sh/uv/install.ps1 | iex
             $env:PATH = "$env:UV_INSTALL_DIR;$env:PATH"
 
