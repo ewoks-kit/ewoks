@@ -209,10 +209,18 @@ def test_install_in_place_not_supported(manager_case, monkeypatch):
 
 def test_in_place_installer(manager_case, monkeypatch):
     """A package manager that cannot install in the current environment is not
-    used to do so."""
+    used to do so, even if that means none is available."""
     monkeypatch.setattr(manager_case.MANAGER_CLS, "CAN_INSTALL_IN_PLACE", False)
 
-    manager = get_in_place_installer()
+    try:
+        manager = get_in_place_installer()
+    except RuntimeError as e:
+        err_msg = (
+            "No package manager available that can "
+            "install in the current python environment"
+        )
+        assert str(e) == err_msg
+        return
 
     assert manager.CAN_INSTALL_IN_PLACE
     assert not isinstance(manager, manager_case.MANAGER_CLS)
