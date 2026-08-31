@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 ENVIRONMENT_SUBDIRS: Tuple[str, ...] = (
     "",  # environment prefix, for example created by `python -m venv`
-    ".venv",  # uv project
+    ".venv",  # uv and poetry project
+    os.path.join(".pixi", "envs", "default"),  # pixi project
 )
 
 
@@ -100,8 +101,8 @@ def python_executable(prefix: Path) -> Path:
 
 def _interpreters() -> Tuple[Path, ...]:
     """Interpreter locations inside an environment prefix, the first one being where
-    a virtual environment has it. On Windows an environment that is not virtual (a
-    python installation) has it in the prefix itself.
+    a virtual environment has it. On Windows the other environments (a python
+    installation, conda and pixi) have it in the prefix itself.
     """
     if sys.platform == "win32":
         return (Path("Scripts", "python.exe"), Path("python.exe"))

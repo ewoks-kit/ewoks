@@ -26,7 +26,7 @@ them in a directory of their own."""
 class BaseManagerInfo(models.BaseModel):
     name: str = Field(
         description="Package manager that generated the requirements.",
-        examples=["pip-venv", "uv"],
+        examples=["pip-venv", "uv", "poetry", "conda", "pixi"],
     )
     version: str = Field(
         description="Version of the package manager.", examples=["25.0.1"]
@@ -36,8 +36,9 @@ class BaseManagerInfo(models.BaseModel):
         description=(
             "Content of the files the package manager needs to reproduce the "
             "environment: 'requirements.txt' for pip-venv, 'pyproject.toml' and "
-            "'uv.lock' for uv. Empty when the package manager could not generate "
-            "them."
+            "'uv.lock' for uv, 'pyproject.toml' and 'poetry.lock' for poetry, "
+            "'environment.yml' for conda, 'pixi.toml' and 'pixi.lock' for pixi. "
+            "Empty when the package manager could not generate them."
         ),
         examples=[{"requirements.txt": "ewoks==7.0.0\nnetworkx==3.4.2\n"}],
     )
@@ -149,7 +150,7 @@ class BaseManager:
     @staticmethod
     def _installer(distribution: models.Distribution) -> str:
         """Tool that installed the distribution. It can contain more than the name
-        of the tool, for example its version.
+        of the tool: poetry writes "Poetry 1.8.5".
         """
         return (distribution.installer or "").lower()
 
@@ -184,9 +185,11 @@ class BaseManager:
         return Path(root or self.environments_root()).expanduser() / name
 
     def environments_root(self) -> Path:
-        """Root directory in which the package manager creates named environments.
-        Package managers that create an environment wherever they are told to (venv
-        and uv) use a directory of ewoks.
+        f"""Root directory in which the package manager creates named environments.
+
+        Package managers venv, uv and pixi allow the environment location to be
+        specified. For those managers the default location for environments created
+        by `ewoks` is `{EWOKS_ENVIRONMENTS_ROOT}`.
         """
         return EWOKS_ENVIRONMENTS_ROOT
 

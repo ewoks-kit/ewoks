@@ -19,7 +19,8 @@ What is stored
   :term:`package manager` can recreate the environment from this list.
 * ``manager``: the :term:`package manager` that generated the requirements, with the content
   of the files it needs to recreate the environment: ``requirements.txt`` for pip-venv,
-  ``pyproject.toml`` and ``uv.lock`` for uv.
+  ``pyproject.toml`` and ``uv.lock`` for uv, ``pyproject.toml`` and ``poetry.lock`` for
+  poetry, ``environment.yml`` for conda, ``pixi.toml`` and ``pixi.lock`` for pixi.
 
 Use ``--exclude-requirements`` to store nothing.
 
@@ -55,8 +56,8 @@ is not on the ``PATH`` or when a faster implementation should be used
 
 .. code-block:: bash
 
-    ewoks install demo.json --yes --package-manager-name uv \
-        --package-manager-command /path/to/uv
+    ewoks install demo.json --yes --package-manager-name conda \
+        --package-manager-command micromamba
 
 Choose the environment
 ----------------------
@@ -85,29 +86,36 @@ The default name is the identifier of the :term:`workflow`, which is the ``id`` 
 ``graph`` field. A :term:`workflow` without an identifier gets a name derived from its
 content.
 
-Without ``--env-root`` the :term:`package manager` decides where the environment goes. venv
-and uv create an environment wherever they are told to, so for pip-venv and uv ewoks uses
-``~/.ewoks/envs``.
+Without ``--env-root`` the :term:`package manager` decides where the environment goes: conda
+creates it in its own environment directory (``conda config --show envs_dirs``), so
+``conda activate <name>`` finds it, and poetry in the directory it creates project
+environments in (``poetry config virtualenvs.path``). venv, uv and pixi create an environment
+wherever they are told to, so for those ewoks uses ``~/.ewoks/envs``.
 
 An environment that already exists is installed in, which adds the requirements to what is
 already there. Use ``--clean`` to remove it first. Only a directory that contains a python
 environment is removed.
 
-The environment of a :term:`workflow` is a directory: for pip-venv it is a virtual
-environment and for uv a project with the environment in ``.venv``. ``ewoks execute --env``
-takes that directory, not the python interpreter inside it.
+The environment of a :term:`workflow` is a directory. For pip-venv and conda it is a python
+environment, for uv and poetry it is a project with the environment in ``.venv`` and for pixi
+it is a workspace with the environment in ``.pixi/envs/default``. ``ewoks execute --env`` takes
+that directory, not the python interpreter inside it.
 
 Limitations
 -----------
 
-* ``--python-version`` is a request: uv can provide any python version but pip-venv can only
-  use the version of the python interpreter that creates the environment. A warning is emitted
-  when the version cannot be provided.
-* uv resolves the ``distributions`` into a lock file, which requires access to the package
-  index. When that fails, a warning is emitted and the requirements are stored without files:
-  the environment is then recreated from the ``distributions`` list.
+* ``--in-place`` is only supported by pip-venv and uv. The other package managers only install
+  in an environment they created themselves.
+* ``--python-version`` is a request: uv can provide any python version, conda and pixi provide
+  the patch versions built by their channel, and pip-venv and poetry can only use the version of
+  the python interpreter that creates the environment. A warning is emitted when the version
+  cannot be provided.
+* uv, poetry and pixi resolve the ``distributions`` into a lock file, which requires access to
+  the package index. When that fails, a warning is emitted and the requirements are stored
+  without files: the environment is then recreated from the ``distributions`` list.
 * A lock file is only read by a :term:`package manager` that understands its format version, so
   reproducing an environment can require a version of the tool that is at least as recent as
   the one that generated the requirements.
+* poetry 1.8 or later is required. Older versions are reported as not available.
 * A package installed from a local directory cannot be recreated elsewhere. This is reported as
   a warning when the requirements are generated.

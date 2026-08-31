@@ -16,6 +16,7 @@ from ...errors import AbortException
 from .managers import ManagerCase
 from .utils import DISTRIBUTIONS
 from .utils import EWOKS_DEPENDENCIES
+from .utils import PYTHON_MINOR_VERSION
 from .utils import PYTHON_VERSION
 from .utils import assert_installed
 from .utils import assert_not_installed
@@ -89,9 +90,12 @@ def test_gather_requirements(manager, manager_case, monkeypatch):
     assert isinstance(requirements.manager.files, dict)
 
 
-def test_create_environment(environment):
+def test_create_environment(manager_case, environment):
     assert environment.exists()
-    assert environment.python_version() == PYTHON_VERSION
+    if manager_case.CHANNEL_PYTHON:
+        assert environment.python_version().startswith(f"{PYTHON_MINOR_VERSION}.")
+    else:
+        assert environment.python_version() == PYTHON_VERSION
     assert Environment.from_location(environment.location) == environment
     assert_not_installed(environment, DISTRIBUTIONS)
 

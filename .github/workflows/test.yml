@@ -32,7 +32,7 @@ jobs:
         ${{ matrix.extra-pytest-warnings }}
       enable-coverage: ${{ matrix.enable-coverage }}
       jupyter-platform-dirs: "1"
-      package-managers: "uv"
+      package-managers: "uv poetry pixi conda"
       codecov-flags: "unit"
     strategy:
       fail-fast: false

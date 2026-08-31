@@ -22,6 +22,9 @@ of the supported ones
 
     install/pip_venv
     install/uv
+    install/poetry
+    install/conda
+    install/pixi
 
 The producer and the re-producer do not need the same :term:`package manager`: the
 requirements contain the installed python packages, which any :term:`package manager` can

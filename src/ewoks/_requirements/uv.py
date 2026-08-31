@@ -83,6 +83,14 @@ class UvManager(BaseManager):
             or _is_project(Path(sys.prefix).parent)
         )
 
+    @classmethod
+    def installed_distribution(cls, distribution: models.Distribution) -> bool:
+        """The distribution was installed by this package manager."""
+        installer = cls._installer(distribution)
+        # PyPI distributions of a pixi workspace are installed by the uv that pixi
+        # vendors ("uv-pixi")
+        return "uv" in installer and "pixi" not in installer
+
     def create_environment(
         self, location: Path, python_version: Optional[str] = None
     ) -> Environment:
