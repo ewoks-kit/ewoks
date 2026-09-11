@@ -3,7 +3,8 @@
 uv
 ==
 
-End-to-end walk-through of `workflow installation and execution <../install.rst>`_ with `uv <https://docs.astral.sh/uv/>`_.
+End-to-end walk-through of `workflow installation and execution <../install.rst>`_
+with `uv <https://docs.astral.sh/uv/>`_.
 
 Install uv
 ----------

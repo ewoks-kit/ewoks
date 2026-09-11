@@ -18,6 +18,9 @@ PYTHON_VERSION = platform.python_version()
 runtime is used because a package manager can only provide a python version that
 is available on the machine."""
 
+PYTHON_MINOR_VERSION = ".".join(PYTHON_VERSION.split(".")[:2])
+"""Major and minor version of `PYTHON_VERSION`."""
+
 
 def _pinned(name: str, versions: Mapping[Tuple[int, int], str]) -> models.Distribution:
     """Distribution pinned to a version the running python supports. The versions
