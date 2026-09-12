@@ -35,6 +35,9 @@ def _home_variables(home: Path) -> Dict[str, Path]:
     """Environment variables that move everything a package manager writes
     outside a python environment to this home directory.
     """
+    condarc = home / ".condarc"
+    with open(condarc, "w", encoding="utf-8") as fh:
+        fh.write("channels:\n  - conda-forge\n")
     return {
         # Home directory on Linux, macOS and Windows
         "HOME": home,
@@ -44,6 +47,13 @@ def _home_variables(home: Path) -> Dict[str, Path]:
         "XDG_CACHE_HOME": home / ".cache",
         "XDG_CONFIG_HOME": home / ".config",
         "XDG_DATA_HOME": home / ".local" / "share",
+        # Conda downloads packages next to its own installation instead
+        "CONDA_PKGS_DIRS": home / "conda" / "pkgs",
+        # Directories in which package managers create named environments
+        "CONDA_ENVS_DIRS": home / "conda" / "envs",
+        "POETRY_VIRTUALENVS_PATH": home / "poetry" / "virtualenvs",
+        # Channels are no longer provided by the home directory of the user
+        "CONDARC": condarc,
     }
 
 
