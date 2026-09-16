@@ -18,7 +18,7 @@ Many `workflow management systems <https://s.apache.org/existing-workflow-system
 deal with data processing problems by expressing them as *workflows*.
 
 Ewoks acts as a **bridge between workflow systems**, enabling the same workflow to be executed across different systems.
-Any workflow system can be integrated into Ewoks as an `execution engine <./engines.html>`_, allowing interoperability without
+Any workflow system can be integrated into Ewoks as an :doc:`execution engine <howtoguides/engines>`, allowing interoperability without
 changing the workflow definition or implementation.
 
 Workflows can be defined using **JSON**, **YAML**, or created programmatically in Python following the
