@@ -22,6 +22,7 @@ of the supported ones
 
     install/pip_venv
     install/uv
+    install/conda
     install/pixi
 
 The producer and the re-producer do not need the same :term:`package manager`: the
