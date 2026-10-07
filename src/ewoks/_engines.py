@@ -6,6 +6,7 @@ from typing import Generator
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import Type
 
 from ewokscore.engine_interface import WorkflowEngine
 from ewokscore.engine_interface import WorkflowEngineWithSerialization
@@ -49,7 +50,7 @@ def get_execution_engine(engine_name: Optional[str]) -> WorkflowEngine:
 
 def get_serialization_engine(
     graph: Any, representation: Optional[str] = None
-) -> Tuple[WorkflowEngine, str]:
+) -> Tuple[WorkflowEngineWithSerialization, Optional[str]]:
     core_representation = representation
     if representation:
         for (
@@ -58,8 +59,9 @@ def get_serialization_engine(
         ) in _iter_engine_class_loaders_with_representation():
             if representation in representations:
                 engine_cls = load_engine_cls()
-                engine = engine_cls()
-                return engine, representation
+                if not issubclass(engine_cls, WorkflowEngineWithSerialization):
+                    continue
+                return engine_cls(), representation
     else:
         for name, load_engine_cls in _iter_engine_class_loaders_with_name():
             try:
@@ -78,10 +80,15 @@ def get_serialization_engine(
             if representation:
                 return engine, representation
 
-    return get_execution_engine("core"), core_representation
+    engine = get_execution_engine("core")
+    if not isinstance(engine, WorkflowEngineWithSerialization):
+        raise RuntimeError("The 'core' engine does not support graph serialization")
+    return engine, core_representation
 
 
-_EngineClassLoaderGenerator = Generator[Tuple[str, Callable[[], None]], None, None]
+_EngineClassLoaderGenerator = Generator[
+    Tuple[str, Callable[[], Type[WorkflowEngine]]], None, None
+]
 
 
 def _iter_engine_class_loaders_with_name() -> _EngineClassLoaderGenerator:
