@@ -3,6 +3,7 @@
 
 
 import importlib.metadata
+import os
 
 release = importlib.metadata.version("ewoks")
 
@@ -77,3 +78,20 @@ html_theme_options = {
     "footer_start": ["copyright"],
     "footer_end": ["footer_end"],
 }
+
+# Root of the documentation version that is built: on Read the Docs, for example
+# .../en/stable, or on GitLab Pages
+_DOCS_URL = (
+    os.environ.get("READTHEDOCS_CANONICAL_URL")
+    or os.environ.get("CI_PAGES_URL")
+    or "https://ewoks.readthedocs.io/en/latest"
+).rstrip("/")
+
+
+def _substitute_docs_url(app, docname, source):
+    # Substitutions are not supported in code blocks
+    source[0] = source[0].replace("|docs_url|", _DOCS_URL)
+
+
+def setup(app):
+    app.connect("source-read", _substitute_docs_url)

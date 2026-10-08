@@ -94,19 +94,19 @@ arguments are passed to ``ewoks install``, except for the options of the script 
 
         .. code-block:: bash
 
-            curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- demo.json --package-manager-name uv
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json --package-manager-name uv
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- demo.json --package-manager-name uv
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json --package-manager-name uv
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            & ([scriptblock]::Create((irm https://ewoks.readthedocs.io/en/stable/ewoks-install.ps1))) demo.json --package-manager-name uv
+            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json --package-manager-name uv
 
 * ``--package-manager-name`` and ``--package-manager-command`` select the
   :term:`package manager` that creates the bootstrap environment. Without them it is the first

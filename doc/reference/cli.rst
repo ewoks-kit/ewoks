@@ -63,6 +63,8 @@ ewoks convert
     
     **ewoks convert** can also be used to store ``inputs`` inside the destination :term:`workflow`.
 
+.. _cli_execute:
+
 ewoks execute
 -------------
 

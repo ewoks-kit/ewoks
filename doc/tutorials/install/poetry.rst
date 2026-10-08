@@ -115,21 +115,23 @@ environment without an environment with :term:`ewoks`
 
         .. code-block:: bash
 
-            curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- demo.json --package-manager-name poetry --yes --env-root ewoks_envs
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json --package-manager-name poetry --yes --env-root ewoks_envs
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- demo.json --package-manager-name poetry --yes --env-root ewoks_envs
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json --package-manager-name poetry --yes --env-root ewoks_envs
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            & ([scriptblock]::Create((irm https://ewoks.readthedocs.io/en/stable/ewoks-install.ps1))) demo.json --package-manager-name poetry --yes --env-root ewoks_envs
+            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json --package-manager-name poetry --yes --env-root ewoks_envs
 
-Execute the workflow with the python interpreter of the environment it prints.
+The script does not install ``ewoks`` in the current environment, so execute the
+workflow with the python interpreter of the environment of the :term:`workflow`, for example
+``ewoks_envs/demo/.venv/bin/python -m ewoks execute demo.json``.
 
 Execute the workflow
 --------------------
