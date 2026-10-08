@@ -222,7 +222,7 @@ def _version_tuple(version: str) -> Tuple[int, ...]:
     return tuple(int(part) for part in version.split(".") if part.isdigit())
 
 
-def _python_env(python: Union[str, Path]) -> Dict[str, str]:
+def _python_env(python: Union[str, Path]) -> Dict[str, Optional[str]]:
     """Poetry searches `PATH` for a python interpreter, which is not necessarily
     a working one. Make sure it finds this interpreter first. The environment of
     a project is the `.venv` directory inside it.
@@ -231,6 +231,10 @@ def _python_env(python: Union[str, Path]) -> Dict[str, str]:
     return {
         "PATH": os.pathsep.join([str(Path(python).parent), path]),
         "POETRY_VIRTUALENVS_IN_PROJECT": "true",
+        # Poetry uses an active virtual or conda environment, for example the one
+        # of `poetry run`, instead of the environment of the project
+        "VIRTUAL_ENV": None,
+        "CONDA_PREFIX": None,
     }
 
 

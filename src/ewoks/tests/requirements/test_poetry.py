@@ -1,6 +1,7 @@
 """Tests specific to the poetry package manager."""
 
 import sys
+import venv
 
 import pytest
 
@@ -63,6 +64,24 @@ def test_environments_root(monkeypatch, tmp_path):
     monkeypatch.setenv("POETRY_VIRTUALENVS_PATH", str(tmp_path))
 
     assert PoetryManager().environments_root() == tmp_path
+
+
+@pytest.mark.skipif(PoetryManager().version() is None, reason="poetry is not installed")
+@pytest.mark.parametrize("variable", ["VIRTUAL_ENV", "CONDA_PREFIX"])
+def test_create_environment_with_active_environment(variable, monkeypatch, tmp_path):
+    """The environment is the one of the project, also when another environment is
+    active, for example the one of `poetry run`."""
+    active = tmp_path / "active"
+    venv.create(active)
+    monkeypatch.setenv(variable, str(active))
+    # Poetry ignores the base environment of conda
+    monkeypatch.setenv("CONDA_DEFAULT_ENV", "active")
+
+    environment = PoetryManager().create_environment(
+        tmp_path / "project", PYTHON_VERSION
+    )
+
+    assert environment.exists()
 
 
 def test_environments_root_not_available(caplog):
