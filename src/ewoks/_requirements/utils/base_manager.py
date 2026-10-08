@@ -326,11 +326,15 @@ class BaseManager:
         pass
 
     def _check_output(
-        self, *args: Union[str, Path], extra_env: Optional[Mapping[str, str]] = None
+        self,
+        *args: Union[str, Path],
+        extra_env: Optional[Mapping[str, Optional[str]]] = None,
     ) -> str:
         return process.check_output(*self._cmd_args, *args, extra_env=extra_env)
 
     def _check_call(
-        self, *args: Union[str, Path], extra_env: Optional[Mapping[str, str]] = None
+        self,
+        *args: Union[str, Path],
+        extra_env: Optional[Mapping[str, Optional[str]]] = None,
     ) -> None:
         process.check_call(*self._cmd_args, *args, extra_env=extra_env)
