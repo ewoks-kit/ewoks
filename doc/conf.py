@@ -48,6 +48,7 @@ html_theme = "pydata_sphinx_theme"
 html_title = docstitle
 html_logo = "_static/logo.png"
 html_static_path = ["_static"]
+html_extra_path = ["../src/ewoks/_bootstrap"]
 html_template_path = ["_templates"]
 html_css_files = ["custom.css"]
 

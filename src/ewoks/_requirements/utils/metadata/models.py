@@ -5,6 +5,10 @@ from pydantic import BaseModel
 from pydantic import Field
 
 
+class EwoksInfo(BaseModel):
+    version: str = Field(description="Ewoks version.", examples=["7.0.0"])
+
+
 class SystemInfo(BaseModel):
     system: str = Field(description="Operating system name.", examples=["Linux"])
     release: str = Field(

@@ -211,7 +211,9 @@ def command_install(
                 location = environment.location
                 print(f"  Python : {environment.python}")
                 if environment.distribution_version("ewoks"):
-                    print(f"  Execute: ewoks execute --env {location} {workflow}")
+                    print(
+                        f"  Execute: {environment.python} -m ewoks execute {workflow}"
+                    )
                 else:
                     print(
                         "  Execute: the environment has no ewoks to execute the "

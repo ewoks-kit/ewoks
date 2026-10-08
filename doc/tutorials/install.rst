@@ -40,6 +40,7 @@ Store the requirements
 .. code-block:: json
 
     {
+        "ewoks": {"version": "7.0.0"},
         "python": {"version": "3.12.11", "implementation": "CPython", "...": "..."},
         "system": {"system": "Linux", "machine": "x86_64", "...": "..."},
         "distributions": [
@@ -53,6 +54,7 @@ Store the requirements
         }
     }
 
+* ``ewoks`` is the version of :term:`ewoks` that generated the requirements.
 * ``distributions`` are the installed python packages. Any :term:`package manager` can
   recreate the environment from this list.
 * ``manager`` is the :term:`package manager` that generated the requirements together with
@@ -69,12 +71,55 @@ and the command to remove it again
 
     Installed requirements for demo.json
       Python : ewoks_envs/demo/bin/python
-      Execute: ewoks execute --env ewoks_envs/demo demo.json
+      Execute: ewoks_envs/demo/bin/python -m ewoks execute demo.json
       Remove : rm -rf ewoks_envs/demo
 
 Without ``--yes`` you are asked to confirm after the packages have been listed. The
 walk-throughs use ``--env-root`` to create the environment in the working directory. Without
 it the environment is created where the :term:`package manager` creates named environments.
+
+.. _install_bootstrap:
+
+Create the environment without ewoks
+++++++++++++++++++++++++++++++++++++
+
+``ewoks install`` needs a python environment with :term:`ewoks`. The ``ewoks-install`` script
+only needs a :term:`package manager`: it installs the version of :term:`ewoks` that generated
+the requirements in a bootstrap environment and runs ``ewoks install`` from there. All
+arguments are passed to ``ewoks install``, except for the options of the script itself
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- demo.json --package-manager-name uv
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- demo.json --package-manager-name uv
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            & ([scriptblock]::Create((irm https://ewoks.readthedocs.io/en/stable/ewoks-install.ps1))) demo.json --package-manager-name uv
+
+* ``--package-manager-name`` and ``--package-manager-command`` select the
+  :term:`package manager` that creates the bootstrap environment. Without them it is the first
+  one that is available of uv, pixi, conda, poetry and pip-venv.
+* ``--print-command`` prints the ``ewoks install`` command instead of running it.
+* ``--ewoks-requirement`` installs another version of :term:`ewoks`, for example
+  ``--ewoks-requirement "ewoks>=7"``. The latest version is installed when the requirements do
+  not provide one.
+
+The script keeps the bootstrap environment in ``~/.ewoks/bootstrap`` (``EWOKS_BOOTSTRAP_DIR``)
+and uses it again when it installs another :term:`workflow` whose requirements were generated
+by the same version of :term:`ewoks`. The bootstrap environment only runs ``ewoks install``:
+it is not the environment of the :term:`workflow`.
 
 Execute the workflow
 --------------------

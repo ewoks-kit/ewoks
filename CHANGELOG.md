@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `ewoks-install` scripts to install the environment of a workflow with only a package manager.
 - `ewoks install`: add `--package-manager-name` and `--package-manager-command` arguments.
 - `ewoks convert`: add `--package-manager-name` and `--package-manager-command` arguments.
 - Add `ewoks lint` CLI command to check if a workflow is conform to the Ewoks specification.
