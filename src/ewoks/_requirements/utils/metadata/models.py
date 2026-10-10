@@ -5,6 +5,22 @@ from pydantic import BaseModel
 from pydantic import Field
 
 
+class EngineInfo(BaseModel):
+    name: str = Field(description="Distribution name.", examples=["ewoksorange"])
+    version: str = Field(description="Distribution version.", examples=["2.2.0"])
+
+
+class EwoksInfo(BaseModel):
+    version: str = Field(description="Ewoks version.", examples=["7.0.0"])
+    engine: Optional[EngineInfo] = Field(
+        default=None,
+        description=(
+            "Distribution of the engine that saved the workflow, which is needed "
+            "to load it."
+        ),
+    )
+
+
 class SystemInfo(BaseModel):
     system: str = Field(description="Operating system name.", examples=["Linux"])
     release: str = Field(
