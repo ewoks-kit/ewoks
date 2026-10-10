@@ -13,6 +13,9 @@ What is stored
 
 ``ewoks convert`` and ``ewoks execute -o convert_destination=...`` store
 
+* ``ewoks``: the version of :term:`ewoks` that generated the requirements and the engine
+  that saved the :term:`workflow`. The
+  :ref:`ewoks-install script <install_bootstrap>` installs both to run ``ewoks install``.
 * ``python`` and ``system``: the python interpreter and the operating system.
 * ``distributions``: every installed python package with its version and, when it was not
   installed from the python package index, the git commit or the archive it came from. Any

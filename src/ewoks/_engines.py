@@ -1,3 +1,4 @@
+import importlib.metadata
 import logging
 from functools import lru_cache
 from typing import Any
@@ -84,6 +85,19 @@ def get_serialization_engine(
     if not isinstance(engine, WorkflowEngineWithSerialization):
         raise RuntimeError("The 'core' engine does not support graph serialization")
     return engine, core_representation
+
+
+def get_engine_distribution(engine: WorkflowEngine) -> Optional[Tuple[str, str]]:
+    """Name and version of the distribution that provides the engine."""
+    module = type(engine).__module__
+    for distribution in importlib.metadata.distributions():
+        for entry_point in distribution.entry_points:
+            if (
+                entry_point.group == "ewoks.engines"
+                and entry_point.value.split(":")[0] == module
+            ):
+                return distribution.metadata["Name"], distribution.version
+    return None
 
 
 _EngineClassLoaderGenerator = Generator[

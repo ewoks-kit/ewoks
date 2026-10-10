@@ -1,3 +1,5 @@
+import os
+import shlex
 import subprocess
 import sys
 import traceback
@@ -211,7 +213,16 @@ def command_install(
                 location = environment.location
                 print(f"  Python : {environment.python}")
                 if environment.distribution_version("ewoks"):
-                    print(f"  Execute: ewoks execute --env {location} {workflow}")
+                    execute = _shell_command(
+                        [
+                            str(environment.python),
+                            "-m",
+                            "ewoks",
+                            "execute",
+                            _absolute_workflow(workflow),
+                        ]
+                    )
+                    print(f"  Execute: {execute}")
                 else:
                     print(
                         "  Execute: the environment has no ewoks to execute the "
@@ -227,7 +238,21 @@ def _remove_command(location: Path) -> str:
     """Shell command that removes a python environment."""
     if sys.platform == "win32":
         return f'rmdir /s /q "{location}"'
-    return f"rm -rf {location}"
+    return f"rm -rf {shlex.quote(str(location))}"
+
+
+def _shell_command(arguments: List[str]) -> str:
+    """Command line for the shell of the platform."""
+    if sys.platform == "win32":
+        return subprocess.list2cmdline(arguments)
+    return shlex.join(arguments)
+
+
+def _absolute_workflow(workflow: str) -> str:
+    """Workflow that does not depend on the working directory."""
+    if os.path.isfile(workflow):
+        return os.path.abspath(workflow)
+    return workflow
 
 
 def command_in_environment(
