@@ -3,6 +3,13 @@ from unittest.mock import MagicMock
 import pytest
 
 
+def pytest_configure(config: pytest.Config) -> None:
+    config.addinivalue_line(
+        "markers",
+        "package_manager_install: installs package managers from the internet",
+    )
+
+
 @pytest.fixture
 def mock_icat_client(monkeypatch):
     mock_defaults = MagicMock()

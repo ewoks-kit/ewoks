@@ -23,7 +23,7 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
       pytest-args: >-
-        -v -ra -W error
+        -v -ra -W error -m "not package_manager_install"
         -W ignore::DeprecationWarning:jupyter_client.session
         -W ignore::DeprecationWarning:orangecanvas.utils.localization
         -W ignore::DeprecationWarning:orangecanvas.utils.localization.si
@@ -78,6 +78,25 @@ jobs:
             python-version: "3.9"
             enable-coverage: "false"
             extra-pytest-warnings: ""
+
+  # Run the tests that install package managers, on runners without them
+  tests-package-manager-install:
+    needs: build
+    uses: ewoks-kit/.github/.github/workflows/python-tests.yml@main
+    with:
+      os: ${{ matrix.os }}
+      python-version: "3.12"
+      pytest-args: >-
+        -v -ra -W error -m package_manager_install
+        -W ignore::DeprecationWarning:jupyter_client.session
+        -W ignore::DeprecationWarning:orangecanvas.utils.localization
+        -W ignore::DeprecationWarning:orangecanvas.utils.localization.si
+        -W ignore::DeprecationWarning:matplotlib._fontconfig_pattern
+        -W ignore::DeprecationWarning:matplotlib._mathtext
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
   # Run linter / checks
   checks:
