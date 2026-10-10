@@ -9,9 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `ewoks install`: add `--package-manager-name` and `--package-manager-command` arguments.
+- `ewoks install`:
+  - support the pip+venv, uv, pixi, conda and poetry package managers.
+  - add `--package-manager-name` and `--package-manager-command` arguments.
+  - add `--env-name`, `--env-root` and `--clean` arguments.
+  - add `--in-place`, `--python-version` and `--with-ewoks` arguments.
 - `ewoks convert`: add `--package-manager-name` and `--package-manager-command` arguments.
+- `ewoks execute`: add `--env` argument.
 - Add `ewoks lint` CLI command to check if a workflow is conform to the Ewoks specification.
+
+### Changed
+
+- `ewoks install`: install in a new python environment by default instead of the current one.
+- `ewoks convert`: save the requirements of the package manager together with the python, ewoks and engine versions.
 
 ### Removed
 
@@ -230,7 +240,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoksppf` dependency.
 - Command-line interface.
 
-[unreleased]: https://github.com/ewoks-kit/ewoks/compare/v6.0.0rc1...HEAD
+[unreleased]: https://github.com/ewoks-kit/ewoks/compare/v7.0.0rc1...HEAD
 [7.0.0rc1]: https://github.com/ewoks-kit/ewoks/compare/v6.0.0...v7.0.0rc1
 [6.0.0]: https://github.com/ewoks-kit/ewoks/compare/v5.0.0...v6.0.0
 [5.0.0]: https://github.com/ewoks-kit/ewoks/compare/v4.0.0...v5.0.0
