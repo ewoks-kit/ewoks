@@ -4,12 +4,14 @@ import os
 import platform
 import re
 import sys
+import tempfile
 from pathlib import Path
 from typing import Dict
 from typing import Literal
 from typing import Mapping
 from typing import Optional
 from typing import Sequence
+from typing import Union
 
 from pydantic import Field
 
@@ -67,6 +69,20 @@ class PixiManager(BaseManager):
         if not command:
             command = ("pixi",)
         super().__init__(*command)
+
+    def _check_output(
+        self,
+        *args: Union[str, Path],
+        extra_env: Optional[Mapping[str, Optional[str]]] = None,
+    ) -> str:
+        return super()._check_output(*args, extra_env=_with_cache_dir(extra_env))
+
+    def _check_call(
+        self,
+        *args: Union[str, Path],
+        extra_env: Optional[Mapping[str, Optional[str]]] = None,
+    ) -> None:
+        super()._check_call(*args, extra_env=_with_cache_dir(extra_env))
 
     def version(self) -> Optional[str]:
         """Returns None when this manager is not available."""
@@ -172,3 +188,14 @@ def _is_workspace_environment(prefix: Path) -> bool:
     """Environment is managed by a pixi workspace."""
     parts = prefix.parts
     return len(parts) > 2 and parts[-3] == ".pixi" and parts[-2] == "envs"
+
+
+def _with_cache_dir(
+    extra_env: Optional[Mapping[str, Optional[str]]],
+) -> Dict[str, Optional[str]]:
+    env = dict(extra_env) if extra_env else dict()
+    if not os.environ.get("PIXI_CACHE_DIR") and not os.environ.get("RATTLER_CACHE_DIR"):
+        env.setdefault(
+            "PIXI_CACHE_DIR", str(Path(tempfile.gettempdir()) / "pixi-cache")
+        )
+    return env

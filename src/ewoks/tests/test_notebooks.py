@@ -26,11 +26,9 @@ def test_notebooks(name):
             tb.execute()
 
             nonlocal output_found
-            for output in _iter_cell_outputs(tb):
-                print(output)
-                if expected_output in output:
-                    output_found = True
-                    break
+            all_output = "".join(_iter_cell_outputs(tb))
+            print(all_output)
+            output_found = expected_output in all_output
 
         decorator(verify_notebook)()
 
