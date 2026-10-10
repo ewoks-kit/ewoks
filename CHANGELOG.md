@@ -13,11 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoks convert`: add `--package-manager-name` and `--package-manager-command` arguments.
 - Add `ewoks lint` CLI command to check if a workflow is conform to the Ewoks specification.
 
-### Fixed
-
-- `ewoks install` with the `pixi` package manager: no longer fails when the
-  default cache directory cannot be determined.
-
 ### Removed
 
 - `ewoks install`: remove `-p/--python` argument.
