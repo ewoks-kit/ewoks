@@ -1,5 +1,6 @@
 import os
 import sys
+import warnings
 
 import pytest
 from ewokscore import load_graph
@@ -39,7 +40,14 @@ def test_execute(graph_name, scheme, engine, tmpdir):
     ewoksgraph = load_graph(graph)
     non_dag = ewoksgraph.is_cyclic or ewoksgraph.has_conditional_links
 
-    results = main(argv=argv, shell=False)
+    with warnings.catch_warnings():
+        if engine == "ppf" and graph_name == "triangle1":
+            warnings.filterwarnings(
+                "ignore",
+                message="Merged workflow results.*are overwritten by actor",
+                category=UserWarning,
+            )
+        results = main(argv=argv, shell=False)
     assert len(results) == 1
 
     if non_dag and engine != "ppf":
