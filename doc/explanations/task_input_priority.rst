@@ -7,7 +7,7 @@ Details
 A :term:`node <Nodes>` in a :term:`workflow` can get inputs from three different sources:
 
 1. Via the ``data_mapping`` :term:`link <Links>` attribute of an incoming :term:`link <Links>` (see `Link attributes <https://ewokscore.readthedocs.io/en/stable/definitions.html#link-attributes>`_)
-2. Via the ``parameters`` CLI argument (or ``inputs`` for Python) when executing/submitting the :term:`workflow` (see `ewoks execute reference <https://ewoks.readthedocs.io/en/stable/cli.html#ewoks-execute>`_)
+2. Via the ``parameters`` CLI argument (or ``inputs`` for Python) when executing/submitting the :term:`workflow` (see :ref:`ewoks execute reference <cli_execute>`)
 3. Via the ``default_inputs`` :term:`node <Nodes>` attribute of the :term:`node <Nodes>` itself (see `Node attributes <https://ewokscore.readthedocs.io/en/stable/definitions.html#node-attributes>`_)
 
 If the same input is specified by these different sources, :term:`Ewoks` applies the following priorities:

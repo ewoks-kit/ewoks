@@ -83,6 +83,33 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 
 The environment of the :term:`workflow` is a virtual environment in ``ewoks_envs/demo``.
 
+Alternatively, the :ref:`ewoks-install script <install_bootstrap>` recreates the
+environment without an environment with :term:`ewoks`
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json --package-manager-name pip-venv --yes --env-root ewoks_envs
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json --package-manager-name pip-venv --yes --env-root ewoks_envs
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json --package-manager-name pip-venv --yes --env-root ewoks_envs
+
+The script does not install ``ewoks`` in the current environment, so execute the
+workflow with the python interpreter of the environment of the :term:`workflow`, for example
+``ewoks_envs/demo/bin/python -m ewoks execute demo.json``.
+
 Execute the workflow
 --------------------
 
