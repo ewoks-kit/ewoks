@@ -47,6 +47,11 @@ def test_execute(graph_name, scheme, engine, tmpdir):
                 message="Merged workflow results.*are overwritten by actor",
                 category=UserWarning,
             )
+        warnings.filterwarnings(
+            "ignore",
+            message="Merged workflow outputs.*are overwritten by node",
+            category=UserWarning,
+        )
         results = main(argv=argv, shell=False)
     assert len(results) == 1
 
