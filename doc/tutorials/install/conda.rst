@@ -89,6 +89,29 @@ packages of the python package index.
 Re-producer side
 ----------------
 
+Without the producer side, download the demo :term:`workflow` of this documentation, which
+only requires :term:`ewoks`
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            curl -LsSfO |docs_url|/demo.json
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            curl -LsSfO |docs_url|/demo.json
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            irm |docs_url|/demo.json -OutFile demo.json
+
 Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 
 .. tabs::
@@ -123,6 +146,32 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 The environment of the :term:`workflow` is a conda environment in ``ewoks_envs/demo``. Without
 ``--env-root`` it is created in the first environment directory of conda, where
 ``conda activate demo`` finds it.
+
+Alternatively, the :ref:`ewoks-install script <install_bootstrap>` recreates the
+environment without an environment with :term:`ewoks`
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json
+
+It selects the :term:`package manager` itself and prints the command to execute the
+:term:`workflow` in the environment it creates.
 
 Execute the workflow
 --------------------

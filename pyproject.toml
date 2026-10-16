@@ -80,6 +80,7 @@ ewoks = "ewoks.__main__:main"
 
 [tool.setuptools.package-data]
 "ewoks.tests.notebooks" = ["*.ipynb"]
+"ewoks._bootstrap" = ["*.sh", "*.ps1"]
 
 [tool.ruff.lint]
 select = [

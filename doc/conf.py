@@ -3,6 +3,13 @@
 
 
 import importlib.metadata
+import os
+from typing import Optional
+
+from ewokscore.tests.examples.graphs import get_graph
+from sphinx.application import Sphinx
+
+from ewoks.bindings import convert_graph
 
 release = importlib.metadata.version("ewoks")
 
@@ -76,3 +83,45 @@ html_theme_options = {
     "footer_start": ["copyright"],
     "footer_end": ["footer_end"],
 }
+
+
+# The ewoks-install scripts
+html_extra_path = ["../src/ewoks/_bootstrap"]
+
+# Root of the documentation version that is built: on Read the Docs, for example
+# .../en/stable, or on GitLab Pages
+_DOCS_URL = (
+    os.environ.get("READTHEDOCS_CANONICAL_URL")
+    or os.environ.get("CI_PAGES_URL")
+    or "https://ewoks.readthedocs.io/en/latest"
+).rstrip("/")
+
+
+def _substitute_docs_url(app, docname, source):
+    # Substitutions are not supported in code blocks
+    source[0] = source[0].replace("|docs_url|", _DOCS_URL)
+
+
+def _save_demo_workflow(app: Sphinx, exception: Optional[Exception]) -> None:
+    """Save the demo workflow next to the ewoks-install scripts, with only ewoks and
+    its engine as requirements instead of all the packages of the documentation
+    build."""
+    if exception is not None or app.builder.format != "html":
+        return
+    graph, _ = get_graph("demo")
+    workflow = convert_graph(graph, None)
+    requirements = workflow["graph"]["requirements"]
+    names = ["ewoks", requirements["ewoks"]["engine"]["name"]]
+    requirements["distributions"] = [
+        {"name": name, "version": importlib.metadata.version(name)} for name in names
+    ]
+    requirements["manager"]["files"] = {}
+    filename = os.path.join(app.outdir, "demo.json")
+    convert_graph(
+        workflow, filename, save_options={"indent": 2}, save_requirements=False
+    )
+
+
+def setup(app):
+    app.connect("source-read", _substitute_docs_url)
+    app.connect("build-finished", _save_demo_workflow)
