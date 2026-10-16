@@ -40,6 +40,7 @@ Store the requirements
 .. code-block:: json
 
     {
+        "ewoks": {"version": "7.0.0", "engine": {"name": "ewokscore", "version": "5.1.0"}},
         "python": {"version": "3.12.11", "implementation": "CPython", "...": "..."},
         "system": {"system": "Linux", "machine": "x86_64", "...": "..."},
         "distributions": [
@@ -53,6 +54,9 @@ Store the requirements
         }
     }
 
+* ``ewoks`` is the version of :term:`ewoks` that generated the requirements and the engine that
+  saved the :term:`workflow`: ``ewokscore`` for a ``.json`` or ``.yaml`` file and
+  ``ewoksorange`` for an ``.ows`` file.
 * ``distributions`` are the installed python packages. Any :term:`package manager` can
   recreate the environment from this list.
 * ``manager`` is the :term:`package manager` that generated the requirements together with
