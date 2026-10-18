@@ -9,6 +9,7 @@ from typing import Iterator
 import pytest
 
 from ..._requirements.utils.environment import Environment
+from ..._requirements.utils.files import write_files
 from ..._requirements.uv import UvManager
 from .utils import PYTHON_VERSION
 
@@ -45,13 +46,21 @@ def test_version_not_available():
     assert UvManager("uv-does-not-exist").version() is None
 
 
-def test_files_not_available(caplog):
-    """Without a lock file the environment is reproduced from the distributions."""
-    manager = UvManager("uv-does-not-exist")
+def test_files_from_project(monkeypatch, tmp_path):
+    """The files of the uv project are reused."""
+    files = {"pyproject.toml": "# project\n", "uv.lock": "# lock\n"}
+    write_files(tmp_path, files)
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".venv"))
 
-    assert manager._gather_files([], PYTHON_VERSION) == {}
+    assert UvManager()._gather_files([], PYTHON_VERSION) == files
 
-    assert "uv cannot describe the current python environment" in caplog.text
+
+def test_files_from_lock_only(monkeypatch, tmp_path):
+    """A lock file without pyproject.toml is not reused: no files are stored."""
+    write_files(tmp_path, {"uv.lock": "# lock\n"})
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".venv"))
+
+    assert UvManager()._gather_files([], PYTHON_VERSION) == {}
 
 
 def test_project_environment(uv_environment):
