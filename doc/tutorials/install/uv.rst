@@ -38,8 +38,9 @@ Install uv
 Producer side
 -------------
 
-Create an environment, install :term:`ewoks` in it and store a :term:`workflow` with the
-packages of that environment as its ``requirements``
+Create a uv project, add :term:`ewoks` to it and store a :term:`workflow` with the
+packages of its environment as its ``requirements``. The ``pyproject.toml`` and ``uv.lock``
+of the project are stored as well.
 
 .. tabs::
 
@@ -47,31 +48,25 @@ packages of that environment as its ``requirements``
 
         .. code-block:: bash
 
-            uv venv ewoks_producer
-            source ewoks_producer/bin/activate
-            uv pip install ewoks
-            ewoks convert demo demo.json --test
-            deactivate
+            uv init ewoks_producer
+            uv add --project ewoks_producer ewoks
+            uv run --project ewoks_producer ewoks convert demo demo.json --test
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            uv venv ewoks_producer
-            source ewoks_producer/bin/activate
-            uv pip install ewoks
-            ewoks convert demo demo.json --test
-            deactivate
+            uv init ewoks_producer
+            uv add --project ewoks_producer ewoks
+            uv run --project ewoks_producer ewoks convert demo demo.json --test
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            uv venv ewoks_producer
-            ewoks_producer\Scripts\activate.ps1
-            uv pip install ewoks
-            ewoks convert demo demo.json --test
-            deactivate
+            uv init ewoks_producer
+            uv add --project ewoks_producer ewoks
+            uv run --project ewoks_producer ewoks convert demo demo.json --test
 
 Install any package that provides :term:`tasks <Task>` instead of
 ``ewoks`` for a real :term:`workflow`.
@@ -87,28 +82,25 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 
         .. code-block:: bash
 
-            uv venv ewoks_reproducer
-            source ewoks_reproducer/bin/activate
-            uv pip install ewoks
-            ewoks install demo.json --yes --env-root ewoks_envs
+            uv init ewoks_reproducer
+            uv add --project ewoks_reproducer ewoks
+            uv run --project ewoks_reproducer ewoks install demo.json --yes --env-root ewoks_envs
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            uv venv ewoks_reproducer
-            source ewoks_reproducer/bin/activate
-            uv pip install ewoks
-            ewoks install demo.json --yes --env-root ewoks_envs
+            uv init ewoks_reproducer
+            uv add --project ewoks_reproducer ewoks
+            uv run --project ewoks_reproducer ewoks install demo.json --yes --env-root ewoks_envs
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            uv venv ewoks_reproducer
-            ewoks_reproducer\Scripts\activate.ps1
-            uv pip install ewoks
-            ewoks install demo.json --yes --env-root ewoks_envs
+            uv init ewoks_reproducer
+            uv add --project ewoks_reproducer ewoks
+            uv run --project ewoks_reproducer ewoks install demo.json --yes --env-root ewoks_envs
 
 The environment of the :term:`workflow` is a uv project in ``ewoks_envs/demo`` with the
 virtual environment in its ``.venv`` directory.
@@ -122,19 +114,19 @@ Execute the workflow
 
         .. code-block:: bash
 
-            ewoks execute --env ewoks_envs/demo demo.json --outputs=all
+            uv run --project ewoks_reproducer ewoks execute --env ewoks_envs/demo demo.json --outputs=all
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            ewoks execute --env ewoks_envs/demo demo.json --outputs=all
+            uv run --project ewoks_reproducer ewoks execute --env ewoks_envs/demo demo.json --outputs=all
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            ewoks execute --env ewoks_envs\demo demo.json --outputs=all
+            uv run --project ewoks_reproducer ewoks execute --env ewoks_envs\demo demo.json --outputs=all
 
 Clean up
 --------
@@ -145,19 +137,16 @@ Clean up
 
         .. code-block:: bash
 
-            deactivate
             rm -rf ewoks_producer ewoks_reproducer ewoks_envs demo.json
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            deactivate
             rm -rf ewoks_producer ewoks_reproducer ewoks_envs demo.json
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            deactivate
             Remove-Item -Recurse -Force ewoks_producer, ewoks_reproducer, ewoks_envs, demo.json

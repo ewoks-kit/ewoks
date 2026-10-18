@@ -18,9 +18,12 @@ What is stored
   installed from the python package index, the git commit or the archive it came from. Any
   :term:`package manager` can recreate the environment from this list.
 * ``manager``: the :term:`package manager` that generated the requirements, with the content
-  of the files it needs to recreate the environment: ``requirements.txt`` for pip-venv,
-  ``pyproject.toml`` and ``uv.lock`` for uv, ``pyproject.toml`` and ``poetry.lock`` for
-  poetry, ``environment.yml`` for conda, ``pixi.toml`` and ``pixi.lock`` for pixi.
+  of the files it needs to recreate the environment. pip-venv and conda store what the
+  environment reports: ``requirements.txt`` (``pip freeze``) and ``environment.yml``
+  (``conda env export``). uv, poetry and pixi store the project files of the environment
+  when it has them: ``pyproject.toml`` and ``uv.lock`` for uv, ``pyproject.toml`` and
+  ``poetry.lock`` for poetry, ``pixi.toml`` (or ``pyproject.toml``) and ``pixi.lock`` for
+  pixi. Otherwise they store no files.
 
 Use ``--exclude-requirements`` to store nothing.
 
@@ -110,9 +113,13 @@ Limitations
   the patch versions built by their channel, and pip-venv and poetry can only use the version of
   the python interpreter that creates the environment. A warning is emitted when the version
   cannot be provided.
-* uv, poetry and pixi resolve the ``distributions`` into a lock file, which requires access to
-  the package index. When that fails, a warning is emitted and the requirements are stored
-  without files: the environment is then recreated from the ``distributions`` list.
+* uv and poetry only find the project files when the environment is the ``.venv`` directory of
+  the project. poetry creates its environments elsewhere unless
+  ``poetry config virtualenvs.in-project true`` is set.
+* pixi stores the workspace files for any environment of the workspace, but ``ewoks install``
+  always installs the ``default`` environment.
+* The stored lock file is not compared with the installed python packages: packages that were
+  added or removed after locking are not reflected in the stored files.
 * A lock file is only read by a :term:`package manager` that understands its format version, so
   reproducing an environment can require a version of the tool that is at least as recent as
   the one that generated the requirements.

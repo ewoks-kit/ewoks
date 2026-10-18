@@ -40,7 +40,8 @@ Producer side
 -------------
 
 Create a project, install :term:`ewoks` in it and store a :term:`workflow` with the packages
-of that project as its ``requirements``
+of that project as its ``requirements``. The environment is created inside the project, so
+that its ``pyproject.toml`` and ``poetry.lock`` are stored as well.
 
 .. tabs::
 
@@ -49,6 +50,7 @@ of that project as its ``requirements``
         .. code-block:: bash
 
             poetry new ewoks_producer
+            poetry -C ewoks_producer config virtualenvs.in-project true --local
             poetry -C ewoks_producer add ewoks
             poetry -C ewoks_producer run ewoks convert demo "$PWD/demo.json" --test
 
@@ -57,6 +59,7 @@ of that project as its ``requirements``
         .. code-block:: bash
 
             poetry new ewoks_producer
+            poetry -C ewoks_producer config virtualenvs.in-project true --local
             poetry -C ewoks_producer add ewoks
             poetry -C ewoks_producer run ewoks convert demo "$PWD/demo.json" --test
 
@@ -65,6 +68,7 @@ of that project as its ``requirements``
         .. code-block:: powershell
 
             poetry new ewoks_producer
+            poetry -C ewoks_producer config virtualenvs.in-project true --local
             poetry -C ewoks_producer add ewoks
             poetry -C ewoks_producer run ewoks convert demo "$PWD\demo.json" --test
 
@@ -84,6 +88,7 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
         .. code-block:: bash
 
             poetry new ewoks_reproducer
+            poetry -C ewoks_reproducer config virtualenvs.in-project true --local
             poetry -C ewoks_reproducer add ewoks
             poetry -C ewoks_reproducer run ewoks install "$PWD/demo.json" --yes --env-root "$PWD/ewoks_envs"
 
@@ -92,6 +97,7 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
         .. code-block:: bash
 
             poetry new ewoks_reproducer
+            poetry -C ewoks_reproducer config virtualenvs.in-project true --local
             poetry -C ewoks_reproducer add ewoks
             poetry -C ewoks_reproducer run ewoks install "$PWD/demo.json" --yes --env-root "$PWD/ewoks_envs"
 
@@ -100,6 +106,7 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
         .. code-block:: powershell
 
             poetry new ewoks_reproducer
+            poetry -C ewoks_reproducer config virtualenvs.in-project true --local
             poetry -C ewoks_reproducer add ewoks
             poetry -C ewoks_reproducer run ewoks install "$PWD\demo.json" --yes --env-root "$PWD\ewoks_envs"
 
