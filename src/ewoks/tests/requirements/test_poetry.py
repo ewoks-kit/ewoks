@@ -7,6 +7,7 @@ import pytest
 from ..._requirements.poetry import PoetryManager
 from ..._requirements.poetry import _pyproject
 from ..._requirements.utils.base_manager import EWOKS_ENVIRONMENTS_ROOT
+from ..._requirements.utils.files import write_files
 from .utils import DISTRIBUTIONS
 from .utils import PYTHON_VERSION
 from .utils import REQUIREMENTS
@@ -39,6 +40,23 @@ def test_project_environment(monkeypatch, tmp_path):
     with open(location / "poetry.lock", "w", encoding="utf-8") as fh:
         fh.write("# lock\n")
     assert PoetryManager().is_active()
+
+
+def test_files_from_project(monkeypatch, tmp_path):
+    """The files of the poetry project are reused."""
+    files = {"pyproject.toml": "# project\n", "poetry.lock": "# lock\n"}
+    write_files(tmp_path, files)
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".venv"))
+
+    assert PoetryManager()._gather_files([], PYTHON_VERSION) == files
+
+
+def test_files_from_lock_only(monkeypatch, tmp_path):
+    """A lock file without pyproject.toml is not reused: no files are stored."""
+    write_files(tmp_path, {"poetry.lock": "# lock\n"})
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".venv"))
+
+    assert PoetryManager()._gather_files([], PYTHON_VERSION) == {}
 
 
 def test_is_active_poetry_run(monkeypatch, tmp_path):
