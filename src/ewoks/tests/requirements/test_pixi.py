@@ -6,6 +6,7 @@ import pytest
 
 from ..._requirements.pixi import PixiManager
 from ..._requirements.utils.conda_channel import python_specifier
+from ..._requirements.utils.files import write_files
 from .utils import DISTRIBUTIONS
 from .utils import PYTHON_VERSION
 from .utils import REQUIREMENTS
@@ -20,6 +21,33 @@ def test_workspace_environment(monkeypatch, tmp_path):
 
     monkeypatch.setattr(sys, "prefix", str(prefix))
     assert PixiManager().is_active()
+
+
+def test_files_from_pixi_toml(monkeypatch, tmp_path):
+    """The files of the pixi workspace are reused. The pixi.toml takes precedence
+    over the pyproject.toml, like pixi itself."""
+    files = {"pixi.toml": "# manifest\n", "pixi.lock": "# lock\n"}
+    write_files(tmp_path, {**files, "pyproject.toml": "# project\n"})
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".pixi" / "envs" / "default"))
+
+    assert PixiManager()._gather_files([], PYTHON_VERSION) == files
+
+
+def test_files_from_pyproject(monkeypatch, tmp_path):
+    """Without pixi.toml the pyproject.toml is the manifest of the workspace."""
+    files = {"pyproject.toml": "# project\n", "pixi.lock": "# lock\n"}
+    write_files(tmp_path, files)
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".pixi" / "envs" / "default"))
+
+    assert PixiManager()._gather_files([], PYTHON_VERSION) == files
+
+
+def test_files_from_lock_only(monkeypatch, tmp_path):
+    """A lock file without manifest is not reused: no files are stored."""
+    write_files(tmp_path, {"pixi.lock": "# lock\n"})
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".pixi" / "envs" / "default"))
+
+    assert PixiManager()._gather_files([], PYTHON_VERSION) == {}
 
 
 def test_is_not_active(monkeypatch, tmp_path):
