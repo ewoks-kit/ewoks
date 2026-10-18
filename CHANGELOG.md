@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoks convert`: add `--package-manager-name` and `--package-manager-command` arguments.
 - Add `ewoks lint` CLI command to check if a workflow is conform to the Ewoks specification.
 
+### Changed
+
+- `ewoks convert`: uv, poetry and pixi store the project files of the current environment
+  instead of generating them if they are present for the environment.
+
 ### Removed
 
 - `ewoks install`: remove `-p/--python` argument.
