@@ -281,18 +281,10 @@ class BaseManager:
         self, distributions: List[models.Distribution], python_version: str
     ) -> Dict[str, str]:
         """Files that describe the current python environment. Package managers
-        that can inspect an environment override this.
+        that can inspect an environment override this. Without files, the stored
+        python distributions describe the environment.
         """
-        try:
-            return self._files_from_distributions(distributions, python_version)
-        except RuntimeError as ex:
-            logger.warning(
-                "%s cannot describe the current python environment (%s). It will be "
-                "reproduced from the installed python distributions.",
-                self.NAME,
-                ex,
-            )
-            return dict()
+        return dict()
 
     @abstractmethod
     def _files_from_distributions(
