@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `ewoks install`: install in a new python environment by default instead of the current one.
 - `ewoks convert`: save the requirements of the package manager together with the python, ewoks and engine versions.
+- `ewoks convert`: uv, poetry and pixi store the project files of the current environment
+  instead of generating them if they are present for the environment.
 
 ### Removed
 

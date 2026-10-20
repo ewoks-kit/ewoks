@@ -7,6 +7,7 @@ import shutil
 import sys
 from pathlib import Path
 from typing import Dict
+from typing import List
 from typing import Literal
 from typing import Mapping
 from typing import Optional
@@ -53,9 +54,10 @@ class PoetryManager(BaseManager):
     `pyproject.toml` and a `poetry.lock` file, `poetry install` reproduces the
     environment from those files.
 
-    The project is generated from the installed python distributions instead of
-    being taken from a poetry project of the current environment. This keeps it
-    self-contained: no local project to build.
+    When the current environment is the `.venv` of a poetry project, its
+    `pyproject.toml` and `poetry.lock` are stored as the manager files. Otherwise
+    no files are stored and the stored python distributions describe the
+    environment.
 
     Environments are created with `poetry env use`, which needs an interpreter of
     the requested python version because poetry cannot install one.
@@ -138,6 +140,16 @@ class PoetryManager(BaseManager):
                 "Cannot determine where poetry creates environments (%s)", ex
             )
             return super().environments_root()
+
+    def _gather_files(
+        self, distributions: List[models.Distribution], python_version: str
+    ) -> Dict[str, str]:
+        project = Path(sys.prefix).parent
+        files = read_files(project, _PYPROJECT_FILENAME, _LOCK_FILENAME)
+        if len(files) == 2:
+            return files
+        # No poetry project: no files
+        return super()._gather_files(distributions, python_version)
 
     def _files_from_distributions(
         self, distributions: Sequence[models.Distribution], python_version: str

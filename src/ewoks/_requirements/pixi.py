@@ -7,6 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 from typing import Dict
+from typing import List
 from typing import Literal
 from typing import Mapping
 from typing import Optional
@@ -29,8 +30,9 @@ from .utils.metadata import models
 
 logger = logging.getLogger(__name__)
 
-_MANIFEST_FILENAME = "pixi.toml"
 _LOCK_FILENAME = "pixi.lock"
+_MANIFEST_FILENAME = "pixi.toml"
+_PYPROJECT_FILENAME = "pyproject.toml"
 _WORKSPACE_NAME = "ewoks-workflow-requirements"
 
 
@@ -52,9 +54,9 @@ class PixiManager(BaseManager):
     from those files. Unlike the python-only package managers this includes
     non-python dependencies.
 
-    The workspace is generated from the installed python distributions instead of
-    being taken from a pixi workspace of the current environment. This keeps it
-    self-contained: no local project to build.
+    When the current environment belongs to a pixi workspace, its manifest and
+    `pixi.lock` are stored as the manager files. Otherwise no files are stored and
+    the stored python distributions describe the environment.
 
     The command invokes pixi. For example `PixiManager("/path/to/pixi")`.
     """
@@ -117,6 +119,22 @@ class PixiManager(BaseManager):
         self._install_workspace(location)
         return self.environment(location)
 
+    def _gather_files(
+        self, distributions: List[models.Distribution], python_version: str
+    ) -> Dict[str, str]:
+        prefix = Path(sys.prefix)
+        if _is_workspace_environment(prefix):
+            # A pixi environment looks like <workspace>/.pixi/envs/<name>
+            project = prefix.parents[2]
+            # pixi.toml takes precedence over pyproject.toml
+            project_files = (_MANIFEST_FILENAME, _PYPROJECT_FILENAME)
+            for project_file in project_files:
+                files = read_files(project, project_file, _LOCK_FILENAME)
+                if len(files) == 2:
+                    return files
+        # No pixi workspace: no files
+        return super()._gather_files(distributions, python_version)
+
     def _files_from_distributions(
         self, distributions: Sequence[models.Distribution], python_version: str
     ) -> Dict[str, str]:
@@ -147,11 +165,11 @@ class PixiManager(BaseManager):
             "--pypi",
             "ewoks",
             "--manifest-path",
-            environment.location / _MANIFEST_FILENAME,
+            environment.location,
         )
 
     def _install_workspace(self, location: Path) -> None:
-        self._check_call("install", "--manifest-path", location / _MANIFEST_FILENAME)
+        self._check_call("install", "--manifest-path", location)
 
     def _manifest(self, requirements: Sequence[str], python_version: str) -> str:
         """Content of a `pixi.toml` file with python distributions as pypi

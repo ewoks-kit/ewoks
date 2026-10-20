@@ -55,8 +55,12 @@ Store the requirements
 
 * ``distributions`` are the installed python packages. Any :term:`package manager` can
   recreate the environment from this list.
-* ``manager`` is the :term:`package manager` that generated the requirements together with
-  the files it needs to recreate the environment exactly, for example a lock file.
+* ``manager`` is the :term:`package manager` that generated the requirements. Its ``files``
+  are what the package manager needs to recreate the environment exactly. pip-venv and
+  conda store what the environment reports (``pip freeze``, ``conda env export``). uv,
+  poetry and pixi store the project files of the environment, for example a
+  ``pyproject.toml`` and a lock file, and store nothing when there are none. Without
+  ``files``, ``distributions`` describe the environment.
 
 Create the environment
 ----------------------

@@ -4,6 +4,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Dict
+from typing import List
 from typing import Literal
 from typing import Mapping
 from typing import Optional
@@ -44,9 +45,10 @@ class UvManager(BaseManager):
     `pyproject.toml` and a `uv.lock` file, `uv sync` reproduces the environment
     from those files.
 
-    The project is generated from the installed python distributions instead of
-    being taken from a `uv` project of the current environment. This keeps it
-    self-contained: no workspace members and no local project to build.
+    When the current environment is the `.venv` of a uv project, its
+    `pyproject.toml` and `uv.lock` are stored as the manager files. Otherwise no
+    files are stored and the stored python distributions describe the
+    environment.
 
     The command invokes uv. For example `UvManager("/path/to/uv")`.
     """
@@ -102,6 +104,16 @@ class UvManager(BaseManager):
         python = python_version or sys.executable
         self._check_call("venv", "--python", python, environment.prefix)
         return environment
+
+    def _gather_files(
+        self, distributions: List[models.Distribution], python_version: str
+    ) -> Dict[str, str]:
+        project = Path(sys.prefix).parent
+        files = read_files(project, _PYPROJECT_FILENAME, _LOCK_FILENAME)
+        if len(files) == 2:
+            return files
+        # No uv project: no files
+        return super()._gather_files(distributions, python_version)
 
     def _files_from_distributions(
         self, distributions: Sequence[models.Distribution], python_version: str
