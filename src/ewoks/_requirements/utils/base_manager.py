@@ -10,6 +10,7 @@ from typing import Sequence
 from typing import Union
 
 from pydantic import Field
+from pydantic import model_serializer
 
 from . import process
 from .environment import Environment
@@ -42,6 +43,17 @@ class BaseManagerInfo(models.BaseModel):
         ),
         examples=[{"requirements.txt": "ewoks==7.0.0\nnetworkx==3.4.2\n"}],
     )
+
+    @model_serializer(mode="wrap")
+    def _files_last(self, handler):
+        """The files are long: write them after the other manager fields."""
+        # pydantic gives the serializer a handler function. Calling handler
+        # returns the model as a dict, with the fields in the order they are defined
+        data = handler(self)
+        if "files" in data:
+            # Removing and adding "files" again moves it to the end of the dict
+            data["files"] = data.pop("files")
+        return data
 
 
 class BaseRequirements(models.BaseModel):
