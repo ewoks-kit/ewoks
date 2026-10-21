@@ -42,6 +42,14 @@ class PixiManagerInfo(BaseManagerInfo):
         description="Environments described and created by a `pixi` workspace.",
         examples=["pixi"],
     )
+    environment: str = Field(
+        default="default",
+        description=(
+            "Environment of the pixi workspace in which the requirements were "
+            "generated."
+        ),
+        examples=["default"],
+    )
 
 
 class PixiRequirements(BaseRequirements):
@@ -134,6 +142,18 @@ class PixiManager(BaseManager):
                     return files
         # No pixi workspace: no files
         return super()._gather_files(distributions, python_version)
+
+    def _gather_extra_fields(self) -> Dict[str, str]:
+        name = os.environ.get("PIXI_ENVIRONMENT_NAME")
+        if not name:
+            prefix = Path(sys.prefix)
+            if _is_workspace_environment(prefix):
+                # A pixi environment looks like <workspace>/.pixi/envs/<name>
+                name = prefix.name
+        if not name:
+            # The manager model provides the default environment
+            return dict()
+        return {"environment": name}
 
     def _files_from_distributions(
         self, distributions: Sequence[models.Distribution], python_version: str
