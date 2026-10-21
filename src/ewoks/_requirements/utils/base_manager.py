@@ -112,9 +112,11 @@ class BaseManager:
     An implementation provides `version`, `is_active`, `create_environment`,
     `_files_from_distributions`, `_install_files` and `_add_ewoks`. Package managers
     that can inspect a python environment also override `_gather_files`. Package
-    managers that keep named environments in a directory of their own also override
-    `environments_root`. Package managers that are not named after the tool that
-    installs the distributions also override `installed_distribution`.
+    managers with extra fields in their manager model also override
+    `_gather_extra_fields`. Package managers that keep named environments in a
+    directory of their own also override `environments_root`. Package managers that
+    are not named after the tool that installs the distributions also override
+    `installed_distribution`.
     """
 
     NAME = NotImplemented
@@ -169,7 +171,12 @@ class BaseManager:
             metadata["distributions"], metadata["python"]["version"]
         )
 
-        manager = dict(name=self.NAME, version=manager_version, files=files)
+        manager = dict(
+            name=self.NAME,
+            version=manager_version,
+            files=files,
+            **self._gather_extra_fields(),
+        )
         return self.REQUIREMENTS_MODEL(manager=manager, **metadata)
 
     def environment(self, location: Union[str, Path]) -> Environment:
@@ -283,6 +290,13 @@ class BaseManager:
         """Files that describe the current python environment. Package managers
         that can inspect an environment override this. Without files, the stored
         python distributions describe the environment.
+        """
+        return dict()
+
+    def _gather_extra_fields(self) -> Dict[str, str]:
+        """Values of the fields a package manager adds to its manager model,
+        besides name, version and files. Package managers that add fields
+        override this.
         """
         return dict()
 
