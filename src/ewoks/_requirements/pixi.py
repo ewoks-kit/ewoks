@@ -42,11 +42,11 @@ class PixiManagerInfo(BaseManagerInfo):
         description="Environments described and created by a `pixi` workspace.",
         examples=["pixi"],
     )
-    environment: str = Field(
+    pixi_environment_name: str = Field(
         default="default",
         description=(
-            "Environment of the pixi workspace in which the requirements were "
-            "generated."
+            "Name of the environment of the pixi workspace in which the "
+            "requirements were generated."
         ),
         examples=["default"],
     )
@@ -127,6 +127,15 @@ class PixiManager(BaseManager):
         self._install_workspace(location)
         return self.environment(location)
 
+    def files_environment(
+        self, requirements: BaseRequirements, environment: Environment
+    ) -> Environment:
+        if not isinstance(requirements, PixiRequirements):
+            return environment
+        name = requirements.manager.pixi_environment_name
+        subdir = os.path.join(".pixi", "envs", name)
+        return Environment.at_location(environment.location, subdir)
+
     def _gather_files(
         self, distributions: List[models.Distribution], python_version: str
     ) -> Dict[str, str]:
@@ -144,6 +153,7 @@ class PixiManager(BaseManager):
         return super()._gather_files(distributions, python_version)
 
     def _gather_extra_fields(self) -> Dict[str, str]:
+        # pixi sets PIXI_ENVIRONMENT_NAME in `pixi run` and `pixi shell`
         name = os.environ.get("PIXI_ENVIRONMENT_NAME")
         if not name:
             prefix = Path(sys.prefix)
@@ -153,7 +163,7 @@ class PixiManager(BaseManager):
         if not name:
             # The manager model provides the default environment
             return dict()
-        return {"environment": name}
+        return {"pixi_environment_name": name}
 
     def _files_from_distributions(
         self, distributions: Sequence[models.Distribution], python_version: str
@@ -174,22 +184,27 @@ class PixiManager(BaseManager):
         self, files: Mapping[str, str], environment: Environment
     ) -> None:
         write_files(environment.location, files)
-        self._install_workspace(environment.location)
+        self._install_workspace(environment.location, environment.prefix.name)
 
     def _add_ewoks(
         self, requirements: BaseRequirements, environment: Environment
     ) -> None:
-        # The workspace pins all versions so they cannot change
+        # pixi keeps the locked versions of the workflow requirements, unless ewoks
+        # needs different versions of them
         self._check_call(
             "add",
             "--pypi",
             "ewoks",
             "--manifest-path",
             environment.location,
+            "--environment",
+            environment.prefix.name,
+            "--no-install",
         )
+        self._install_workspace(environment.location, environment.prefix.name)
 
-    def _install_workspace(self, location: Path) -> None:
-        self._check_call("install", "--manifest-path", location)
+    def _install_workspace(self, location: Path, name: str = "default") -> None:
+        self._check_call("install", "--manifest-path", location, "--environment", name)
 
     def _manifest(self, requirements: Sequence[str], python_version: str) -> str:
         """Content of a `pixi.toml` file with python distributions as pypi
