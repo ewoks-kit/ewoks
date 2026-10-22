@@ -188,8 +188,10 @@ def install_requirements(
 
     installed = False
     if native:
+        files_environment = manager.files_environment(requirements, environment)
         try:
-            manager.install_files(requirements, environment)
+            manager.install_files(requirements, files_environment)
+            environment = files_environment
             installed = True
         except Exception:
             logger.exception(

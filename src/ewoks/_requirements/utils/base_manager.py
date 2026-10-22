@@ -195,6 +195,14 @@ class BaseManager:
         """Environment the manager creates at this location."""
         return Environment.at_location(location, self.ENVIRONMENT_SUBDIR)
 
+    def files_environment(
+        self, requirements: BaseRequirements, environment: Environment
+    ) -> Environment:
+        """Environment in which the files of the requirements are installed.
+        Package managers whose files describe several environments override this.
+        """
+        return environment
+
     def environment_location(
         self, name: str, root: Optional[Union[str, Path]] = None
     ) -> Path:
