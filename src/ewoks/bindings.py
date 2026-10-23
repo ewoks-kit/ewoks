@@ -391,9 +391,6 @@ def _locale_is_utf8() -> bool:
     ``LC_CTYPE`` is ignored because Python sets it to ``C.UTF-8`` itself
     when the locale is POSIX.
     """
-    # LC_ALL overrides LANG (POSIX): the first non-empty variable decides.
-    for name in ("LC_ALL", "LANG"):
-        value = os.environ.get(name)
-        if value:
-            return "utf8" in value.lower().replace("-", "")
-    return False
+    # LC_ALL overrides LANG (POSIX).
+    locale_name = os.environ.get("LC_ALL") or os.environ.get("LANG") or ""
+    return "utf8" in locale_name.lower().replace("-", "")
