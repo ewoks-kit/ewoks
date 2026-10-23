@@ -268,7 +268,7 @@ def _print_graph(
         label = key.replace("_", " ").capitalize()
         print(f"{label}: {value}")
     if rows:
-        print(tabulate(rows, headers=column_names, tablefmt="fancy_grid"))
+        print(tabulate(rows, headers=column_names, tablefmt=_table_format()))
     else:
         print("No workflow input parameters detected!")
     for footnote in footnotes:
@@ -372,3 +372,25 @@ def lint_graph(
             print(f"    {line}")
     else:
         print(f"Workflow {original_source or ''} linted without errors!")
+
+
+def _table_format() -> str:
+    """Return the fancy table format if the terminal can show it, else the ASCII one."""
+    try:
+        "╒═╤╕│╞╪╡├┼┤╘╧╛".encode(sys.stdout.encoding or "ascii")
+    except UnicodeEncodeError:
+        return "grid"
+    if os.name == "posix" and not _locale_is_utf8():
+        return "grid"
+    return "fancy_grid"
+
+
+def _locale_is_utf8() -> bool:
+    """The terminal inherits the locale, which is POSIX when no variable is set.
+
+    ``LC_CTYPE`` is ignored because Python sets it to ``C.UTF-8`` itself
+    when the locale is POSIX.
+    """
+    # LC_ALL overrides LANG (POSIX).
+    locale_name = os.environ.get("LC_ALL") or os.environ.get("LANG") or ""
+    return "utf8" in locale_name.lower().replace("-", "")
