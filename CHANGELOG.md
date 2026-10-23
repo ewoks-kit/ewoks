@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoks convert`: uv, poetry and pixi store the project files of the current environment
   instead of generating them if they are present for the environment.
 
+### Fixed
+
+- `ewoks show`: use an ASCII table when the locale or terminal encoding does not support box-drawing characters.
+
 ### Removed
 
 - `ewoks install`: remove `-p/--python` argument.
