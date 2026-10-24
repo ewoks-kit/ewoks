@@ -10,6 +10,7 @@ from typing import Sequence
 from typing import Union
 
 from pydantic import Field
+from pydantic import model_serializer
 
 from . import process
 from .environment import Environment
@@ -42,6 +43,17 @@ class BaseManagerInfo(models.BaseModel):
         ),
         examples=[{"requirements.txt": "ewoks==7.0.0\nnetworkx==3.4.2\n"}],
     )
+
+    @model_serializer(mode="wrap")
+    def _files_last(self, handler):
+        """The files are long: write them after the other manager fields."""
+        # pydantic gives the serializer a handler function. Calling handler
+        # returns the model as a dict, with the fields in the order they are defined
+        data = handler(self)
+        if "files" in data:
+            # Removing and adding "files" again moves it to the end of the dict
+            data["files"] = data.pop("files")
+        return data
 
 
 class BaseRequirements(models.BaseModel):
@@ -112,9 +124,11 @@ class BaseManager:
     An implementation provides `version`, `is_active`, `create_environment`,
     `_files_from_distributions`, `_install_files` and `_add_ewoks`. Package managers
     that can inspect a python environment also override `_gather_files`. Package
-    managers that keep named environments in a directory of their own also override
-    `environments_root`. Package managers that are not named after the tool that
-    installs the distributions also override `installed_distribution`.
+    managers with extra fields in their manager model also override
+    `_gather_extra_fields`. Package managers that keep named environments in a
+    directory of their own also override `environments_root`. Package managers that
+    are not named after the tool that installs the distributions also override
+    `installed_distribution`.
     """
 
     NAME = NotImplemented
@@ -169,12 +183,25 @@ class BaseManager:
             metadata["distributions"], metadata["python"]["version"]
         )
 
-        manager = dict(name=self.NAME, version=manager_version, files=files)
+        manager = dict(
+            name=self.NAME,
+            version=manager_version,
+            files=files,
+            **self._gather_extra_fields(),
+        )
         return self.REQUIREMENTS_MODEL(manager=manager, **metadata)
 
     def environment(self, location: Union[str, Path]) -> Environment:
         """Environment the manager creates at this location."""
         return Environment.at_location(location, self.ENVIRONMENT_SUBDIR)
+
+    def files_environment(
+        self, requirements: BaseRequirements, environment: Environment
+    ) -> Environment:
+        """Environment in which the files of the requirements are installed.
+        Package managers whose files describe several environments override this.
+        """
+        return environment
 
     def environment_location(
         self, name: str, root: Optional[Union[str, Path]] = None
@@ -283,6 +310,13 @@ class BaseManager:
         """Files that describe the current python environment. Package managers
         that can inspect an environment override this. Without files, the stored
         python distributions describe the environment.
+        """
+        return dict()
+
+    def _gather_extra_fields(self) -> Dict[str, str]:
+        """Values of the fields a package manager adds to its manager model,
+        besides name, version and files. Package managers that add fields
+        override this.
         """
         return dict()
 
