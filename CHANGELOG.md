@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - add `--in-place`, `--python-version` and `--with-ewoks` arguments.
 - `ewoks convert`: add `--package-manager-name` and `--package-manager-command` arguments.
 - `ewoks execute`: add `--env` argument.
-- Add `ewoks-install.sh` script to install the environment of a workflow without ewoks.
+- Add `ewoks-install.sh` and `ewoks-install.ps1` scripts to install the environment of a workflow without ewoks.
 - Add `ewoks lint` CLI command to check if a workflow is conform to the Ewoks specification.
 
 ### Changed
