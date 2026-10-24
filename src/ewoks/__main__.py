@@ -1,3 +1,6 @@
+import os
+import re
+import shlex
 import subprocess
 import sys
 import traceback
@@ -207,27 +210,63 @@ def command_install(
             print(f"Install aborted for {workflow}")
         else:
             print(f"Installed requirements for {workflow}")
+            print(f"  Python : {environment.python}")
+            if environment.distribution_version("ewoks"):
+                execute = _shell_command(
+                    [
+                        str(environment.python),
+                        "-m",
+                        "ewoks",
+                        "execute",
+                        _absolute_workflow(workflow),
+                    ]
+                )
+                print(f"  Execute: {execute}")
+            else:
+                print(
+                    "  Execute: the environment has no ewoks to execute the "
+                    "workflow with (use '--with-ewoks')"
+                )
             if not cli_args.in_place:
-                location = environment.location
-                print(f"  Python : {environment.python}")
-                if environment.distribution_version("ewoks"):
-                    print(f"  Execute: ewoks execute --env {location} {workflow}")
-                else:
-                    print(
-                        "  Execute: the environment has no ewoks to execute the "
-                        "workflow with (use '--with-ewoks')"
-                    )
-                print(f"  Remove : {_remove_command(location)}")
+                print(f"  Remove : {_remove_command(environment.location)}")
     if shell:
         return 0
     return None
 
 
 def _remove_command(location: Path) -> str:
-    """Shell command that removes a python environment."""
+    """Shell command that removes a python environment: PowerShell on Windows."""
     if sys.platform == "win32":
-        return f'rmdir /s /q "{location}"'
-    return f"rm -rf {location}"
+        return f"Remove-Item -Recurse -Force {_powershell_quote(str(location))}"
+    return f"rm -rf {shlex.quote(str(location))}"
+
+
+def _shell_command(arguments: List[str]) -> str:
+    """Command line for the shell of the platform: PowerShell on Windows."""
+    if sys.platform == "win32":
+        command = " ".join(_powershell_quote(argument) for argument in arguments)
+        if command.startswith("'"):
+            # A quoted string is not a command in PowerShell
+            return f"& {command}"
+        return command
+    return shlex.join(arguments)
+
+
+_POWERSHELL_SAFE = re.compile(r"[\w./\\:=+-]+")
+
+
+def _powershell_quote(argument: str) -> str:
+    """Argument quoted for PowerShell when needed."""
+    if _POWERSHELL_SAFE.fullmatch(argument):
+        return argument
+    return "'" + argument.replace("'", "''") + "'"
+
+
+def _absolute_workflow(workflow: str) -> str:
+    """Workflow that does not depend on the working directory."""
+    if os.path.isfile(workflow):
+        return os.path.abspath(workflow)
+    return workflow
 
 
 def command_in_environment(
