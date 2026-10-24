@@ -142,6 +142,26 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 The environment of the :term:`workflow` is a pixi workspace in ``ewoks_envs/demo`` with the
 environment in its ``.pixi/envs/default`` directory.
 
+Alternatively, the :ref:`ewoks-install script <install_bootstrap>` recreates the
+environment without an environment with :term:`ewoks`
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
+
+It selects the :term:`package manager` itself and prints the command to execute the
+:term:`workflow` in the environment it creates.
+
 Execute the workflow
 --------------------
 
