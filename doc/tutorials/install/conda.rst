@@ -147,6 +147,26 @@ The environment of the :term:`workflow` is a conda environment in ``ewoks_envs/d
 ``--env-root`` it is created in the first environment directory of conda, where
 ``conda activate demo`` finds it.
 
+Alternatively, the :ref:`ewoks-install script <install_bootstrap>` recreates the
+environment without an environment with :term:`ewoks`
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
+
+It selects the :term:`package manager` itself and prints the command to execute the
+:term:`workflow` in the environment it creates.
+
 Execute the workflow
 --------------------
 

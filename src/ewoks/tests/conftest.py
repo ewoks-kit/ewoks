@@ -1,6 +1,32 @@
+from typing import List
 from unittest.mock import MagicMock
 
 import pytest
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    config.addinivalue_line(
+        "markers",
+        "package_manager_install: installs package managers from the internet, "
+        "only runs when selected with '-m package_manager_install'",
+    )
+
+
+_PACKAGE_MANAGER_INSTALL = "package_manager_install"
+
+
+def pytest_collection_modifyitems(
+    config: pytest.Config, items: List[pytest.Item]
+) -> None:
+    """Skip the tests that install package managers unless they are selected."""
+    if _PACKAGE_MANAGER_INSTALL in config.getoption("markexpr", ""):
+        return
+    skip = pytest.mark.skip(
+        reason=f"installs package managers: select with '-m {_PACKAGE_MANAGER_INSTALL}'"
+    )
+    for item in items:
+        if _PACKAGE_MANAGER_INSTALL in item.keywords:
+            item.add_marker(skip)
 
 
 @pytest.fixture

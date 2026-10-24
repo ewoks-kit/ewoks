@@ -185,10 +185,16 @@ def command_convert(
     return None
 
 
+# Environment variable with text that is printed before the summary, like the
+# ewoks-install scripts do for their bootstrap environment
+_SUMMARY_HEADER_VARIABLE = "EWOKS_INSTALL_SUMMARY_HEADER"
+
+
 def command_install(
     cli_args: Namespace, shell: bool = False
 ) -> Optional[Literal[0, 1]]:
     cli_install_utils.parse_install_arguments(cli_args, shell=shell)
+    header = os.environ.get(_SUMMARY_HEADER_VARIABLE)
     for workflow, source in zip(cli_args.workflows, cli_args.graphs):
         try:
             environment = install_graph(
@@ -205,33 +211,47 @@ def command_install(
             )
         except (CalledProcessError, RuntimeError, ValueError):
             traceback.print_exc()
-            print(f"Install failed for {workflow}")
+            summary = [f"Install failed for {workflow}"]
         except AbortException:
-            print(f"Install aborted for {workflow}")
+            summary = [f"Install aborted for {workflow}"]
         else:
-            print(f"Installed requirements for {workflow}")
-            print(f"  Python : {environment.python}")
-            if environment.distribution_version("ewoks"):
-                execute = _shell_command(
-                    [
-                        str(environment.python),
-                        "-m",
-                        "ewoks",
-                        "execute",
-                        _absolute_workflow(workflow),
-                    ]
-                )
-                print(f"  Execute: {execute}")
-            else:
-                print(
-                    "  Execute: the environment has no ewoks to execute the "
-                    "workflow with (use '--with-ewoks')"
-                )
-            if not cli_args.in_place:
-                print(f"  Remove : {_remove_command(environment.location)}")
+            summary = _install_summary(workflow, environment, cli_args.in_place)
+        if header:
+            print(header)
+            header = None
+        print("\n".join(summary))
     if shell:
         return 0
     return None
+
+
+def _install_summary(
+    workflow: str, environment: Environment, in_place: bool
+) -> List[str]:
+    """Lines that describe the python environment in which a workflow is installed."""
+    summary = [
+        f"Installed requirements for {workflow}",
+        f"  Python : {environment.python}",
+    ]
+    if environment.distribution_version("ewoks"):
+        execute = _shell_command(
+            [
+                str(environment.python),
+                "-m",
+                "ewoks",
+                "execute",
+                _absolute_workflow(workflow),
+            ]
+        )
+        summary.append(f"  Execute: {execute}")
+    else:
+        summary.append(
+            "  Execute: the environment has no ewoks to execute the workflow with "
+            "(use '--with-ewoks')"
+        )
+    if not in_place:
+        summary.append(f"  Remove : {_remove_command(environment.location)}")
+    return summary
 
 
 def _remove_command(location: Path) -> str:
