@@ -145,6 +145,12 @@ environment without an environment with :term:`ewoks`
 
             curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
 
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json
+
 It selects the :term:`package manager` itself and prints the command to execute the
 :term:`workflow` in the environment it creates.
 
