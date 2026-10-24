@@ -74,6 +74,29 @@ Install any package that provides :term:`tasks <Task>` instead of
 Re-producer side
 ----------------
 
+Without the producer side, download the demo :term:`workflow` of this documentation, which
+only requires :term:`ewoks`
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            curl -LsSfO |docs_url|/demo.json
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            curl -LsSfO |docs_url|/demo.json
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            irm |docs_url|/demo.json -OutFile demo.json
+
 Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 
 .. tabs::
