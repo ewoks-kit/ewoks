@@ -42,14 +42,32 @@ class Environment:
 
     @classmethod
     def from_location(cls, location: Union[str, Path]) -> "Environment":
-        """Environment found inside the location.
+        """Environment found inside the location. A pixi workspace without a
+        default environment provides its only environment.
 
-        :raises ValueError: no python interpreter found
+        :raises ValueError: no python interpreter found or several pixi environments
         """
         for subdir in ENVIRONMENT_SUBDIRS:
             environment = cls.at_location(location, subdir)
             if environment.python.is_file():
                 return environment
+
+        # A pixi environment looks like <workspace>/.pixi/envs/<name>
+        environments = []
+        for prefix in (Path(location) / ".pixi" / "envs").glob("*"):
+            subdir = os.path.join(".pixi", "envs", prefix.name)
+            environment = cls.at_location(location, subdir)
+            if environment.python.is_file():
+                environments.append(environment)
+        if len(environments) == 1:
+            return environments[0]
+        if environments:
+            names = ", ".join(environment.prefix.name for environment in environments)
+            raise ValueError(
+                f"Several pixi environments found in '{location}' ({names}): use the "
+                f"prefix of one of them, for example '{environments[0].prefix}'"
+            )
+
         raise ValueError(f"No python environment found in '{location}'")
 
     @property
