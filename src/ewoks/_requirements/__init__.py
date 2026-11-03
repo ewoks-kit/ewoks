@@ -213,7 +213,7 @@ def install_requirements(
             )
 
     if not installed:
-        manager.install_distributions(requirements, environment)
+        manager.install_distributions(requirements, environment, python_version)
 
     if ensure_ewoks:
         manager.ensure_ewoks(requirements, environment)

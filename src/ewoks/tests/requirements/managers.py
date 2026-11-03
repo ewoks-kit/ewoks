@@ -36,6 +36,9 @@ class ManagerCase:
     CHANNEL_PYTHON: bool = False
     """Python comes from a conda channel, which decides the patch version."""
 
+    CREATES_ENVIRONMENT: bool = True
+    """The environment exists before the requirements are installed."""
+
     def command(self) -> Tuple[str, ...]:
         """Command that invokes the package manager (the default when empty)."""
         return tuple()
@@ -132,6 +135,7 @@ class PixiCase(ManagerCase):
     INSTALLER = "uv-pixi"  # pixi installs PyPI distributions with its own uv
     SLOW = True
     CHANNEL_PYTHON = True
+    CREATES_ENVIRONMENT = False
 
     def native_files(
         self, distributions: Sequence[models.Distribution], python_version: str

@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import platform
 import re
 import sys
 import tempfile
@@ -117,14 +116,7 @@ class PixiManager(BaseManager):
     def create_environment(
         self, location: Path, python_version: Optional[str] = None
     ) -> Environment:
-        """
-        :raises RuntimeError: creation failed
-        """
-        if not python_version:
-            python_version = platform.python_version()
-        manifest = self._manifest([], python_version)
-        write_files(location, {_MANIFEST_FILENAME: manifest})
-        self._install_workspace(location)
+        # pixi creates the environment in `_install_workspace`
         return self.environment(location)
 
     def files_environment(

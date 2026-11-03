@@ -1,5 +1,6 @@
 import importlib.metadata
 import logging
+import platform
 from abc import abstractmethod
 from pathlib import Path
 from textwrap import indent
@@ -265,10 +266,14 @@ class BaseManager:
             raise
 
     def install_distributions(
-        self, requirements: BaseRequirements, environment: Environment
+        self,
+        requirements: BaseRequirements,
+        environment: Environment,
+        python_version: Optional[str] = None,
     ) -> None:
-        """Install the python distributions of the requirements in an existing
-        environment.
+        """Install the python distributions of the requirements in an environment.
+        `python_version` is used when neither the requirements nor the environment
+        provide a python version. Otherwise, the version of the running python is used.
 
         :raises ValueError: no distributions provided to install
         :raises RuntimeError: installation failed
@@ -276,8 +281,13 @@ class BaseManager:
         if not requirements.distributions:
             raise ValueError("No distributions provided to install")
         # Requirements that do not specify a python version are described for the
-        # python version of the environment they are installed in
-        python_version = requirements.python.version or environment.python_version()
+        # python version of the environment they are installed in.
+        if requirements.python.version:
+            python_version = requirements.python.version
+        elif environment.exists():
+            python_version = environment.python_version()
+        elif not python_version:
+            python_version = platform.python_version()
         try:
             files = self._files_from_distributions(
                 requirements.distributions, python_version
