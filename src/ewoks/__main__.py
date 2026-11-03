@@ -253,6 +253,7 @@ def _shell_command(arguments: List[str]) -> str:
 
 
 _POWERSHELL_SAFE = re.compile(r"[\w./\\:=+-]+")
+# Characters allowed in PowerShell arguments without quoting
 
 
 def _powershell_quote(argument: str) -> str:
