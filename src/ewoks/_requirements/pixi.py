@@ -182,15 +182,13 @@ class PixiManager(BaseManager):
         self, requirements: BaseRequirements, environment: Environment
     ) -> None:
         # pixi keeps the locked versions of the workflow requirements, unless ewoks
-        # needs different versions of them
+        # needs different versions of them.
         self._check_call(
             "add",
             "--pypi",
             "ewoks",
             "--manifest-path",
             environment.location,
-            "--environment",
-            environment.prefix.name,
             "--no-install",
         )
         self._install_workspace(environment.location, environment.prefix.name)
