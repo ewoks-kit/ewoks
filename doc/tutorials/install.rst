@@ -89,7 +89,7 @@ it the environment is created where the :term:`package manager` creates named en
 Create the environment without ewoks
 ++++++++++++++++++++++++++++++++++++
 
-``ewoks install`` needs a python environment with :term:`ewoks`. The ``ewoks-install`` script
+``ewoks install`` needs a Python environment with :term:`ewoks`. The ``ewoks-install`` script
 only needs a :term:`package manager`: it installs the version of :term:`ewoks` that generated
 the requirements, and the engine that saved the :term:`workflow`, in a bootstrap environment
 and runs ``ewoks install`` from there. All
