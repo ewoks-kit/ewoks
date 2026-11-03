@@ -40,10 +40,17 @@ def test_no_environment(tmp_path):
 
 @pytest.mark.parametrize(
     "names, expected",
-    [(["test"], "test"), (["default", "test"], "default"), (["test", "docs"], None)],
+    [
+        (["default"], "default"),
+        (["test"], "test"),
+        (["default", "test"], "default"),
+        (["test", "docs"], None),
+    ],
 )
-def test_pixi_environments(names, expected, monkeypatch, tmp_path):
-    """A pixi workspace provides its default or its only environment."""
+def test_pixi_environments(names, expected, monkeypatch, tmp_path, caplog):
+    """A pixi workspace provides its only environment, or its default environment
+    with a warning when it has several.
+    """
     monkeypatch.setattr(sys, "platform", "linux")
     envs = tmp_path / ".pixi" / "envs"
     for name in names:
@@ -56,3 +63,4 @@ def test_pixi_environments(names, expected, monkeypatch, tmp_path):
             Environment.from_location(tmp_path)
     else:
         assert Environment.from_location(tmp_path).prefix == envs / expected
+        assert ("Several pixi environments" in caplog.text) == (len(names) > 1)
