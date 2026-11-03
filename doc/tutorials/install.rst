@@ -71,14 +71,14 @@ Create the environment
 
 ``ewoks install`` creates a python environment for the :term:`workflow`. It prints the python
 interpreter of the environment it created, the command to execute the :term:`workflow` in it
-and the command to remove it again
+and the command to remove it again. These commands work from any terminal and directory
 
 .. code-block:: text
 
     Installed requirements for demo.json
-      Python : ewoks_envs/demo/bin/python
-      Execute: ewoks execute --env ewoks_envs/demo demo.json
-      Remove : rm -rf ewoks_envs/demo
+      Python : /home/user/ewoks_envs/demo/bin/python
+      Execute: /home/user/ewoks_envs/demo/bin/python -m ewoks execute /home/user/demo.json
+      Remove : rm -rf /home/user/ewoks_envs/demo
 
 Without ``--yes`` you are asked to confirm after the packages have been listed. The
 walk-throughs use ``--env-root`` to create the environment in the working directory. Without

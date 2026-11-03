@@ -12,6 +12,8 @@ from typing import Optional
 
 import pytest
 
+from ...__main__ import _remove_command
+from ...__main__ import _shell_command
 from ..._requirements import environment_name
 from ..._requirements.utils.environment import Environment
 from ...bindings import load_graph
@@ -25,6 +27,18 @@ from .utils import manager_requirements
 _GRAPH_ID = "test_install"
 """Identifier of the workflows to install, which is also the name of the
 environment created for them."""
+
+
+def test_printed_commands_with_spaces(tmp_path):
+    """The printed commands work in the shell of the platform."""
+    location = tmp_path / "ewoks envs"
+    python = str(location / "python")
+    if sys.platform == "win32":
+        assert _shell_command([python, "-m", "ewoks"]) == f"& '{python}' -m ewoks"
+        assert _remove_command(location) == f"Remove-Item -Recurse -Force '{location}'"
+    else:
+        assert _shell_command([python, "-m", "ewoks"]) == f"'{python}' -m ewoks"
+        assert _remove_command(location) == f"rm -rf '{location}'"
 
 
 def test_install_with_files(fast_manager_case, env_root):
