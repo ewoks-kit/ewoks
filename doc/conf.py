@@ -85,6 +85,9 @@ html_theme_options = {
 }
 
 
+# The ewoks-install scripts
+html_extra_path = ["../src/ewoks/_bootstrap"]
+
 # Root of the documentation version that is built: on Read the Docs, for example
 # .../en/stable, or on GitLab Pages
 _DOCS_URL = (

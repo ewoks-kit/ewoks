@@ -52,6 +52,9 @@ def _home_variables(home: Path) -> Dict[str, Path]:
         # Directories in which package managers create named environments
         "CONDA_ENVS_DIRS": home / "conda" / "envs",
         "POETRY_VIRTUALENVS_PATH": home / "poetry" / "virtualenvs",
+        # Pixi cannot find its cache directory without a user profile, like on CI
+        # runners that run as a service
+        "PIXI_CACHE_DIR": home / "pixi" / "cache",
         # Channels are no longer provided by the home directory of the user
         "CONDARC": condarc,
     }
