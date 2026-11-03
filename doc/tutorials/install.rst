@@ -109,6 +109,12 @@ arguments are passed to ``ewoks install``, except for the options of the script 
 
             curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
 
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json
+
 Without a :term:`workflow` at hand, try it with the demo :term:`workflow` of this
 documentation, which only requires :term:`ewoks`
 
@@ -128,6 +134,13 @@ documentation, which only requires :term:`ewoks`
             curl -LsSfO |docs_url|/demo.json
             curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
 
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            irm |docs_url|/demo.json -OutFile demo.json
+            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json
+
 Alternatively, download the script first, for example to read it before running it
 
 .. tabs::
@@ -145,6 +158,13 @@ Alternatively, download the script first, for example to read it before running 
 
             curl -LsSf -o ewoks-install.sh |docs_url|/ewoks-install.sh
             sh ewoks-install.sh demo.json
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            irm |docs_url|/ewoks-install.ps1 -OutFile ewoks-install.ps1
+            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 demo.json
 
 * ``--package-manager-name`` and ``--package-manager-command`` select the
   :term:`package manager` that creates the bootstrap environment. Without them it is the first

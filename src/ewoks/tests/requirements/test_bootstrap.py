@@ -29,23 +29,46 @@ _INSTALLABLE_MANAGERS = ["uv", "pixi", "poetry", "conda"]
 _GRAPH_ID = "bootstrap"
 
 
-@pytest.fixture
-def script() -> List[str]:
-    """Command that runs the bootstrap script."""
-    if sys.platform == "win32":
-        pytest.skip("sh is not available on Windows")
-    return ["sh", str(_SCRIPTS / "ewoks-install.sh")]
+@pytest.fixture(params=["sh", "pwsh", "powershell"])
+def script(request) -> List[str]:
+    """Command that runs a bootstrap script. `powershell` is Windows PowerShell 5.1."""
+    if request.param == "sh":
+        if sys.platform == "win32":
+            pytest.skip("sh is not available on Windows")
+        return ["sh", str(_SCRIPTS / "ewoks-install.sh")]
+    if request.param == "powershell" and sys.platform != "win32":
+        pytest.skip("Windows PowerShell is only available on Windows")
+    powershell = shutil.which(request.param)
+    if powershell is None:
+        pytest.skip(f"{request.param} is not installed")
+    return [
+        powershell,
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        str(_SCRIPTS / "ewoks-install.ps1"),
+    ]
 
 
 @pytest.fixture
 def no_managers_env(tmp_path) -> Dict[str, str]:
     """Environment variables with a PATH that only provides python and the
     system tools, which can include package managers (see `_skip_if_installed`)."""
-    bin_dir = tmp_path / "python-bin"
-    bin_dir.mkdir()
-    for name in ("python3", f"python{PYTHON_MINOR_VERSION}"):
-        _python_wrapper(bin_dir / name)
-    directories = [str(bin_dir), "/usr/bin", "/bin", "/usr/sbin", "/sbin"]
+    if sys.platform == "win32":
+        system_root = os.environ.get("SystemRoot", r"C:\Windows")
+        directories = [
+            os.path.dirname(sys.executable),
+            os.path.join(system_root, "System32"),
+            system_root,
+            os.path.join(system_root, "System32", "WindowsPowerShell", "v1.0"),
+        ]
+    else:
+        bin_dir = tmp_path / "python-bin"
+        bin_dir.mkdir()
+        for name in ("python3", f"python{PYTHON_MINOR_VERSION}"):
+            _python_wrapper(bin_dir / name)
+        directories = [str(bin_dir), "/usr/bin", "/bin", "/usr/sbin", "/sbin"]
     path = os.pathsep.join(directories)
     env = {
         name: value
@@ -128,6 +151,8 @@ def test_manager_command_with_spaces(
     script, workflow, bootstrap_dir, bootstrap_python, failing_install, tmp_path
 ):
     """The package manager command is quoted like the one of `ewoks install`."""
+    if script[0] != "sh":
+        pytest.skip("PowerShell splits the command like `ewoks install` on Windows")
     python = tmp_path / "python bin" / "python"
     python.parent.mkdir()
     _python_wrapper(python)
@@ -277,7 +302,11 @@ def test_install_manager(
     assert f"install {manager} in" in result.stderr
     manager_dir = bootstrap_dir / "package-managers" / manager
     command = _printed_command(result)
-    assert str(manager_dir) in command
+    if sys.platform == "win32":
+        # `ewoks install` splits the command on spaces that are not escaped
+        assert str(manager_dir).replace(" ", "\\ ") in command
+    else:
+        assert str(manager_dir) in command
 
     result = _run(script, arguments, bootstrap_dir, env=no_managers_env)
 
@@ -314,6 +343,8 @@ def _fake_bootstrap_environment(
     interpreter is the one of the tests. The scripts find the ewoks under test
     installed in it, so they do not install anything. Returns the python
     interpreter."""
+    if sys.platform == "win32":
+        pytest.skip("the fake bootstrap environment is a POSIX shell script")
     ewoks = load_graph(str(workflow)).graph.graph["requirements"]["ewoks"]
     engine = ewoks["engine"]
     name = (
