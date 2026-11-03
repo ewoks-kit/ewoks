@@ -145,17 +145,12 @@ class PixiManager(BaseManager):
         return super()._gather_files(distributions, python_version)
 
     def _gather_extra_fields(self) -> Dict[str, str]:
-        # pixi sets PIXI_ENVIRONMENT_NAME in `pixi run` and `pixi shell`
-        name = os.environ.get("PIXI_ENVIRONMENT_NAME")
-        if not name:
-            prefix = Path(sys.prefix)
-            if _is_workspace_environment(prefix):
-                # A pixi environment looks like <workspace>/.pixi/envs/<name>
-                name = prefix.name
-        if not name:
+        prefix = Path(sys.prefix)
+        if not _is_workspace_environment(prefix):
             # The manager model provides the default environment
             return dict()
-        return {"pixi_environment_name": name}
+        # A pixi environment looks like <workspace>/.pixi/envs/<name>
+        return {"pixi_environment_name": prefix.name}
 
     def _files_from_distributions(
         self, distributions: Sequence[models.Distribution], python_version: str

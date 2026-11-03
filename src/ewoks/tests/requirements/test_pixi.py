@@ -59,10 +59,11 @@ def test_is_not_active(monkeypatch, tmp_path):
     assert not PixiManager().is_active()
 
 
-def test_pixi_environment_name_from_variable(monkeypatch, tmp_path):
-    """pixi run and pixi shell set the name of the environment."""
-    monkeypatch.setenv("PIXI_ENVIRONMENT_NAME", "test")
-    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".pixi" / "envs" / "default"))
+def test_pixi_environment_name_not_from_variable(monkeypatch, tmp_path):
+    """The name comes from the running python, not from an environment that pixi
+    activated for another interpreter."""
+    monkeypatch.setenv("PIXI_ENVIRONMENT_NAME", "other")
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".pixi" / "envs" / "test"))
     assert PixiManager()._gather_extra_fields() == {"pixi_environment_name": "test"}
 
 
