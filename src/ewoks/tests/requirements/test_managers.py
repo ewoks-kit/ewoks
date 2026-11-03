@@ -96,9 +96,7 @@ def test_create_environment(manager_case, environment):
     if manager_case.CREATES_ENVIRONMENT:
         assert environment.exists()
         if manager_case.CHANNEL_PYTHON:
-            assert environment.python_version().startswith(
-                f"{PYTHON_MINOR_VERSION}."
-            )
+            assert environment.python_version().startswith(f"{PYTHON_MINOR_VERSION}.")
         else:
             assert environment.python_version() == PYTHON_VERSION
         assert Environment.from_location(environment.location) == environment
