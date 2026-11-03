@@ -1,5 +1,6 @@
 """Tests that apply to all package managers."""
 
+import importlib.metadata
 from typing import Iterator
 
 import pytest
@@ -83,6 +84,7 @@ def test_gather_requirements(manager, manager_case, monkeypatch):
     requirements = manager.gather_requirements()
 
     assert isinstance(requirements, manager_case.MANAGER_CLS.REQUIREMENTS_MODEL)
+    assert requirements.ewoks.version == importlib.metadata.version("ewoks")
     assert requirements.manager.name == manager_case.NAME
     assert requirements.manager.version
     assert requirements.python.version == PYTHON_VERSION

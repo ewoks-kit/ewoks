@@ -21,6 +21,7 @@ from .utils.detect import get_installer
 from .utils.detect import get_manager
 from .utils.environment import Environment
 from .utils.metadata import last_resort
+from .utils.metadata.models import EngineInfo
 
 logger = logging.getLogger(__file__)
 
@@ -49,12 +50,16 @@ def add_requirements(
     graph: TaskGraph,
     manager_name: Optional[str] = None,
     manager_command: Tuple[str, ...] = tuple(),
+    engine: Optional[Tuple[str, str]] = None,
 ) -> str:
     """Add requirements to a workflow definition in-place. Returns the name of the
-    package manager that generated them.
+    package manager that generated them. `engine` is the name and version of the
+    distribution of the engine that saves the workflow.
     """
     manager = get_manager(manager_name=manager_name, manager_command=manager_command)
     requirements = manager.gather_requirements()
+    if requirements.ewoks and engine:
+        requirements.ewoks.engine = EngineInfo(name=engine[0], version=engine[1])
     graph.graph.graph["requirements"] = requirements.model_dump()
     return manager.NAME
 

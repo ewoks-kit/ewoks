@@ -1,3 +1,4 @@
+import importlib.metadata
 import logging
 from abc import abstractmethod
 from pathlib import Path
@@ -45,6 +46,13 @@ class BaseManagerInfo(models.BaseModel):
 
 
 class BaseRequirements(models.BaseModel):
+    ewoks: Optional[models.EwoksInfo] = Field(
+        default=None,
+        description=(
+            "Ewoks that generated the requirements. Not set for requirements that "
+            "ewoks did not generate."
+        ),
+    )
     system: models.SystemInfo = Field(
         description="Operating system on which the requirements were generated."
     )
@@ -170,7 +178,8 @@ class BaseManager:
         )
 
         manager = dict(name=self.NAME, version=manager_version, files=files)
-        return self.REQUIREMENTS_MODEL(manager=manager, **metadata)
+        ewoks = dict(version=importlib.metadata.version("ewoks"))
+        return self.REQUIREMENTS_MODEL(ewoks=ewoks, manager=manager, **metadata)
 
     def environment(self, location: Union[str, Path]) -> Environment:
         """Environment the manager creates at this location."""

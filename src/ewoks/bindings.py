@@ -222,10 +222,14 @@ def convert_graph(
         elif isinstance(package_manager_command, str):
             package_manager_command = _split_command(package_manager_command)
 
+        engine, _ = _engines.get_serialization_engine(
+            destination, representation=save_options.get("representation")
+        )
         manager_name = _requirements.add_requirements(
             graph,
             manager_name=package_manager_name,
             manager_command=package_manager_command,
+            engine=_engines.get_engine_distribution(engine),
         )
         logger.info("Requirements generated with the %r package manager", manager_name)
     else:

@@ -1,3 +1,5 @@
+import importlib.metadata
+import json
 import os
 import sys
 
@@ -34,6 +36,10 @@ def test_convert_to_json(graph_name, tmpdir):
     graph = load_graph(destination)
 
     assert_in_graph_requirements(graph, "ewokscore")
+    assert graph.graph.graph["requirements"]["ewoks"]["engine"] == {
+        "name": "ewokscore",
+        "version": importlib.metadata.version("ewokscore"),
+    }
 
 
 def test_convert_with_all_inputs(tmpdir):
@@ -132,6 +138,12 @@ def test_convert_to_ows(graph_name, tmpdir):
 
     tree = ElementTree.parse(destination)
     root = tree.getroot()
+
+    graph_attrs = json.loads(root.find("./ewoks_graph_attrs").text)
+    assert graph_attrs["requirements"]["ewoks"]["engine"] == {
+        "name": "ewoksorange",
+        "version": importlib.metadata.version("ewoksorange"),
+    }
 
     for node in root.findall("./nodes/node"):
         try:
