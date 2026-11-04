@@ -81,6 +81,14 @@ def test_pixi_environment_name_default(monkeypatch, tmp_path):
     assert requirements.manager.pixi_environment_name == "default"
 
 
+def test_gather_pixi_environment_name(monkeypatch, tmp_path):
+    """The gathered requirements contain the name of the environment."""
+    monkeypatch.setattr(PixiManager, "version", lambda self: "0.82.1")
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / ".pixi" / "envs" / "test"))
+    requirements = PixiManager().gather_requirements()
+    assert requirements.manager.pixi_environment_name == "test"
+
+
 def test_files_environment(tmp_path):
     """The files are installed in the environment of the requirements."""
     data = manager_requirements("pixi")

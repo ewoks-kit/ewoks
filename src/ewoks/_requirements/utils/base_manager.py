@@ -192,7 +192,12 @@ class BaseManager:
             metadata["distributions"], metadata["python"]["version"]
         )
 
-        manager = dict(name=self.NAME, version=manager_version, files=files)
+        manager = dict(
+            name=self.NAME,
+            version=manager_version,
+            files=files,
+            **self._gather_extra_fields(),
+        )
         ewoks = dict(version=importlib.metadata.version("ewoks"))
         return self.REQUIREMENTS_MODEL(ewoks=ewoks, manager=manager, **metadata)
 
