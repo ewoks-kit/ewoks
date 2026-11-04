@@ -273,7 +273,8 @@ class BaseManager:
     ) -> None:
         """Install the python distributions of the requirements in an environment.
         `python_version` is used when neither the requirements nor the environment
-        provide a python version. Otherwise, the version of the running python is used.
+        provide a python version, and the version of the running python when
+        `python_version` is not given.
 
         :raises ValueError: no distributions provided to install
         :raises RuntimeError: installation failed

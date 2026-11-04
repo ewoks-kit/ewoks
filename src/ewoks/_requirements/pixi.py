@@ -188,7 +188,7 @@ class PixiManager(BaseManager):
         )
         self._install_workspace(environment.location, environment.prefix.name)
 
-    def _install_workspace(self, location: Path, name: str = "default") -> None:
+    def _install_workspace(self, location: Path, name: str) -> None:
         self._check_call("install", "--manifest-path", location, "--environment", name)
 
     def _manifest(self, requirements: Sequence[str], python_version: str) -> str:

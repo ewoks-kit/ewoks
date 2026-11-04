@@ -68,15 +68,13 @@ def test_pixi_environment_name_not_from_variable(monkeypatch, tmp_path):
 
 
 def test_pixi_environment_name_from_prefix(monkeypatch, tmp_path):
-    """Without the variable, the name comes from the environment prefix."""
-    monkeypatch.delenv("PIXI_ENVIRONMENT_NAME", raising=False)
+    """The name comes from the environment prefix."""
     monkeypatch.setattr(sys, "prefix", str(tmp_path / ".pixi" / "envs" / "test"))
     assert PixiManager()._gather_extra_fields() == {"pixi_environment_name": "test"}
 
 
 def test_pixi_environment_name_default(monkeypatch, tmp_path):
     """Outside a pixi workspace the environment is "default"."""
-    monkeypatch.delenv("PIXI_ENVIRONMENT_NAME", raising=False)
     monkeypatch.setattr(sys, "prefix", str(tmp_path))
     assert PixiManager()._gather_extra_fields() == {}
     requirements = PixiRequirements(**manager_requirements("pixi"))
