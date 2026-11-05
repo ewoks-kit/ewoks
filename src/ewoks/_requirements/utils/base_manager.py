@@ -49,8 +49,6 @@ class BaseManagerInfo(models.BaseModel):
     @model_serializer(mode="wrap")
     def _files_last(self, handler):
         """The files are long: write them after the other manager fields."""
-        # pydantic gives the serializer a handler function. Calling handler
-        # returns the model as a dict, with the fields in the order they are defined
         data = handler(self)
         if "files" in data:
             # Removing and adding "files" again moves it to the end of the dict

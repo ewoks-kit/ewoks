@@ -115,16 +115,11 @@ class PixiManager(BaseManager):
     def create_environment(
         self, location: Path, python_version: Optional[str] = None
     ) -> Environment:
-        # pixi creates the environment in `_install_workspace`
+        """Environment that pixi creates when it installs the workspace."""
         return self.environment(location)
 
     def environment(self, location: Union[str, Path]) -> Environment:
-        """The default environment of the pixi workspace in `location`.
-
-        Only the location is known here, not the requirements. When pixi files
-        are found while gathering the requirements, `files_environment`
-        switches to the files' environment.
-        """
+        """The default environment of the pixi workspace in `location`."""
         return _workspace_environment(location, "default")
 
     def files_environment(
@@ -194,6 +189,11 @@ class PixiManager(BaseManager):
             "--no-install",
         )
         self._install_workspace(environment.location, environment.prefix.name)
+        if not environment.distribution_version("ewoks"):
+            raise RuntimeError(
+                f"ewoks was not installed in the pixi environment "
+                f"'{environment.prefix.name}': add ewoks to one of its features"
+            )
 
     def _install_workspace(self, location: Path, name: str) -> None:
         self._check_call("install", "--manifest-path", location, "--environment", name)
