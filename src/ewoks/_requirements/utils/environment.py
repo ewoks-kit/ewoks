@@ -120,7 +120,7 @@ def _pixi_environments(location: Union[str, Path]) -> Dict[str, Environment]:
     <workspace>/.pixi/envs/<name>.
     """
     environments = {}
-    for prefix in (Path(location) / ".pixi" / "envs").glob("*"):
+    for prefix in sorted((Path(location) / ".pixi" / "envs").glob("*")):
         subdir = os.path.join(".pixi", "envs", prefix.name)
         environment = Environment.at_location(location, subdir)
         if environment.python.is_file():

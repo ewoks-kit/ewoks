@@ -100,6 +100,20 @@ def test_files_environment(tmp_path):
     assert environment.prefix == tmp_path / ".pixi" / "envs" / "test"
 
 
+def test_windows_interpreter(monkeypatch, tmp_path):
+    """On Windows the interpreter is in the prefix, also before pixi creates the
+    environment."""
+    monkeypatch.setattr(sys, "platform", "win32")
+    data = manager_requirements("pixi")
+    data["manager"]["pixi_environment_name"] = "test"
+    requirements = PixiRequirements(**data)
+    manager = PixiManager()
+    environment = manager.environment(tmp_path)
+    assert environment.python == tmp_path / ".pixi" / "envs" / "default" / "python.exe"
+    environment = manager.files_environment(requirements, environment)
+    assert environment.python == tmp_path / ".pixi" / "envs" / "test" / "python.exe"
+
+
 @pytest.mark.skipif(PixiManager().version() is None, reason="pixi is not installed")
 def test_manifest():
     manifest = PixiManager()._manifest(REQUIREMENTS, PYTHON_VERSION)

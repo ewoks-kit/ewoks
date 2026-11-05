@@ -72,7 +72,6 @@ class PixiManager(BaseManager):
     PRIORITY = 5
     REQUIREMENTS_MODEL = PixiRequirements
     COMMAND_EXAMPLE = "pixi"
-    ENVIRONMENT_SUBDIR = os.path.join(".pixi", "envs", "default")
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -119,14 +118,22 @@ class PixiManager(BaseManager):
         # pixi creates the environment in `_install_workspace`
         return self.environment(location)
 
+    def environment(self, location: Union[str, Path]) -> Environment:
+        """The default environment of the pixi workspace in `location`.
+
+        Only the location is known here, not the requirements. When pixi files
+        are found while gathering the requirements, `files_environment`
+        switches to the files' environment.
+        """
+        return _workspace_environment(location, "default")
+
     def files_environment(
         self, requirements: BaseRequirements, environment: Environment
     ) -> Environment:
         if not isinstance(requirements, PixiRequirements):
             return environment
         name = requirements.manager.pixi_environment_name
-        subdir = os.path.join(".pixi", "envs", name)
-        return Environment.at_location(environment.location, subdir)
+        return _workspace_environment(environment.location, name)
 
     def _gather_files(
         self, distributions: List[models.Distribution], python_version: str
@@ -220,6 +227,21 @@ python = {json.dumps(python)}
             return json.loads(output)["platform"]
         except (ValueError, KeyError):
             raise RuntimeError("Cannot determine the pixi platform") from None
+
+
+def _workspace_environment(location: Union[str, Path], name: str) -> Environment:
+    """Return the environment at `<location>/.pixi/envs/<name>`.
+
+    The environment may not exist yet, so the python path is built instead of
+    searched for.
+    """
+    location = Path(os.path.abspath(location))
+    prefix = location / ".pixi" / "envs" / name
+    if sys.platform == "win32":
+        python = prefix / "python.exe"
+    else:
+        python = prefix / "bin" / "python"
+    return Environment(location=location, python=python)
 
 
 def _is_workspace_environment(prefix: Path) -> bool:
