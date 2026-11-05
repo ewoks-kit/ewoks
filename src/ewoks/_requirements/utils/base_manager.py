@@ -1,5 +1,6 @@
 import importlib.metadata
 import logging
+import platform
 from abc import abstractmethod
 from pathlib import Path
 from textwrap import indent
@@ -11,6 +12,7 @@ from typing import Sequence
 from typing import Union
 
 from pydantic import Field
+from pydantic import model_serializer
 
 from . import process
 from .environment import Environment
@@ -43,6 +45,15 @@ class BaseManagerInfo(models.BaseModel):
         ),
         examples=[{"requirements.txt": "ewoks==7.0.0\nnetworkx==3.4.2\n"}],
     )
+
+    @model_serializer(mode="wrap")
+    def _files_last(self, handler):
+        """The files are long: write them after the other manager fields."""
+        data = handler(self)
+        if "files" in data:
+            # Removing and adding "files" again moves it to the end of the dict
+            data["files"] = data.pop("files")
+        return data
 
 
 class BaseRequirements(models.BaseModel):
@@ -120,9 +131,11 @@ class BaseManager:
     An implementation provides `version`, `is_active`, `create_environment`,
     `_files_from_distributions`, `_install_files` and `_add_ewoks`. Package managers
     that can inspect a python environment also override `_gather_files`. Package
-    managers that keep named environments in a directory of their own also override
-    `environments_root`. Package managers that are not named after the tool that
-    installs the distributions also override `installed_distribution`.
+    managers with extra fields in their manager model also override
+    `_gather_extra_fields`. Package managers that keep named environments in a
+    directory of their own also override `environments_root`. Package managers that
+    are not named after the tool that installs the distributions also override
+    `installed_distribution`.
     """
 
     NAME = NotImplemented
@@ -177,13 +190,26 @@ class BaseManager:
             metadata["distributions"], metadata["python"]["version"]
         )
 
-        manager = dict(name=self.NAME, version=manager_version, files=files)
+        manager = dict(
+            name=self.NAME,
+            version=manager_version,
+            files=files,
+            **self._gather_extra_fields(),
+        )
         ewoks = dict(version=importlib.metadata.version("ewoks"))
         return self.REQUIREMENTS_MODEL(ewoks=ewoks, manager=manager, **metadata)
 
     def environment(self, location: Union[str, Path]) -> Environment:
         """Environment the manager creates at this location."""
         return Environment.at_location(location, self.ENVIRONMENT_SUBDIR)
+
+    def files_environment(
+        self, requirements: BaseRequirements, environment: Environment
+    ) -> Environment:
+        """Environment in which the files of the requirements are installed.
+        Package managers whose files describe several environments override this.
+        """
+        return environment
 
     def environment_location(
         self, name: str, root: Optional[Union[str, Path]] = None
@@ -243,10 +269,15 @@ class BaseManager:
             raise
 
     def install_distributions(
-        self, requirements: BaseRequirements, environment: Environment
+        self,
+        requirements: BaseRequirements,
+        environment: Environment,
+        python_version: Optional[str] = None,
     ) -> None:
-        """Install the python distributions of the requirements in an existing
-        environment.
+        """Install the python distributions of the requirements in an environment.
+        `python_version` is used when neither the requirements nor the environment
+        provide a python version, and the version of the running python when
+        `python_version` is not given.
 
         :raises ValueError: no distributions provided to install
         :raises RuntimeError: installation failed
@@ -254,8 +285,13 @@ class BaseManager:
         if not requirements.distributions:
             raise ValueError("No distributions provided to install")
         # Requirements that do not specify a python version are described for the
-        # python version of the environment they are installed in
-        python_version = requirements.python.version or environment.python_version()
+        # python version of the environment they are installed in.
+        if requirements.python.version:
+            python_version = requirements.python.version
+        elif environment.exists():
+            python_version = environment.python_version()
+        elif not python_version:
+            python_version = platform.python_version()
         try:
             files = self._files_from_distributions(
                 requirements.distributions, python_version
@@ -292,6 +328,13 @@ class BaseManager:
         """Files that describe the current python environment. Package managers
         that can inspect an environment override this. Without files, the stored
         python distributions describe the environment.
+        """
+        return dict()
+
+    def _gather_extra_fields(self) -> Dict[str, str]:
+        """Values of the fields a package manager adds to its manager model,
+        besides name, version and files. Package managers that add fields
+        override this.
         """
         return dict()
 

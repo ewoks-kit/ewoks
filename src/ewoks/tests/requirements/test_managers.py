@@ -93,13 +93,17 @@ def test_gather_requirements(manager, manager_case, monkeypatch):
 
 
 def test_create_environment(manager_case, environment):
-    assert environment.exists()
-    if manager_case.CHANNEL_PYTHON:
-        assert environment.python_version().startswith(f"{PYTHON_MINOR_VERSION}.")
+    if manager_case.CREATES_ENVIRONMENT:
+        assert environment.exists()
+        if manager_case.CHANNEL_PYTHON:
+            assert environment.python_version().startswith(f"{PYTHON_MINOR_VERSION}.")
+        else:
+            assert environment.python_version() == PYTHON_VERSION
+        assert Environment.from_location(environment.location) == environment
+        assert_not_installed(environment, DISTRIBUTIONS)
     else:
-        assert environment.python_version() == PYTHON_VERSION
-    assert Environment.from_location(environment.location) == environment
-    assert_not_installed(environment, DISTRIBUTIONS)
+        # The environment is created when the requirements are installed
+        assert not environment.exists()
 
 
 def test_install_native(manager, manager_case, environment):

@@ -295,6 +295,8 @@ def command_in_environment(
 ) -> Literal[0, 1]:
     """Run the command in another python environment."""
     environment = Environment.from_location(location)
+    # Flush so that this line comes before the output of the subprocess
+    print(f"Running in the python environment {environment.prefix}", flush=True)
     arguments = _remove_option(argv[1:], "--env")
     return subprocess.call(  # noqa: S603 - Arguments of this command
         [environment.python, "-m", "ewoks", *arguments]

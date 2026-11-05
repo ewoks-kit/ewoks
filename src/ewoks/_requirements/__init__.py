@@ -193,8 +193,10 @@ def install_requirements(
 
     installed = False
     if native:
+        files_environment = manager.files_environment(requirements, environment)
         try:
-            manager.install_files(requirements, environment)
+            manager.install_files(requirements, files_environment)
+            environment = files_environment
             installed = True
         except Exception:
             logger.exception(
@@ -211,7 +213,7 @@ def install_requirements(
             )
 
     if not installed:
-        manager.install_distributions(requirements, environment)
+        manager.install_distributions(requirements, environment, python_version)
 
     if ensure_ewoks:
         manager.ensure_ewoks(requirements, environment)

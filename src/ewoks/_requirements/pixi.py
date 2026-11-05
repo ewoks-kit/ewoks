@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import platform
 import re
 import sys
 import tempfile
@@ -42,6 +41,14 @@ class PixiManagerInfo(BaseManagerInfo):
         description="Environments described and created by a `pixi` workspace.",
         examples=["pixi"],
     )
+    pixi_environment_name: str = Field(
+        default="default",
+        description=(
+            "Name of the environment of the pixi workspace in which the "
+            "requirements were generated."
+        ),
+        examples=["default"],
+    )
 
 
 class PixiRequirements(BaseRequirements):
@@ -65,7 +72,6 @@ class PixiManager(BaseManager):
     PRIORITY = 5
     REQUIREMENTS_MODEL = PixiRequirements
     COMMAND_EXAMPLE = "pixi"
-    ENVIRONMENT_SUBDIR = os.path.join(".pixi", "envs", "default")
 
     def __init__(self, *command: str) -> None:
         if not command:
@@ -109,15 +115,20 @@ class PixiManager(BaseManager):
     def create_environment(
         self, location: Path, python_version: Optional[str] = None
     ) -> Environment:
-        """
-        :raises RuntimeError: creation failed
-        """
-        if not python_version:
-            python_version = platform.python_version()
-        manifest = self._manifest([], python_version)
-        write_files(location, {_MANIFEST_FILENAME: manifest})
-        self._install_workspace(location)
+        """Environment that pixi creates when it installs the workspace."""
         return self.environment(location)
+
+    def environment(self, location: Union[str, Path]) -> Environment:
+        """The default environment of the pixi workspace in `location`."""
+        return _workspace_environment(location, "default")
+
+    def files_environment(
+        self, requirements: BaseRequirements, environment: Environment
+    ) -> Environment:
+        if not isinstance(requirements, PixiRequirements):
+            return environment
+        name = requirements.manager.pixi_environment_name
+        return _workspace_environment(environment.location, name)
 
     def _gather_files(
         self, distributions: List[models.Distribution], python_version: str
@@ -134,6 +145,14 @@ class PixiManager(BaseManager):
                     return files
         # No pixi workspace: no files
         return super()._gather_files(distributions, python_version)
+
+    def _gather_extra_fields(self) -> Dict[str, str]:
+        prefix = Path(sys.prefix)
+        if not _is_workspace_environment(prefix):
+            # The manager model provides the default environment
+            return dict()
+        # A pixi environment looks like <workspace>/.pixi/envs/<name>
+        return {"pixi_environment_name": prefix.name}
 
     def _files_from_distributions(
         self, distributions: Sequence[models.Distribution], python_version: str
@@ -154,22 +173,30 @@ class PixiManager(BaseManager):
         self, files: Mapping[str, str], environment: Environment
     ) -> None:
         write_files(environment.location, files)
-        self._install_workspace(environment.location)
+        self._install_workspace(environment.location, environment.prefix.name)
 
     def _add_ewoks(
         self, requirements: BaseRequirements, environment: Environment
     ) -> None:
-        # The workspace pins all versions so they cannot change
+        # pixi keeps the locked versions of the workflow requirements, unless ewoks
+        # needs different versions of them.
         self._check_call(
             "add",
             "--pypi",
             "ewoks",
             "--manifest-path",
             environment.location,
+            "--no-install",
         )
+        self._install_workspace(environment.location, environment.prefix.name)
+        if not environment.distribution_version("ewoks"):
+            raise RuntimeError(
+                f"ewoks was not installed in the pixi environment "
+                f"'{environment.prefix.name}': add ewoks to one of its features"
+            )
 
-    def _install_workspace(self, location: Path) -> None:
-        self._check_call("install", "--manifest-path", location)
+    def _install_workspace(self, location: Path, name: str) -> None:
+        self._check_call("install", "--manifest-path", location, "--environment", name)
 
     def _manifest(self, requirements: Sequence[str], python_version: str) -> str:
         """Content of a `pixi.toml` file with python distributions as pypi
@@ -200,6 +227,21 @@ python = {json.dumps(python)}
             return json.loads(output)["platform"]
         except (ValueError, KeyError):
             raise RuntimeError("Cannot determine the pixi platform") from None
+
+
+def _workspace_environment(location: Union[str, Path], name: str) -> Environment:
+    """Return the environment at `<location>/.pixi/envs/<name>`.
+
+    The environment may not exist yet, so the python path is built instead of
+    searched for.
+    """
+    location = Path(os.path.abspath(location))
+    prefix = location / ".pixi" / "envs" / name
+    if sys.platform == "win32":
+        python = prefix / "python.exe"
+    else:
+        python = prefix / "bin" / "python"
+    return Environment(location=location, python=python)
 
 
 def _is_workspace_environment(prefix: Path) -> bool:

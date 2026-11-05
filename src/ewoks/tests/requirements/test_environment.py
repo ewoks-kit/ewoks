@@ -36,3 +36,31 @@ def test_environment_layout(platform, relative, subdir, monkeypatch, tmp_path):
 def test_no_environment(tmp_path):
     with pytest.raises(ValueError, match="No python environment found"):
         Environment.from_location(tmp_path)
+
+
+@pytest.mark.parametrize(
+    "names, expected",
+    [
+        (["default"], "default"),
+        (["test"], "test"),
+        (["default", "test"], "default"),
+        (["test", "docs"], None),
+    ],
+)
+def test_pixi_environments(names, expected, monkeypatch, tmp_path, caplog):
+    """A pixi workspace provides its only environment, or its default environment
+    with a warning when it has several.
+    """
+    monkeypatch.setattr(sys, "platform", "linux")
+    envs = tmp_path / ".pixi" / "envs"
+    for name in names:
+        python = envs / name / "bin" / "python"
+        python.parent.mkdir(parents=True)
+        python.touch()
+
+    if expected is None:
+        with pytest.raises(ValueError, match="Several pixi environments"):
+            Environment.from_location(tmp_path)
+    else:
+        assert Environment.from_location(tmp_path).prefix == envs / expected
+        assert ("Several pixi environments" in caplog.text) == (len(names) > 1)

@@ -3,6 +3,7 @@ import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Dict
 from typing import Optional
 from typing import Tuple
 from typing import Union
@@ -14,7 +15,6 @@ logger = logging.getLogger(__name__)
 ENVIRONMENT_SUBDIRS: Tuple[str, ...] = (
     "",  # environment prefix, for example created by `python -m venv`
     ".venv",  # uv and poetry project
-    os.path.join(".pixi", "envs", "default"),  # pixi project
 )
 
 
@@ -42,14 +42,42 @@ class Environment:
 
     @classmethod
     def from_location(cls, location: Union[str, Path]) -> "Environment":
-        """Environment found inside the location.
+        """Environment found inside the location. A pixi workspace provides its only
+        environment, or its default environment when it has several.
 
-        :raises ValueError: no python interpreter found
+        :raises ValueError: no python interpreter found or several pixi environments
+                            without a default one
         """
         for subdir in ENVIRONMENT_SUBDIRS:
             environment = cls.at_location(location, subdir)
             if environment.python.is_file():
                 return environment
+
+        environments = _pixi_environments(location)
+        if len(environments) == 1:
+            return list(environments.values())[0]
+        if environments:
+            env_message = (
+                f"Several pixi environments found in '{location}': "
+                f"{', '.join(environments)}"
+            )
+            # Example of a path to pass, other than the default environment
+            named_env_paths = [
+                environment.prefix
+                for name, environment in environments.items()
+                if name != "default"
+            ]
+            example = f"for example '--env {named_env_paths[0]}'"
+            if "default" in environments:
+                logger.warning(
+                    f"{env_message}\nUsing the default environment. To use another "
+                    f"one, rerun with its path in --env, {example}"
+                )
+                return environments["default"]
+            raise ValueError(
+                f"{env_message}\nRerun with the path of one of them in --env, {example}"
+            )
+
         raise ValueError(f"No python environment found in '{location}'")
 
     @property
@@ -85,6 +113,19 @@ class Environment:
 
     def _python_output(self, code: str) -> str:
         return process.check_output(self.python, "-c", code).strip()
+
+
+def _pixi_environments(location: Union[str, Path]) -> Dict[str, Environment]:
+    """Environments of a pixi workspace by name, which look like
+    <workspace>/.pixi/envs/<name>.
+    """
+    environments = {}
+    for prefix in sorted((Path(location) / ".pixi" / "envs").glob("*")):
+        subdir = os.path.join(".pixi", "envs", prefix.name)
+        environment = Environment.at_location(location, subdir)
+        if environment.python.is_file():
+            environments[prefix.name] = environment
+    return environments
 
 
 def python_executable(prefix: Path) -> Path:
