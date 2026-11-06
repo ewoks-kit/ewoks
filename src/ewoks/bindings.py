@@ -15,18 +15,18 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
+from ewokscore import requirements as _requirements
 from ewokscore.events.contexts import RawExecInfoType
 from ewokscore.events.contexts import job_context
 from ewokscore.graph import TaskGraph
 from ewokscore.graph.inputs import graph_inputs_as_table
 from ewokscore.graph.schema.model import EwoksGraph
+from ewokscore.requirements.environment import Environment
 from pydantic import ValidationError
 from tabulate import tabulate
 
 from . import _engines
-from . import _requirements
 from . import graph_cache
-from ._requirements.utils.environment import Environment
 from .errors import AbortException
 
 try:
@@ -329,7 +329,7 @@ def install_graph(
         manager_name=package_manager_name,
         manager_command=package_manager_command,
         python_version=python_version,
-        ensure_ewoks=ensure_ewoks,
+        extra_distributions=("ewoks",) if ensure_ewoks else tuple(),
         clean=clean,
         confirm=None if skip_prompt else _confirm_installation,
     )

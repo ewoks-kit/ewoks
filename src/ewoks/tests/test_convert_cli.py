@@ -6,14 +6,14 @@ import sys
 import pytest
 from defusedxml import ElementTree
 from ewokscore import load_graph
+from ewokscore import requirements
 from ewokscore.task import Task
 from ewokscore.tests.examples.graphs import graph_names
+from ewokscore.tests.requirements.utils import assert_in_graph_requirements
 from ewoksutils.import_utils import import_qualname
 from orangewidget.widget import OWBaseWidget
 
-from .. import _requirements
 from ..__main__ import main
-from .requirements.utils import assert_in_graph_requirements
 from .utils import has_default_input
 from .utils import no_widget_registry
 
@@ -36,9 +36,12 @@ def test_convert_to_json(graph_name, tmpdir):
     graph = load_graph(destination)
 
     assert_in_graph_requirements(graph, "ewokscore")
-    assert graph.graph.graph["requirements"]["ewoks"]["engine"] == {
-        "name": "ewokscore",
-        "version": importlib.metadata.version("ewokscore"),
+    assert graph.graph.graph["requirements"]["ewoks"] == {
+        "version": importlib.metadata.version("ewoks"),
+        "engine": {
+            "name": "ewokscore",
+            "version": importlib.metadata.version("ewokscore"),
+        },
     }
 
 
@@ -92,7 +95,7 @@ def test_convert_requirements_failure(tmpdir, monkeypatch):
     def add_requirements(*args, **kwargs) -> None:
         raise RuntimeError("no package manager")
 
-    monkeypatch.setattr(_requirements, "add_requirements", add_requirements)
+    monkeypatch.setattr(requirements, "add_requirements", add_requirements)
 
     destination = str(tmpdir / "demo.json")
     argv = [
