@@ -28,7 +28,8 @@ ewoks install
     Use ``--env-root`` for another directory to create the environment in and ``--env-name`` for another name than the workflow identifier.
     An environment that already exists is installed in, unless ``--clean`` is provided to remove it first.
     The :term:`workflow` can be executed in that environment when it contains **ewoks** itself, which is the case when the ``requirements`` contain it.
-    Use ``--with-ewoks`` to add **ewoks** when the ``requirements`` do not contain it, without changing any of the versions they do contain:
+    Use ``--with-ewoks`` to add **ewoks** when the ``requirements`` do not contain it.
+    The versions they contain are kept, unless they come from project files that allow other versions: a warning lists the versions that changed.
 
     .. code-block:: bash
 

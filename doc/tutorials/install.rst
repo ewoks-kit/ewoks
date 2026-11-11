@@ -194,8 +194,9 @@ Execute the workflow
 ``--env`` executes the :term:`workflow` with the python interpreter of that environment
 instead of the current one. This works because the requirements contain ``ewoks`` itself: it
 was installed in the environment in which the :term:`workflow` was converted. When they do
-not, add ``--with-ewoks`` to ``ewoks install`` to install it without changing any of the
-versions coming from the :term:`workflow`.
+not, add ``--with-ewoks`` to ``ewoks install`` to install it. The versions coming from the
+:term:`workflow` are kept, unless they come from project files that allow other versions: a
+warning lists the versions that changed.
 
 Remove the environment
 ----------------------

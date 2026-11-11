@@ -124,6 +124,20 @@ def test_install_without_requirements(fast_manager_case, env_root):
         assert Environment.from_location(location).distribution_version("six")
 
 
+def test_install_with_ewoks(fast_manager_case, env_root):
+    """`--with-ewoks` adds ewoks to the environment of the workflow."""
+    graph = _graph(REQUIREMENTS)
+    argv = _argv(fast_manager_case, env_root) + ["--with-ewoks", json.dumps(graph)]
+
+    subprocess.check_call(argv)  # noqa: S603 - Trusted test command
+
+    environment = Environment.from_location(
+        _location(graph, fast_manager_case, env_root)
+    )
+    assert environment.distribution_version("ewoks")
+    assert_installed(environment, DISTRIBUTIONS)
+
+
 def test_install_env_name(fast_manager_case, env_root):
     """The environment name replaces the workflow identifier."""
     graph = _graph(REQUIREMENTS)
