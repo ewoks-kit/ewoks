@@ -12,18 +12,18 @@ from typing import List
 from typing import Optional
 
 import pytest
+from ewokscore.requirements import environment_name
+from ewokscore.requirements.environment import Environment
+from ewokscore.tests.requirements.managers import ManagerCase
+from ewokscore.tests.requirements.utils import DISTRIBUTIONS
+from ewokscore.tests.requirements.utils import PYTHON_VERSION
+from ewokscore.tests.requirements.utils import REQUIREMENTS
+from ewokscore.tests.requirements.utils import assert_installed
+from ewokscore.tests.requirements.utils import manager_requirements
 
 from ...__main__ import _remove_command
 from ...__main__ import _shell_command
-from ..._requirements import environment_name
-from ..._requirements.utils.environment import Environment
 from ...bindings import load_graph
-from .managers import ManagerCase
-from .utils import DISTRIBUTIONS
-from .utils import PYTHON_VERSION
-from .utils import REQUIREMENTS
-from .utils import assert_installed
-from .utils import manager_requirements
 
 _GRAPH_ID = "test_install"
 """Identifier of the workflows to install, which is also the name of the

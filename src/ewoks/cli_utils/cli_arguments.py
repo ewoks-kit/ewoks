@@ -1,9 +1,9 @@
 from typing import List
 
+from ewokscore.requirements import supported_managers
 from ewoksutils.cli_utils.cli_arguments import CLIArg
 
 from .._engines import get_graph_representations
-from .._requirements import supported_managers
 
 
 def package_manager_arguments(action: str) -> List[CLIArg]:
