@@ -217,18 +217,13 @@ def convert_graph(
     graph = load_graph(source, inputs=inputs, **load_options)
 
     if save_requirements:
-        if not package_manager_command:
-            package_manager_command = tuple()
-        elif isinstance(package_manager_command, str):
-            package_manager_command = _split_command(package_manager_command)
-
         engine, _ = _engines.get_serialization_engine(
             destination, representation=save_options.get("representation")
         )
         manager_name = _requirements.add_requirements(
             graph,
             manager_name=package_manager_name,
-            manager_command=package_manager_command,
+            manager_command=_manager_command(package_manager_command),
             engine=_engines.get_engine_distribution(engine),
         )
         logger.info("Requirements generated with the %r package manager", manager_name)
@@ -240,6 +235,34 @@ def convert_graph(
         on_requirements(manager_name)
 
     return save_graph(graph, destination, **save_options)
+
+
+def generate_requirements(
+    package_manager_name: Optional[str] = None,
+    package_manager_command: Union[None, str, Tuple[str, ...]] = None,
+    engine: Optional[Tuple[str, str]] = None,
+) -> dict:
+    """Requirements of the current python environment, as `convert_graph` saves
+    them in the `requirements` graph attribute. `engine` is the name and version of
+    the distribution of the engine that saves the workflow.
+    """
+    requirements, manager_name = _requirements.generate_requirements(
+        manager_name=package_manager_name,
+        manager_command=_manager_command(package_manager_command),
+        engine=engine,
+    )
+    logger.info("Requirements generated with the %r package manager", manager_name)
+    return requirements
+
+
+def _manager_command(
+    package_manager_command: Union[None, str, Tuple[str, ...]],
+) -> Tuple[str, ...]:
+    if not package_manager_command:
+        return tuple()
+    if isinstance(package_manager_command, str):
+        return _split_command(package_manager_command)
+    return tuple(package_manager_command)
 
 
 def show_graph(

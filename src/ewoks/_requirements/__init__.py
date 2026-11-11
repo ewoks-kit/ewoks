@@ -56,12 +56,28 @@ def add_requirements(
     package manager that generated them. `engine` is the name and version of the
     distribution of the engine that saves the workflow.
     """
+    requirements, name = generate_requirements(
+        manager_name=manager_name, manager_command=manager_command, engine=engine
+    )
+    graph.graph.graph["requirements"] = requirements
+    return name
+
+
+def generate_requirements(
+    manager_name: Optional[str] = None,
+    manager_command: Tuple[str, ...] = tuple(),
+    engine: Optional[Tuple[str, str]] = None,
+) -> Tuple[dict, str]:
+    """Requirements of the current python environment, as stored in the
+    `requirements` graph attribute, and the name of the package manager that
+    generated them. `engine` is the name and version of the distribution of the
+    engine that saves the workflow.
+    """
     manager = get_manager(manager_name=manager_name, manager_command=manager_command)
     requirements = manager.gather_requirements()
     if requirements.ewoks and engine:
         requirements.ewoks.engine = EngineInfo(name=engine[0], version=engine[1])
-    graph.graph.graph["requirements"] = requirements.model_dump()
-    return manager.NAME
+    return requirements.model_dump(), manager.NAME
 
 
 def get_requirements(graph: TaskGraph) -> BaseRequirements:
