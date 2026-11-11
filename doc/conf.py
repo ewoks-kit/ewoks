@@ -111,7 +111,7 @@ def _save_demo_workflow(app: Sphinx, exception: Optional[Exception]) -> None:
     graph, _ = get_graph("demo")
     workflow = convert_graph(graph, None)
     requirements = workflow["graph"]["requirements"]
-    names = ["ewoks", requirements["ewoks"]["engine"]["name"]]
+    names = list(requirements["bootstrap"]["distributions"])
     requirements["distributions"] = [
         {"name": name, "version": importlib.metadata.version(name)} for name in names
     ]
