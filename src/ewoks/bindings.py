@@ -1,4 +1,5 @@
 import datetime
+import importlib.metadata
 import logging
 import os
 import re
@@ -15,18 +16,19 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
+from ewokscore import requirements as _requirements
+from ewokscore.engine_interface import WorkflowEngine
 from ewokscore.events.contexts import RawExecInfoType
 from ewokscore.events.contexts import job_context
 from ewokscore.graph import TaskGraph
 from ewokscore.graph.inputs import graph_inputs_as_table
 from ewokscore.graph.schema.model import EwoksGraph
+from ewokscore.requirements.environment import Environment
 from pydantic import ValidationError
 from tabulate import tabulate
 
 from . import _engines
-from . import _requirements
 from . import graph_cache
-from ._requirements.utils.environment import Environment
 from .errors import AbortException
 
 try:
@@ -229,7 +231,7 @@ def convert_graph(
             graph,
             manager_name=package_manager_name,
             manager_command=package_manager_command,
-            engine=_engines.get_engine_distribution(engine),
+            bootstrap=_bootstrap_distributions(engine),
         )
         logger.info("Requirements generated with the %r package manager", manager_name)
     else:
@@ -240,6 +242,16 @@ def convert_graph(
         on_requirements(manager_name)
 
     return save_graph(graph, destination, **save_options)
+
+
+def _bootstrap_distributions(engine: WorkflowEngine) -> Dict[str, str]:
+    """Version of ewoks and of the distribution of the engine that saves a workflow."""
+    distributions = {"ewoks": importlib.metadata.version("ewoks")}
+    engine_distribution = _engines.get_engine_distribution(engine)
+    if engine_distribution:
+        name, version = engine_distribution
+        distributions[name] = version
+    return distributions
 
 
 def show_graph(
@@ -329,7 +341,7 @@ def install_graph(
         manager_name=package_manager_name,
         manager_command=package_manager_command,
         python_version=python_version,
-        ensure_ewoks=ensure_ewoks,
+        extra_distributions=("ewoks",) if ensure_ewoks else tuple(),
         clean=clean,
         confirm=None if skip_prompt else _confirm_installation,
     )

@@ -40,7 +40,7 @@ Store the requirements
 .. code-block:: json
 
     {
-        "ewoks": {"version": "7.0.0", "engine": {"name": "ewokscore", "version": "5.1.0"}},
+        "bootstrap": {"distributions": {"ewoks": "7.0.0", "ewokscore": "5.1.0"}},
         "python": {"version": "3.12.11", "implementation": "CPython", "...": "..."},
         "system": {"system": "Linux", "machine": "x86_64", "...": "..."},
         "distributions": [
@@ -54,9 +54,9 @@ Store the requirements
         }
     }
 
-* ``ewoks`` is the version of :term:`ewoks` that generated the requirements and the engine that
-  saved the :term:`workflow`: ``ewokscore`` for a ``.json`` or ``.yaml`` file and
-  ``ewoksorange`` for an ``.ows`` file.
+* ``bootstrap`` are the versions of :term:`ewoks` and of the engine that saved the
+  :term:`workflow`: ``ewokscore`` for a ``.json`` or ``.yaml`` file and ``ewoksorange`` for an
+  ``.ows`` file.
 * ``distributions`` are the installed python packages. Any :term:`package manager` can
   recreate the environment from this list.
 * ``manager`` is the :term:`package manager` that generated the requirements. Its ``files``
@@ -90,9 +90,9 @@ Create the environment without ewoks
 ++++++++++++++++++++++++++++++++++++
 
 ``ewoks install`` needs a Python environment with :term:`ewoks`. The ``ewoks-install`` script
-only needs a :term:`package manager`: it installs the version of :term:`ewoks` that generated
-the requirements, and the engine that saved the :term:`workflow`, in a bootstrap environment
-and runs ``ewoks install`` from there. All
+only needs a :term:`package manager`: it installs the ``bootstrap`` packages of the
+requirements, :term:`ewoks` and the engine that saved the :term:`workflow`, in a bootstrap
+environment and runs ``ewoks install`` from there. All
 arguments are passed to ``ewoks install``, except for the options of the script itself
 
 .. tabs::
@@ -170,7 +170,7 @@ Alternatively, download the script first, for example to read it before running 
   :term:`package manager` that creates the bootstrap environment. Without them it is the first
   one that is available of uv, pixi, conda, poetry and pip-venv.
 * ``--bootstrap-requirement`` installs a package in the bootstrap environment instead of the
-  version of :term:`ewoks` and the engine of the requirements, for example
+  ``bootstrap`` packages of the requirements, for example
   ``--bootstrap-requirement "ewoks>=7"``. Repeat it to install an engine as well, for example
   ``--bootstrap-requirement ewoks --bootstrap-requirement ewoksorange``. The latest version of
   :term:`ewoks` is installed when the requirements do not provide one.
@@ -194,8 +194,9 @@ Execute the workflow
 ``--env`` executes the :term:`workflow` with the python interpreter of that environment
 instead of the current one. This works because the requirements contain ``ewoks`` itself: it
 was installed in the environment in which the :term:`workflow` was converted. When they do
-not, add ``--with-ewoks`` to ``ewoks install`` to install it without changing any of the
-versions coming from the :term:`workflow`.
+not, add ``--with-ewoks`` to ``ewoks install`` to install it. The versions coming from the
+:term:`workflow` are kept, unless they come from project files that allow other versions: a
+warning lists the versions that changed.
 
 Remove the environment
 ----------------------

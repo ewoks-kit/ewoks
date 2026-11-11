@@ -13,8 +13,8 @@
 #
 #   1. Split the arguments in options of this script and arguments of `ewoks install`.
 #   2. Select the package manager.
-#   3. Read the ewoks, engine and python versions from the workflow requirements.
-#   4. Create a bootstrap environment with that ewoks and engine, unless it exists.
+#   3. Read the bootstrap distributions and python version from the workflow requirements.
+#   4. Create a bootstrap environment with those distributions, unless it exists.
 #   5. Run `ewoks install` in the bootstrap environment.
 #
 # The bootstrap environments are cached in ~/.ewoks/bootstrap/<manager>/<name>
@@ -26,9 +26,9 @@ usage() {
 Usage: ewoks-install.sh [OPTIONS] WORKFLOW [ARGS ...]
 
 Install the python environment of an ewoks workflow with nothing but a package
-manager. The ewoks version that generated the workflow requirements, and the
-engine that saved the workflow, are installed in a bootstrap environment, which
-then runs
+manager. The bootstrap distributions of the workflow requirements, ewoks and
+the engine that saved the workflow, are installed in a bootstrap environment,
+which then runs
 
     ewoks install WORKFLOW ARGS
 
@@ -42,7 +42,7 @@ directory with '--install-package-manager'.
 Options:
   --bootstrap-requirement REQ
                            Install REQ in the bootstrap environment instead of
-                           the ewoks version and engine of the workflow, for
+                           the bootstrap distributions of the workflow, for
                            example 'ewoks>=7' or a wheel file. Repeat it to
                            install an engine as well, for example
                            '--bootstrap-requirement ewoks
@@ -133,45 +133,52 @@ download() {
 # Workflow requirements
 # =============================================================================
 
-# Value in the requirements of a workflow file: ewoks.version, ewoks.engine.name,
-# ewoks.engine.version or python.version. The requirements are JSON, which can be
+# `key value` lines of the object at a key path of the requirements of a workflow
+# file: python or bootstrap.distributions. The requirements are JSON, which can be
 # embedded in another format like the XML of .ows files, or YAML.
-requirement_value() {
-    value=$(json_requirement_value "$1" "$2")
-    [ -n "$value" ] || value=$(yaml_requirement_value "$1" "$2")
-    printf '%s' "$value"
+requirement_items() {
+    items=$(json_requirement_items "$1" "$2")
+    [ -n "$items" ] || items=$(yaml_requirement_items "$1" "$2")
+    printf '%s\n' "$items"
 }
 
-# Value in JSON without a JSON parser. For example `ewoks.version` in
+# Items in JSON without a JSON parser. For example `bootstrap.distributions` in
 #
-#   "ewoks": {"engine": {"name": "ewokscore", "version": "5.1.0"}, "version": "7.0.0"}
-json_requirement_value() {
+#   "bootstrap": {"distributions": {"ewoks": "7.0.0", "ewokscore": "5.1.0"}}
+json_requirement_items() {
     q="[\"']"
     s='[[:space:]]*'
-    value="${q}$s:$s${q}\([^\"']*\)${q}"
-    # The members of an object, which can contain objects themselves
-    members='[^{}]*\({[^{}]*}[^{}]*\)*'
-    case $2 in
-        ewoks.version)
-            pattern="${q}ewoks${q}$s:$s{$members${q}version$value" group=2
-            ;;
-        ewoks.engine.name)
-            pattern="${q}ewoks${q}$s:$s{[^{}]*${q}engine${q}$s:$s{[^{}]*${q}name$value" group=1
-            ;;
-        ewoks.engine.version)
-            pattern="${q}ewoks${q}$s:$s{[^{}]*${q}engine${q}$s:$s{[^{}]*${q}version$value" group=1
-            ;;
-        python.version)
-            pattern="${q}python${q}$s:$s{[^{}]*${q}version$value" group=1
-            ;;
-    esac
+    pattern=""
+    old_ifs=$IFS
+    IFS=.
+    for key in $2; do
+        pattern="$pattern${pattern:+[^{\}]*}${q}$key${q}$s:$s{"
+    done
+    IFS=$old_ifs
     # On one line, with the quotes that XML escapes
-    tr -d '\n\r' <"$1" | sed 's/&quot;/"/g' | sed -n "s/.*$pattern.*/\\$group/p"
+    tr -d '\n\r' <"$1" | sed 's/&quot;/"/g' | sed -n "s/.*$pattern\([^{}]*\)}.*/\1/p" |
+        awk -v sq="'" '
+            {
+                quoted = "[\"" sq "][^\"" sq "]*[\"" sq "]"
+                quotes = "^[ \t]*[\"" sq "]|[\"" sq "][ \t]*$"
+                rest = $0
+                while (match(rest, quoted "[ \t]*:[ \t]*" quoted)) {
+                    pair = substr(rest, RSTART, RLENGTH)
+                    rest = substr(rest, RSTART + RLENGTH)
+                    colon = index(pair, ":")
+                    key = substr(pair, 1, colon - 1)
+                    value = substr(pair, colon + 1)
+                    gsub(quotes, "", key)
+                    gsub(quotes, "", value)
+                    print key " " value
+                }
+            }
+        '
 }
 
-# Value in YAML without a YAML parser: the last `key: value` line whose key path
-# ends with requirements.<key>
-yaml_requirement_value() {
+# Items in YAML without a YAML parser: the `key: value` lines whose parent key
+# path ends with requirements.<path>
+yaml_requirement_items() {
     awk -v wanted="requirements.$2" -v sq="'" '
         {
             sub(/\r$/, "")
@@ -180,7 +187,7 @@ yaml_requirement_value() {
             match($0, /^[ -]*/)
             indent = RLENGTH
             rest = substr($0, indent + 1)
-            if (rest !~ /^[A-Za-z0-9_]+:/) next
+            if (rest !~ /^[A-Za-z0-9_.-]+:/) next
             key = rest
             sub(/:.*/, "", key)
             value = rest
@@ -190,15 +197,15 @@ yaml_requirement_value() {
             depth++
             indents[depth] = indent
             keys[depth] = key
-            path = keys[1]
-            for (i = 2; i <= depth; i++) path = path "." keys[i]
-            n = length(path) - length(wanted)
-            if (value == "" || n < 0 || substr(path, n + 1) != wanted) next
-            if (n > 0 && substr(path, n, 1) != ".") next
+            if (value == "" || depth < 2) next
+            parent = keys[1]
+            for (i = 2; i < depth; i++) parent = parent "." keys[i]
+            n = length(parent) - length(wanted)
+            if (n < 0 || substr(parent, n + 1) != wanted) next
+            if (n > 0 && substr(parent, n, 1) != ".") next
             gsub("^[\"" sq "]|[\"" sq "]$", "", value)
-            found = value
+            print key " " value
         }
-        END { printf "%s", found }
     ' "$1"
 }
 
@@ -372,46 +379,59 @@ select_manager() {
 # Set `python_version` (major.minor), `requirements` of the bootstrap environment
 # (quoted for the shell), `tag` (the name of the bootstrap environment without the
 # python version) and, to check whether an existing bootstrap environment is up to
-# date, `version`, `engine` and `engine_version`
+# date, `pinned` (`name version` lines) and `latest` (names without a version)
 read_workflow_requirements() {
-    python_version=$(requirement_value "$workflow" python.version)
+    python_version=$(requirement_items "$workflow" python | sed -n 's/^version //p' | tail -n 1)
     python_version=$(printf '%s' "$python_version" | sed -n 's/^\([0-9]*\.[0-9]*\).*/\1/p')
 
     # The `@` and `=` separators of the tag cannot be part of a distribution name or version
     if [ -n "$custom_requirements" ]; then
-        version=""
-        engine=""
+        pinned=""
+        latest=""
         requirements=$custom_requirements
         tag=custom=$(printf '%s' "$requirements" | cksum | cut -d ' ' -f 1)
         return
     fi
 
-    version=$(requirement_value "$workflow" ewoks.version)
-    engine=$(requirement_value "$workflow" ewoks.engine.name)
-    engine_version=$(requirement_value "$workflow" ewoks.engine.version)
-    [ -n "$engine_version" ] || engine=""
-    if [ -z "$engine" ]; then
-        case $workflow in
-            *.ows)
+    pinned=$(requirement_items "$workflow" bootstrap.distributions | sed '/^$/d' | LC_ALL=C sort)
+    latest=""
+    if ! pins ewoks; then
+        say "the workflow does not provide the ewoks version: using the latest one"
+        latest=ewoks
+    fi
+    case $workflow in
+        *.ows)
+            if ! pins ewoksorange; then
                 # Workflows saved before ewoks recorded the engine
                 say "the workflow does not provide its engine: using the latest ewoksorange"
-                engine=ewoksorange
-                ;;
-        esac
-    fi
+                latest="$latest ewoksorange"
+            fi
+            ;;
+    esac
 
-    if [ -n "$version" ]; then
-        requirements=$(quote "ewoks==$version")
-        tag=ewoks=$version
-    else
-        say "the workflow does not provide the ewoks version: using the latest one"
-        requirements=$(quote "ewoks>=7")
-        tag=ewoks=latest
-    fi
-    if [ -n "$engine" ]; then
-        requirements="$requirements $(quote "$engine${engine_version:+==$engine_version}")"
-        tag=$tag@$engine${engine_version:+=$engine_version}
-    fi
+    requirements=""
+    tag=""
+    while read -r name dist_version; do
+        [ -n "$name" ] || continue
+        requirements="$requirements $(quote "$name==$dist_version")"
+        tag=${tag:+$tag@}$name=$dist_version
+    done <<EOF
+$pinned
+EOF
+    for name in $latest; do
+        if [ "$name" = ewoks ]; then
+            requirements="$requirements $(quote "ewoks>=7")"
+        else
+            requirements="$requirements $(quote "$name")"
+        fi
+        tag=${tag:+$tag@}$name=latest
+    done
+    requirements=${requirements# }
+}
+
+# The bootstrap distributions of the workflow have a version of this distribution
+pins() {
+    printf '%s\n' "$pinned" | grep -q "^$1 "
 }
 
 # Install the package manager in the bootstrap directory when it is not installed.
@@ -490,16 +510,19 @@ create_bootstrap_environment() {
     esac
 }
 
+# The bootstrap environment has the pinned versions
+pinned_installed() {
+    while read -r name dist_version; do
+        [ "$(distribution_version "$python" "$name" </dev/null)" = "$dist_version" ] || return 1
+    done <<EOF
+$pinned
+EOF
+}
+
 # Install the requirements in the bootstrap environment unless it has their pinned versions
 install_bootstrap_requirements() {
-    if [ -n "$version" ] && [ "$(distribution_version "$python" ewoks)" = "$version" ]; then
-        if [ -z "$engine" ]; then
-            return
-        fi
-        installed=$(distribution_version "$python" "$engine")
-        if [ -n "$installed" ] && [ "${engine_version:-$installed}" = "$installed" ]; then
-            return
-        fi
+    if [ -n "$pinned" ] && [ -z "$latest" ] && pinned_installed; then
+        return
     fi
 
     say "install $requirements in $location"

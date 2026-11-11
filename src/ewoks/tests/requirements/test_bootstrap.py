@@ -19,10 +19,10 @@ from typing import List
 from typing import Optional
 
 import pytest
+from ewokscore.tests.requirements.utils import PYTHON_MINOR_VERSION
 
 from ...bindings import convert_graph
 from ...bindings import load_graph
-from .utils import PYTHON_MINOR_VERSION
 
 _SCRIPTS = Path(__file__).parents[2] / "_bootstrap"
 _INSTALLABLE_MANAGERS = ["uv", "pixi", "poetry", "conda"]
@@ -318,8 +318,8 @@ def test_install_manager(
 def test_requirements_of_any_format(
     script, workflow, bootstrap_dir, bootstrap_python, failing_install
 ):
-    """The bootstrap environment of the ewoks version and the engine of the
-    workflow is used, whatever the format of the workflow."""
+    """The bootstrap environment of the bootstrap distributions of the workflow is
+    used, whatever the format of the workflow."""
     result = _run(
         script,
         [str(workflow), *_pip_venv_arguments(), *failing_install],
@@ -345,12 +345,10 @@ def _fake_bootstrap_environment(
     interpreter."""
     if sys.platform == "win32":
         pytest.skip("the fake bootstrap environment is a POSIX shell script")
-    ewoks = load_graph(str(workflow)).graph.graph["requirements"]["ewoks"]
-    engine = ewoks["engine"]
-    name = (
-        f"ewoks={ewoks['version']}@{engine['name']}={engine['version']}"
-        f"@python={PYTHON_MINOR_VERSION}"
-    )
+    requirements = load_graph(str(workflow)).graph.graph["requirements"]
+    distributions = sorted(requirements["bootstrap"]["distributions"].items())
+    pinned = "@".join(f"{name}={version}" for name, version in distributions)
+    name = f"{pinned}@python={PYTHON_MINOR_VERSION}"
     python = root / manager / name / "bin" / "python"
     python.parent.mkdir(parents=True)
     _python_wrapper(python)

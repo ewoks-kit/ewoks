@@ -6,10 +6,10 @@ import pytest
 from ewokscore import load_graph
 from ewokscore.tests.examples.graphs import get_graph
 from ewokscore.tests.examples.graphs import graph_names
+from ewokscore.tests.requirements.utils import assert_in_graph_requirements
 from ewokscore.tests.utils.results import assert_execute_graph_default_result
 
 from ..__main__ import main
-from .requirements.utils import assert_in_graph_requirements
 from .utils import has_default_input
 
 
