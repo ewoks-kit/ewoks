@@ -16,12 +16,12 @@ from typing import Literal
 from typing import Optional
 from typing import Union
 
+from ewokscore.requirements.environment import Environment
 from ewoksutils.cli_utils import cli_cancel_utils
 from ewoksutils.cli_utils import cli_execute_utils
 from ewoksutils.cli_utils import cli_submit_utils
 from ewoksutils.cli_utils.cli_argparse import add_to_parser
 
-from ._requirements.utils.environment import Environment
 from .bindings import _load_graph
 from .bindings import convert_graph
 from .bindings import execute_graph

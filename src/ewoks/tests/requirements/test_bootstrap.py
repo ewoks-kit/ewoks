@@ -19,10 +19,10 @@ from typing import List
 from typing import Optional
 
 import pytest
+from ewokscore.tests.requirements.utils import PYTHON_MINOR_VERSION
 
 from ...bindings import convert_graph
 from ...bindings import load_graph
-from .utils import PYTHON_MINOR_VERSION
 
 _SCRIPTS = Path(__file__).parents[2] / "_bootstrap"
 _INSTALLABLE_MANAGERS = ["uv", "pixi", "poetry", "conda"]

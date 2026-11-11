@@ -2,13 +2,13 @@ import logging
 from argparse import Namespace
 from typing import List
 
+from ewokscore.requirements import managers_supporting_in_place
+from ewokscore.requirements.environment import EWOKS_ENVIRONMENTS_ROOT
 from ewoksutils.cli_utils import cli_arguments
 from ewoksutils.cli_utils import cli_log_utils
 from ewoksutils.cli_utils import cli_parse
 from ewoksutils.cli_utils.cli_spec import CLIArg
 
-from .._requirements import managers_supporting_in_place
-from .._requirements.utils.base_manager import EWOKS_ENVIRONMENTS_ROOT
 from .cli_arguments import package_manager_arguments
 
 logger = logging.getLogger(__name__)
