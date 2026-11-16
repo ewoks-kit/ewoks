@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0rc2] - 2026-11-16
+
 ### Added
 
 - `ewoks install`:
@@ -21,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade `ewoksutils` to 2.*
+- Upgrade `ewoksorange` to 6.*
 - `ewoks install`: install in a new python environment by default instead of the current one.
 - `ewoks convert`: save the requirements of the package manager together with the python, ewoks and engine versions.
 - `ewoks convert`: uv, poetry and pixi store the project files of the current environment
@@ -33,13 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - `ewoks install`: remove `-p/--python` argument.
-
-## [7.0.0rc1] - 2026-08-02
-
-### Changed
-
-- Upgrade `ewoksutils` to 2.*
-- Upgrade `ewoksorange` to 6.*
 
 ## [6.0.0] - 2026-07-01
 
@@ -247,8 +244,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ewoksppf` dependency.
 - Command-line interface.
 
-[unreleased]: https://github.com/ewoks-kit/ewoks/compare/v7.0.0rc1...HEAD
-[7.0.0rc1]: https://github.com/ewoks-kit/ewoks/compare/v6.0.0...v7.0.0rc1
+[unreleased]: https://github.com/ewoks-kit/ewoks/compare/v7.0.0rc2...HEAD
+[7.0.0rc2]: https://github.com/ewoks-kit/ewoks/compare/v6.0.0...v7.0.0rc2
 [6.0.0]: https://github.com/ewoks-kit/ewoks/compare/v5.0.0...v6.0.0
 [5.0.0]: https://github.com/ewoks-kit/ewoks/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/ewoks-kit/ewoks/compare/v3.0.0...v4.0.0
