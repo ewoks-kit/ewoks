@@ -12,8 +12,8 @@
 #
 #   1. Split the arguments in options of this script and arguments of `ewoks install`.
 #   2. Select the package manager.
-#   3. Read the ewoks, engine and python versions from the workflow requirements.
-#   4. Create a bootstrap environment with that ewoks and engine, unless it exists.
+#   3. Read the bootstrap distributions and python version from the workflow requirements.
+#   4. Create a bootstrap environment with those distributions, unless it exists.
 #   5. Run `ewoks install` in the bootstrap environment.
 #
 # The bootstrap environments are cached in ~/.ewoks/bootstrap/<manager>/<name>
@@ -29,9 +29,9 @@ $usage = @'
 Usage: ewoks-install.ps1 [OPTIONS] WORKFLOW [ARGS ...]
 
 Install the python environment of an ewoks workflow with nothing but a package
-manager. The ewoks version that generated the workflow requirements, and the
-engine that saved the workflow, are installed in a bootstrap environment, which
-then runs
+manager. The bootstrap distributions of the workflow requirements, ewoks and
+the engine that saved the workflow, are installed in a bootstrap environment,
+which then runs
 
     ewoks install WORKFLOW ARGS
 
@@ -45,7 +45,7 @@ directory with '--install-package-manager'.
 Options:
   --bootstrap-requirement REQ
                            Install REQ in the bootstrap environment instead of
-                           the ewoks version and engine of the workflow, for
+                           the bootstrap distributions of the workflow, for
                            example 'ewoks>=7' or a wheel file. Repeat it to
                            install an engine as well, for example
                            '--bootstrap-requirement ewoks
@@ -195,52 +195,53 @@ function Get-DistributionVersion([string]$python, [string]$name) {
 # Workflow requirements
 # =============================================================================
 
-# Value in the requirements of a workflow file: ewoks.version, ewoks.engine.name,
-# ewoks.engine.version or python.version. The requirements are JSON, which can be
+# Items of the object at a key path of the requirements of a workflow file: python
+# or bootstrap.distributions, sorted by key. The requirements are JSON, which can be
 # embedded in another format like the XML of .ows files, or YAML.
-function Get-RequirementValue([string]$content, [string]$key) {
-    $value = Get-JsonRequirementValue $content $key
-    if (-not $value) {
-        $value = Get-YamlRequirementValue $content $key
+function Get-RequirementItems([string]$content, [string]$path) {
+    $items = Get-JsonRequirementItems $content $path
+    if ($items.Count -eq 0) {
+        $items = Get-YamlRequirementItems $content $path
     }
-    return $value
+    return ,$items
 }
 
-# Value in JSON without a JSON parser. For example `ewoks.version` in
+function New-Items {
+    return ,([System.Collections.Generic.SortedDictionary[string, string]]::new([StringComparer]::Ordinal))
+}
+
+# Items in JSON without a JSON parser. For example `bootstrap.distributions` in
 #
-#   "ewoks": {"engine": {"name": "ewokscore", "version": "5.1.0"}, "version": "7.0.0"}
-function Get-JsonRequirementValue([string]$content, [string]$key) {
+#   "bootstrap": {"distributions": {"ewoks": "7.0.0", "ewokscore": "5.1.0"}}
+function Get-JsonRequirementItems([string]$content, [string]$path) {
     $q = "[""']"
-    $value = "$q\s*:\s*$q([^""']*)$q"
-    # The members of an object, which can contain objects themselves
-    $members = "[^{}]*(?:\{[^{}]*\}[^{}]*)*"
-    switch ($key) {
-        "ewoks.version" { $pattern = "${q}ewoks$q\s*:\s*\{$members${q}version$value" }
-        "ewoks.engine.name" { $pattern = "${q}ewoks$q\s*:\s*\{[^{}]*${q}engine$q\s*:\s*\{[^{}]*${q}name$value" }
-        "ewoks.engine.version" { $pattern = "${q}ewoks$q\s*:\s*\{[^{}]*${q}engine$q\s*:\s*\{[^{}]*${q}version$value" }
-        "python.version" { $pattern = "${q}python$q\s*:\s*\{[^{}]*${q}version$value" }
-    }
+    $pattern = ($path.Split(".") | ForEach-Object { "$q$_$q\s*:\s*\{" }) -join "[^{}]*"
+    $items = New-Items
     # With the quotes that XML escapes
-    $found = [regex]::Matches($content.Replace("&quot;", '"'), $pattern)
+    $found = [regex]::Matches($content.Replace("&quot;", '"'), "$pattern([^{}]*)\}")
     if ($found.Count -eq 0) {
-        return ""
+        return ,$items
     }
-    return $found[$found.Count - 1].Groups[1].Value
+    $members = $found[$found.Count - 1].Groups[1].Value
+    foreach ($pair in [regex]::Matches($members, "$q([^""']*)$q\s*:\s*$q([^""']*)$q")) {
+        $items[$pair.Groups[1].Value] = $pair.Groups[2].Value
+    }
+    return ,$items
 }
 
-# Value in YAML without a YAML parser: the last `key: value` line whose key path
-# ends with requirements.<key>
-function Get-YamlRequirementValue([string]$content, [string]$key) {
-    $wanted = "requirements.$key"
+# Items in YAML without a YAML parser: the `key: value` lines whose parent key path
+# ends with requirements.<path>
+function Get-YamlRequirementItems([string]$content, [string]$path) {
+    $wanted = "requirements.$path"
     $indents = New-Object System.Collections.Generic.List[int]
     $keys = New-Object System.Collections.Generic.List[string]
-    $found = ""
+    $items = New-Items
     foreach ($line in ($content -split "\r?\n")) {
         if ($line -match '^\s*(#|$)') {
             continue
         }
         # The dash of a list item belongs to the indentation of its first key
-        $match = [regex]::Match($line, '^([ -]*)([A-Za-z0-9_]+):\s*(.*)$')
+        $match = [regex]::Match($line, '^([ -]*)([A-Za-z0-9_.-]+):\s*(.*)$')
         if (-not $match.Success) {
             continue
         }
@@ -252,13 +253,13 @@ function Get-YamlRequirementValue([string]$content, [string]$key) {
         }
         $indents.Add($indent)
         $keys.Add($match.Groups[2].Value)
-        $path = $keys -join "."
+        $parent = $keys.GetRange(0, $keys.Count - 1) -join "."
         $value = $match.Groups[3].Value
-        if ($value -and (($path -eq $wanted) -or $path.EndsWith(".$wanted"))) {
-            $found = $value -replace "^[""']|[""']$", ""
+        if ($value -and (($parent -eq $wanted) -or $parent.EndsWith(".$wanted"))) {
+            $items[$match.Groups[2].Value] = $value -replace "^[""']|[""']$", ""
         }
     }
-    return $found
+    return ,$items
 }
 
 # =============================================================================
@@ -472,19 +473,19 @@ function Select-Manager([hashtable]$state) {
 
 # Set `PythonVersion` (major.minor), `Requirements` of the bootstrap environment,
 # `Tag` (the name of the bootstrap environment without the python version) and, to
-# check whether an existing bootstrap environment is up to date, `Version`, `Engine`
-# and `EngineVersion`
+# check whether an existing bootstrap environment is up to date, `Pinned` (versions
+# by name) and `Latest` (names without a version)
 function Read-WorkflowRequirements([hashtable]$state) {
     $content = [System.IO.File]::ReadAllText((Resolve-Path -LiteralPath $state.Workflow))
     $state.PythonVersion = ""
-    if ((Get-RequirementValue $content "python.version") -match '^(\d+\.\d+)') {
+    $python = Get-RequirementItems $content "python"
+    if ($python.ContainsKey("version") -and ($python["version"] -match '^(\d+\.\d+)')) {
         $state.PythonVersion = $Matches[1]
     }
 
     # The `@` and `=` separators of the tag cannot be part of a distribution name or version
-    $state.Version = ""
-    $state.Engine = ""
-    $state.EngineVersion = ""
+    $state.Pinned = New-Items
+    $state.Latest = @()
     if ($state.CustomRequirements) {
         $state.Requirements = $state.CustomRequirements
         $sha = [System.Security.Cryptography.SHA256]::Create()
@@ -493,38 +494,36 @@ function Read-WorkflowRequirements([hashtable]$state) {
         return
     }
 
-    $version = Get-RequirementValue $content "ewoks.version"
-    $engine = Get-RequirementValue $content "ewoks.engine.name"
-    $engineVersion = Get-RequirementValue $content "ewoks.engine.version"
-    if (-not $engineVersion) {
-        $engine = ""
+    $pinned = Get-RequirementItems $content "bootstrap.distributions"
+    $latest = @()
+    if (-not $pinned.ContainsKey("ewoks")) {
+        Write-Info "the workflow does not provide the ewoks version: using the latest one"
+        $latest += "ewoks"
     }
-    if (-not $engine -and $state.Workflow.EndsWith(".ows")) {
+    if ($state.Workflow.EndsWith(".ows") -and -not $pinned.ContainsKey("ewoksorange")) {
         # Workflows saved before ewoks recorded the engine
         Write-Info "the workflow does not provide its engine: using the latest ewoksorange"
-        $engine = "ewoksorange"
+        $latest += "ewoksorange"
     }
 
-    if ($version) {
-        $requirements = @("ewoks==$version")
-        $tag = "ewoks=$version"
-    } else {
-        Write-Info "the workflow does not provide the ewoks version: using the latest one"
-        $requirements = @("ewoks>=7")
-        $tag = "ewoks=latest"
+    $requirements = @()
+    $tags = @()
+    foreach ($item in $pinned.GetEnumerator()) {
+        $requirements += "$($item.Key)==$($item.Value)"
+        $tags += "$($item.Key)=$($item.Value)"
     }
-    if ($engineVersion) {
-        $requirements += "$engine==$engineVersion"
-        $tag = "$tag@$engine=$engineVersion"
-    } elseif ($engine) {
-        $requirements += $engine
-        $tag = "$tag@$engine"
+    foreach ($name in $latest) {
+        if ($name -eq "ewoks") {
+            $requirements += "ewoks>=7"
+        } else {
+            $requirements += $name
+        }
+        $tags += "$name=latest"
     }
-    $state.Version = $version
-    $state.Engine = $engine
-    $state.EngineVersion = $engineVersion
+    $state.Pinned = $pinned
+    $state.Latest = $latest
     $state.Requirements = $requirements
-    $state.Tag = $tag
+    $state.Tag = $tags -join "@"
 }
 
 # Install the package manager in the bootstrap directory when it is not installed.
@@ -639,12 +638,15 @@ function New-BootstrapEnvironment([hashtable]$state) {
 # Install the requirements in the bootstrap environment unless it has their pinned versions
 function Install-BootstrapRequirements([hashtable]$state) {
     $python = $state.Python
-    if ($state.Version -and ((Get-DistributionVersion $python "ewoks") -eq $state.Version)) {
-        if (-not $state.Engine) {
-            return
+    if ($state.Pinned.Count -gt 0 -and $state.Latest.Count -eq 0) {
+        $installed = $true
+        foreach ($item in $state.Pinned.GetEnumerator()) {
+            if ((Get-DistributionVersion $python $item.Key) -ne $item.Value) {
+                $installed = $false
+                break
+            }
         }
-        $installed = Get-DistributionVersion $python $state.Engine
-        if ($installed -and (-not $state.EngineVersion -or $installed -eq $state.EngineVersion)) {
+        if ($installed) {
             return
         }
     }
