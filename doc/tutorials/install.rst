@@ -243,25 +243,16 @@ A successfully recreated Python environment only guarantees that the Python depe
 can be installed. Execution can still fail because a task depends on resources or configuration
 outside that environment. For example:
 
-* A task input points to a file that does not exist on the target machine.
-* A task expects a directory, executable, configuration file, or other resource that
-  is not available.
-* A task relies on an environment variable that is not defined in the target environment.
-* A task requires access to an external service, database, network resource, or hardware device
-  that is unavailable.
-* A task requires credentials, secrets, or configuration that are not stored in the workflow.
-* A task assumes a particular working directory or filesystem layout.
-* A task uses operating-system features or commands that are not available on the target system.
-* A task relies on data that was available when the workflow was created but has not been
-  transferred with the workflow.
-* A task dynamically imports or installs Python packages that are not declared in the
-  workflow requirements.
-* A task depends on a specific version or configuration of external software that is not captured
+* A task depends on files, directories, executables, or data that exist on the
+  original machine but were not transferred to the target.
+* A task relies on environment variables, credentials, secrets, or a specific
+  filesystem layout that are not stored in the workflow.
+* A task requires access to an external service, database, hardware device, or
+  non-deterministic state (such as the current date or remote data) that is
+  unavailable or differs on the target.
+* A task uses operating-system features, commands, or external software —
+  including packages imported or installed at runtime — that are not captured
   by the Python environment.
-* A task produces or consumes temporary files whose locations or permissions differ on
-  the target machine.
-* The workflow relies on non-deterministic external state, such as the current date, remote data,
-  or the state of an external service.
 
 In these cases, `ewoks install` can successfully recreate the Python environment, while `ewoks execute`
 can still fail. The requirements should therefore be considered a description of the Python environment,
