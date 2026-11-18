@@ -49,7 +49,7 @@ of the project are stored as well.
         .. code-block:: bash
 
             uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
+            uv add --project ewoks_producer ewoks pip
             uv run --project ewoks_producer ewoks convert demo demo.json --test
 
     .. group-tab:: macOS
@@ -57,7 +57,7 @@ of the project are stored as well.
         .. code-block:: bash
 
             uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
+            uv add --project ewoks_producer ewoks pip
             uv run --project ewoks_producer ewoks convert demo demo.json --test
 
     .. group-tab:: Windows
@@ -65,7 +65,7 @@ of the project are stored as well.
         .. code-block:: powershell
 
             uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
+            uv add --project ewoks_producer ewoks pip
             uv run --project ewoks_producer ewoks convert demo demo.json --test
 
 Install any package that provides :term:`tasks <Task>` instead of
