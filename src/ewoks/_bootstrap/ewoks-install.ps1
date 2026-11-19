@@ -562,6 +562,11 @@ function New-BootstrapEnvironment([hashtable]$state) {
             $command = @(Find-Python $pythonVersion)
             $state.Command = $command
         }
+        try {
+            Get-NativeOutput ($command + @("-c", "import ensurepip, venv")) | Out-Null
+        } catch {
+            throw "$($command -join ' ') cannot create virtual environments: install the venv module of python (python3-venv on Debian and Ubuntu) or use another package manager (see --package-manager-name)"
+        }
         $pythonVersion = Get-PythonMajorMinor $command
     } elseif ($manager -eq "poetry") {
         $basePython = @(Find-Python $pythonVersion)
