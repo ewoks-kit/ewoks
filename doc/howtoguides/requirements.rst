@@ -11,7 +11,13 @@ field of its ``graph`` field. ``ewoks install`` recreates that environment and
 What is stored
 --------------
 
-``ewoks convert`` and ``ewoks execute -o convert_destination=...`` store
+``ewoks convert`` and ``ewoks execute -o convert_destination=...`` store the
+``requirements`` field of the ``graph`` field. It looks like this
+
+.. literalinclude:: ../_snippets/requirements.json
+    :language: json
+
+Its fields are
 
 * ``bootstrap``: the versions of :term:`ewoks` and of the engine that saved the
   :term:`workflow`. The :ref:`ewoks-install script <install_bootstrap>` installs them to run
