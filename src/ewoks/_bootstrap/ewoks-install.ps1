@@ -443,10 +443,12 @@ function Select-Manager([hashtable]$state) {
     if ($state.InstallPackageManager -and -not $manager) {
         throw "--install-package-manager requires --package-manager-name"
     }
+    $reason = "--package-manager-name"
     if (-not $manager) {
         if ($state.ManagerCommand) {
             throw "--package-manager-command requires --package-manager-name"
         }
+        $reason = "the first installed of uv, pixi, conda and poetry"
         foreach ($name in @("uv", "pixi", "conda", "poetry")) {
             if (Test-Command $name) {
                 $manager = $name
@@ -455,6 +457,7 @@ function Select-Manager([hashtable]$state) {
         }
         if (-not $manager) {
             $manager = "pip-venv"
+            $reason = "uv, pixi, conda and poetry are not installed"
         }
     }
 
@@ -467,6 +470,7 @@ function Select-Manager([hashtable]$state) {
     } elseif ($manager -ne "pip-venv") {
         throw "package manager '$manager' is not supported"
     }
+    Write-Info "Package manager: $manager ($reason)"
     $state.Manager = $manager
     $state.Command = $command
 }
