@@ -16,7 +16,8 @@ There are two sides to this
 
 Both sides use a :term:`package manager`. They do not need the same one: the requirements
 contain the installed python packages, which any :term:`package manager` can install. See
-:ref:`this how-to guide <requirements>` to select a :term:`package manager`.
+:ref:`the how-to guide on reproducing a workflow environment <requirements>` to select a
+:term:`package manager`.
 
 .. toctree::
     :maxdepth: 1
@@ -97,8 +98,8 @@ Install without ewoks
 +++++++++++++++++++++
 
 ``ewoks install`` needs a python environment with :term:`ewoks`. See
-:ref:`this page <install_bootstrap>` to create the environment of a :term:`workflow` with
-nothing but a :term:`package manager`.
+:ref:`Install without ewoks <install_bootstrap>` to create the environment of a
+:term:`workflow` when only a :term:`package manager` is installed.
 
 Execute the workflow
 ++++++++++++++++++++
@@ -120,4 +121,4 @@ Limitations and caveats
 -----------------------
 
 Recreating the environment does not guarantee that the :term:`workflow` can be installed or
-executed. See :ref:`this page <install_troubleshooting>`.
+executed. See :ref:`Limitations and caveats <install_troubleshooting>`.
