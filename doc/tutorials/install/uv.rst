@@ -38,6 +38,36 @@ Install uv
 Producer side
 -------------
 
+A :term:`workflow` with requirements comes from one of three sources.
+
+Download the demo workflow
+++++++++++++++++++++++++++
+
+Download the demo :term:`workflow` of this documentation
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            curl -LsSfO |docs_url|/demo.json
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            curl -LsSfO |docs_url|/demo.json
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            irm |docs_url|/demo.json -OutFile demo.json
+
+Generate the demo workflow
+++++++++++++++++++++++++++
+
 Create a uv project, add :term:`ewoks` to it and store a :term:`workflow` with the
 packages of its environment as its ``requirements``. The ``pyproject.toml`` and ``uv.lock``
 of the project are stored as well.
@@ -68,34 +98,19 @@ of the project are stored as well.
             uv add --project ewoks_producer ewoks
             uv run --project ewoks_producer ewoks convert demo demo.json --test
 
-Install any package that provides :term:`tasks <Task>` instead of
-``ewoks`` for a real :term:`workflow`.
+Generate your own workflow
+++++++++++++++++++++++++++
+
+Install the packages that provide the :term:`tasks <Task>` of your :term:`workflow` instead of
+``ewoks``, and :doc:`create <../create_workflow>` ``myworkflow.json`` with them.
+Then store its requirements
+
+.. code-block:: bash
+
+    ewoks convert myworkflow.json myworkflow_requirements.json
 
 Re-producer side
 ----------------
-
-Without the producer side, download the demo :term:`workflow` of this documentation, which
-only requires :term:`ewoks`
-
-.. tabs::
-
-    .. group-tab:: Linux
-
-        .. code-block:: bash
-
-            curl -LsSfO |docs_url|/demo.json
-
-    .. group-tab:: macOS
-
-        .. code-block:: bash
-
-            curl -LsSfO |docs_url|/demo.json
-
-    .. group-tab:: Windows
-
-        .. code-block:: powershell
-
-            irm |docs_url|/demo.json -OutFile demo.json
 
 Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 
