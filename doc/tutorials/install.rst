@@ -37,22 +37,8 @@ Store the requirements
 ``requirements`` of the destination :term:`workflow`. The ``requirements`` field of the
 ``graph`` field looks like this
 
-.. code-block:: json
-
-    {
-        "bootstrap": {"distributions": {"ewoks": "7.0.0", "ewokscore": "5.1.0"}},
-        "python": {"version": "3.12.11", "implementation": "CPython", "...": "..."},
-        "system": {"system": "Linux", "machine": "x86_64", "...": "..."},
-        "distributions": [
-            {"name": "ewokscore", "version": "5.1.0", "installer": "pip"},
-            {"name": "networkx", "version": "3.4.2", "installer": "pip"}
-        ],
-        "manager": {
-            "name": "pip-venv",
-            "version": "25.0.1",
-            "files": {"requirements.txt": "ewokscore==5.1.0\nnetworkx==3.4.2\n"}
-        }
-    }
+.. literalinclude:: ../_snippets/requirements.json
+    :language: json
 
 * ``bootstrap`` are the versions of :term:`ewoks` and of the engine that saved the
   :term:`workflow`: ``ewokscore`` for a ``.json`` or ``.yaml`` file and ``ewoksorange`` for an
