@@ -141,10 +141,20 @@ Select one :term:`package manager` and run only its command. The command install
         .. code-block:: bash
 
             curl -LsSf -o ewoks-install.sh |docs_url|/ewoks-install.sh
+
+            # pip-venv: needs python. The script cannot install it.
             sh ewoks-install.sh --package-manager-name pip-venv demo.json
+
+            # uv: needs nothing.
             sh ewoks-install.sh --package-manager-name uv --install-package-manager demo.json
+
+            # pixi: needs nothing.
             sh ewoks-install.sh --package-manager-name pixi --install-package-manager demo.json
+
+            # conda: the script cannot install it in a directory with spaces.
             sh ewoks-install.sh --package-manager-name conda --install-package-manager demo.json
+
+            # poetry: needs python.
             sh ewoks-install.sh --package-manager-name poetry --install-package-manager demo.json
 
     .. group-tab:: macOS
@@ -152,10 +162,20 @@ Select one :term:`package manager` and run only its command. The command install
         .. code-block:: bash
 
             curl -LsSf -o ewoks-install.sh |docs_url|/ewoks-install.sh
+
+            # pip-venv: needs python. The script cannot install it.
             sh ewoks-install.sh --package-manager-name pip-venv demo.json
+
+            # uv: needs nothing.
             sh ewoks-install.sh --package-manager-name uv --install-package-manager demo.json
+
+            # pixi: needs nothing.
             sh ewoks-install.sh --package-manager-name pixi --install-package-manager demo.json
+
+            # conda: the script cannot install it in a directory with spaces.
             sh ewoks-install.sh --package-manager-name conda --install-package-manager demo.json
+
+            # poetry: needs python.
             sh ewoks-install.sh --package-manager-name poetry --install-package-manager demo.json
 
     .. group-tab:: Windows
@@ -163,15 +183,21 @@ Select one :term:`package manager` and run only its command. The command install
         .. code-block:: powershell
 
             irm |docs_url|/ewoks-install.ps1 -OutFile ewoks-install.ps1
-            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name pip-venv demo.json
-            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name uv --install-package-manager demo.json
-            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name pixi --install-package-manager demo.json
-            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name conda --install-package-manager demo.json
-            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name poetry --install-package-manager demo.json
 
-* pip-venv and poetry need a python interpreter on the machine. uv, pixi and conda do not.
-* The script cannot install pip-venv: it is part of python.
-* Conda cannot be installed in a directory with spaces.
+            # pip-venv: needs python. The script cannot install it.
+            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name pip-venv demo.json
+
+            # uv: needs nothing.
+            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name uv --install-package-manager demo.json
+
+            # pixi: needs nothing.
+            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name pixi --install-package-manager demo.json
+
+            # conda: the script cannot install it in a directory with spaces.
+            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name conda --install-package-manager demo.json
+
+            # poetry: needs python.
+            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 --package-manager-name poetry --install-package-manager demo.json
 
 The bootstrap environment
 -------------------------
