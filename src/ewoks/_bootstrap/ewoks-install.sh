@@ -368,15 +368,20 @@ select_manager() {
     if [ "$install_package_manager" = 1 ] && [ -z "$manager" ]; then
         die "--install-package-manager requires --package-manager-name"
     fi
+    reason="--package-manager-name"
     if [ -z "$manager" ]; then
         [ -z "$manager_command" ] || die "--package-manager-command requires --package-manager-name"
+        reason="the first installed of uv, pixi, conda and poetry"
         for name in uv pixi conda poetry; do
             if command -v "$name" >/dev/null 2>&1; then
                 manager=$name
                 break
             fi
         done
-        manager=${manager:-pip-venv}
+        if [ -z "$manager" ]; then
+            manager=pip-venv
+            reason="uv, pixi, conda and poetry are not installed"
+        fi
     fi
 
     case $manager in
@@ -384,6 +389,7 @@ select_manager() {
         pip-venv) cmd=$manager_command ;;
         *) die "package manager '$manager' is not supported: use uv, pixi, conda, poetry or pip-venv" ;;
     esac
+    say "Package manager: $manager ($reason)"
 }
 
 # Set `python_version` (major.minor), `requirements` of the bootstrap environment

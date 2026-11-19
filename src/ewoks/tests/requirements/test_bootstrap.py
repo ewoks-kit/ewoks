@@ -257,6 +257,32 @@ def test_manager_not_installed(script, workflow, no_managers_env, bootstrap_dir)
     assert "pixi is not installed (see --install-package-manager)" in result.stderr
 
 
+@pytest.mark.parametrize("select", [True, False])
+def test_print_manager(
+    script,
+    workflow,
+    no_managers_env,
+    bootstrap_dir,
+    bootstrap_python,
+    failing_install,
+    select,
+):
+    """The script prints the package manager and why it uses it."""
+    for name in ("uv", "pixi", "conda", "poetry"):
+        _skip_if_installed(name, no_managers_env)
+    arguments = [str(workflow), *failing_install]
+    if select:
+        arguments += ["--package-manager-name", "pip-venv"]
+
+    result = _run(script, arguments, bootstrap_dir, env=no_managers_env)
+
+    if select:
+        reason = "--package-manager-name"
+    else:
+        reason = "uv, pixi, conda and poetry are not installed"
+    assert f"Package manager: pip-venv ({reason})" in result.stderr
+
+
 def test_install_conda_in_directory_with_spaces(
     script, workflow, no_managers_env, bootstrap_dir
 ):
