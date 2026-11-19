@@ -395,6 +395,8 @@ function Read-Arguments([object[]]$arguments) {
             return $state
         } elseif ($arg -eq "--install-package-manager") {
             $state.InstallPackageManager = $true
+        } elseif ($arg.StartsWith("--install-package-manager=")) {
+            throw "--install-package-manager takes no value (see --package-manager-name)"
         } elseif ($arg -eq "--bootstrap-requirement") {
             if ($i -ge $arguments.Count) { throw "$arg requires a value" }
             $state.CustomRequirements += [string]$arguments[$i]
@@ -465,7 +467,7 @@ function Select-Manager([hashtable]$state) {
     if ($manager -in @("uv", "pixi", "conda", "poetry")) {
         if (-not $command) { $command = @($manager) }
     } elseif ($manager -ne "pip-venv") {
-        throw "package manager '$manager' is not supported"
+        throw "package manager '$manager' is not supported: use uv, pixi, conda, poetry or pip-venv"
     }
     $state.Manager = $manager
     $state.Command = $command

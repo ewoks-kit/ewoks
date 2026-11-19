@@ -297,6 +297,9 @@ parse_arguments() {
             --install-package-manager)
                 install_package_manager=1
                 ;;
+            --install-package-manager=*)
+                die "--install-package-manager takes no value (see --package-manager-name)"
+                ;;
             --bootstrap-requirement)
                 [ $# -gt 0 ] || die "$arg requires a value"
                 custom_requirements="$custom_requirements $(quote "$1")"
@@ -372,7 +375,7 @@ select_manager() {
     case $manager in
         uv | pixi | conda | poetry) cmd=${manager_command:-$manager} ;;
         pip-venv) cmd=$manager_command ;;
-        *) die "package manager '$manager' is not supported" ;;
+        *) die "package manager '$manager' is not supported: use uv, pixi, conda, poetry or pip-venv" ;;
     esac
 }
 

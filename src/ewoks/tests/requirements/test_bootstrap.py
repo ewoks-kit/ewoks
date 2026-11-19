@@ -217,22 +217,29 @@ def test_no_workflow(script, bootstrap_dir):
     assert "provide the file of the workflow" in result.stderr
 
 
-def test_unsupported_manager(script, workflow, bootstrap_dir):
-    result = _run(
-        script, [str(workflow), "--package-manager-name", "unknown"], bootstrap_dir
-    )
+@pytest.mark.parametrize(
+    "arguments, error",
+    [
+        (
+            ["--package-manager-name", "unknown"],
+            "package manager 'unknown' is not supported: use uv, pixi, conda, poetry "
+            "or pip-venv",
+        ),
+        (
+            ["--install-package-manager"],
+            "--install-package-manager requires --package-manager-name",
+        ),
+        (
+            ["--install-package-manager=uv"],
+            "--install-package-manager takes no value (see --package-manager-name)",
+        ),
+    ],
+)
+def test_argument_error(script, workflow, bootstrap_dir, arguments, error):
+    result = _run(script, [str(workflow), *arguments], bootstrap_dir)
 
     assert result.returncode != 0
-    assert "package manager 'unknown' is not supported" in result.stderr
-
-
-def test_install_manager_requires_name(script, workflow, bootstrap_dir):
-    result = _run(script, [str(workflow), "--install-package-manager"], bootstrap_dir)
-
-    assert result.returncode != 0
-    assert "--install-package-manager requires --package-manager-name" in (
-        result.stderr
-    )
+    assert error in result.stderr
 
 
 def test_manager_not_installed(script, workflow, no_managers_env, bootstrap_dir):
