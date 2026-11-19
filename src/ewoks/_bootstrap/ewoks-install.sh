@@ -2,12 +2,12 @@
 # Install the python environment of an ewoks workflow with nothing but a package
 # manager. For example
 #
-#   curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- demo.json --package-manager-name uv
+#   curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- --package-manager-name uv demo.json
 #
 # or download the script first
 #
 #   curl -LsSf -o ewoks-install.sh https://ewoks.readthedocs.io/en/stable/ewoks-install.sh
-#   sh ewoks-install.sh demo.json --package-manager-name uv
+#   sh ewoks-install.sh --package-manager-name uv demo.json
 #
 # Steps (see `main` at the end):
 #
@@ -25,34 +25,41 @@ usage() {
     cat <<'EOF'
 Usage: ewoks-install.sh [OPTIONS] WORKFLOW [ARGS ...]
 
-Install the python environment of an ewoks workflow with nothing but a package
-manager. The bootstrap distributions of the workflow requirements, ewoks and
-the engine that saved the workflow, are installed in a bootstrap environment,
-which then runs
+Install the python environment of an ewoks workflow with only a package
+manager:
 
-    ewoks install WORKFLOW ARGS
+  1. Create a bootstrap environment with ewoks and the engine that saved
+     the workflow.
+  2. Run 'ewoks install WORKFLOW ARGS' in the bootstrap environment.
 
-See 'ewoks install --help' for ARGS. The package manager that creates the
-bootstrap environment is selected with '--package-manager-name' and
-'--package-manager-command', which are passed to 'ewoks install' as well.
-Without them it is the first available of uv, pixi, conda, poetry and pip-venv.
-A package manager that is not installed can be installed in the bootstrap
-directory with '--install-package-manager'.
+WORKFLOW is the first argument that is an existing file. ARGS are the
+arguments of 'ewoks install', for example --yes. OPTIONS and ARGS can be in
+any order.
 
-Options:
+Options of this script:
   --bootstrap-requirement REQ
                            Install REQ in the bootstrap environment instead of
-                           the bootstrap distributions of the workflow, for
-                           example 'ewoks>=7' or a wheel file. Repeat it to
-                           install an engine as well, for example
-                           '--bootstrap-requirement ewoks
-                           --bootstrap-requirement ewoksorange'.
+                           the bootstrap packages of the workflow, for example
+                           'ewoks>=7' or a wheel file. Repeat it for more
+                           packages, for example ewoksorange.
   --bootstrap-dir DIR      Directory of the bootstrap environments.
                            Default: ~/.ewoks/bootstrap
   --install-package-manager
-                           Install the package manager of
-                           '--package-manager-name' when it is not installed.
+                           A flag without a value. Install the package manager
+                           in DIR/package-managers when it is not installed.
+                           Requires --package-manager-name.
   -h, --help               Show this help.
+
+Options of this script and of 'ewoks install':
+  --package-manager-name NAME
+                           Package manager of the bootstrap environment and of
+                           the workflow environment: uv, pixi, conda, poetry
+                           or pip-venv. Default: the first installed of uv,
+                           pixi, conda and poetry, else pip-venv.
+  --package-manager-command COMMAND
+                           Command that runs the package manager, for example
+                           'python3.12' for pip-venv.
+                           Requires --package-manager-name.
 EOF
 }
 
