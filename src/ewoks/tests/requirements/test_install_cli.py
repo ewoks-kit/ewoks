@@ -66,6 +66,7 @@ def test_summary_header(tmp_path):
         argv, capture_output=True, text=True, env=env
     )
 
+    assert result.returncode == 1
     assert result.stdout.startswith("Header\n  line\nInstall failed for")
 
 
