@@ -527,7 +527,17 @@ install_bootstrap_requirements() {
 
     say "install $requirements in $location"
     if [ "$manager" = uv ]; then
-        eval "run_manager pip install --quiet --upgrade --python \"\$python\" $requirements" >&2 ||
+        # uv before 0.12.0 rejects a pre-release that only a dependency requires
+        # (astral-sh/uv#19993). '--prerelease=allow' allows pre-releases of all packages.
+        prerelease=""
+        case $requirements in
+            *[0-9][ab][0-9]* | *[0-9]rc[0-9]* | *[0-9].dev[0-9]*)
+                case $(run_manager --version) in
+                    uv\ 0.[0-9].* | uv\ 0.1[01].*) prerelease=--prerelease=allow ;;
+                esac
+                ;;
+        esac
+        eval "run_manager pip install --quiet --upgrade $prerelease --python \"\$python\" $requirements" >&2 ||
             die "cannot install $requirements (see --bootstrap-requirement)"
     else
         eval "\"\$python\" -m pip install --quiet --disable-pip-version-check --upgrade $requirements" >&2 ||

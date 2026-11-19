@@ -272,6 +272,29 @@ def test_install_conda_in_directory_with_spaces(
 
 
 @pytest.mark.package_manager_install
+@pytest.mark.parametrize("manager", ["pip-venv", *_INSTALLABLE_MANAGERS])
+def test_install_prerelease(script, workflow, bootstrap_dir, failing_install, manager):
+    """The bootstrap environment can have a pre-release that requires another
+    pre-release: ewoks 7.0.0rc2 requires ewoksutils>=2.0.0rc1."""
+    if manager == "conda":
+        # Miniforge cannot be installed in a directory with spaces
+        bootstrap_dir = bootstrap_dir.with_name("bootstrap")
+    arguments = [
+        "--install-package-manager",
+        "--bootstrap-requirement",
+        "ewoks==7.0.0rc2",
+        str(workflow),
+        "--package-manager-name",
+        manager,
+        *failing_install,
+    ]
+
+    result = _run(script, arguments, bootstrap_dir, timeout=1800)
+
+    assert "is not a python environment" in result.stderr, result.stderr
+
+
+@pytest.mark.package_manager_install
 @pytest.mark.parametrize("manager", _INSTALLABLE_MANAGERS)
 def test_install_manager(
     script, workflow, no_managers_env, bootstrap_dir, failing_install, manager
@@ -328,6 +351,56 @@ def test_requirements_of_any_format(
 
     assert "install ewoks" not in result.stderr
     assert str(bootstrap_python) in _printed_command(result)
+
+
+@pytest.mark.parametrize(
+    "requirement, uv_version, prerelease",
+    [
+        ("ewoks==7.0.0rc2", "0.11.0", True),
+        ("ewoks==7.0.0rc2", "0.12.0", False),
+        ("ewoks==7.0.0", "0.11.0", False),
+    ],
+)
+def test_uv_prerelease(
+    script, workflow, bootstrap_dir, tmp_path, requirement, uv_version, prerelease
+):
+    """uv before 0.12.0 installs pre-releases when a bootstrap requirement is a
+    pre-release. `test_install_prerelease` cannot test this with uv 0.12.0 or later."""
+    if sys.platform == "win32":
+        pytest.skip("the fake uv is a POSIX shell script")
+    arguments_file = tmp_path / "uv-pip-arguments"
+    uv = tmp_path / "bin" / "uv"
+    uv.parent.mkdir()
+    uv.write_text(
+        "#!/bin/sh\n"
+        f'if [ "$1" = --version ]; then echo "uv {uv_version} (fake)"; exit 0; fi\n'
+        'if [ "$1" = venv ]; then\n'
+        "    for location; do :; done\n"
+        '    mkdir -p "$location/bin"\n'
+        f'    printf \'#!/bin/sh\\nexec "{sys.executable}" "$@"\\n\' >"$location/bin/python"\n'
+        '    chmod +x "$location/bin/python"\n'
+        "    exit 0\n"
+        "fi\n"
+        f'echo "$@" >"{arguments_file}"\n'
+        "exit 1\n"
+    )
+    uv.chmod(0o755)
+    env = {**os.environ, "PATH": f"{uv.parent}{os.pathsep}{os.environ['PATH']}"}
+
+    _run(
+        script,
+        [
+            "--bootstrap-requirement",
+            requirement,
+            str(workflow),
+            "--package-manager-name",
+            "uv",
+        ],
+        bootstrap_dir,
+        env=env,
+    )
+
+    assert ("--prerelease=allow" in arguments_file.read_text()) == prerelease
 
 
 def _skip_if_installed(manager: str, env: Dict[str, str]) -> None:
