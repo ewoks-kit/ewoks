@@ -131,7 +131,7 @@ For example, install uv when it is missing and do not ask for confirmation
 Select the package manager
 --------------------------
 
-One command for each :term:`package manager`. The commands install the
+Select one :term:`package manager` and run only its command. The command installs the
 :term:`package manager` when it is missing.
 
 .. tabs::
