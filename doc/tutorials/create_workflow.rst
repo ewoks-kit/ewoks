@@ -25,7 +25,7 @@ These :term:`tasks <Task>` are part of the ``ewoksxrpd`` package.
 
 
 Requirements
-============
+------------
 
 For this, we will firstly need to install the ``ewoks`` package
 
@@ -45,7 +45,7 @@ Finally, pyFAI needs a `PONI file <https://pyfai.readthedocs.io/en/stable/>`_ th
 
 
 Walkthrough
-===========
+-----------
 
 An :term:`Ewoks` :term:`workflow` is represented in Python by a Python ``dict`` with three entries:
 
@@ -54,7 +54,7 @@ An :term:`Ewoks` :term:`workflow` is represented in Python by a Python ``dict`` 
 - ``graph``: metadata of the :term:`workflow`.
 
 Defining the nodes
-------------------
+++++++++++++++++++
 
 :term:`Ewoks` :term:`nodes` are represented as Python ``dict``. Each entry of the dictionary defines a characteristic of the :term:`node <Nodes>`. Lets illustrate this with the first :term:`node <Nodes>` that will define the detector geometry:
 
@@ -106,7 +106,7 @@ We end up then with the following :term:`workflow`:
 We now need to create :term:`links` to define the :term:`node <Nodes>` execution order and to pass data from one :term:`node <Nodes>` to the next.
 
 Defining the links
-------------------
+++++++++++++++++++
 
 Similarly to :term:`nodes`, :term:`links` are represented as Python ``dict`` with entries defining their characteristics. In our workflow, we need two :term:`links`:
 
@@ -151,7 +151,7 @@ Secondly, we need to pass the data produced by the ``integrate`` :term:`node <No
 This time, we link the output named ``radial`` of the ``IntegrateSinglePattern`` :term:`task <Task>` to the input named ``x`` of the ``SaveNexusPattern1D`` :term:`task <Task>`, demonstrating how :term:`links` can connect outputs and inputs of different names. Similarly, we link the output named ``intensity`` of the integration :term:`task <Task>` to the input named ``y`` of the saving :term:`task <Task>`.
 
 Define the workflow
--------------------
++++++++++++++++++++
 
 Now that the :term:`nodes` and :term:`link <Links>` are defined, all is left is to build a Python ``dict`` representing the :term:`workflow`
 
@@ -170,7 +170,7 @@ Visually, the :term:`workflow` now looks like this:
 
 
 To go further
-=============
+-------------
 
 We demonstrated here how to create a simple :term:`workflow` from Python objects. For more complex :term:`workflows <Workflow>`, you may want to use `EwoksWeb <https://ewoksweb.readthedocs.io>`_ instead, a web-based GUI to design :term:`workflows <Workflow>`. In :term:`Ewoksweb`, you can drag and drop :term:`nodes` in a canvas, link them together and :term:`Ewoksweb` will create the :term:`workflow` file for you.
 
@@ -180,7 +180,7 @@ Finally, this tutorial only covers the required fields of the :term:`nodes`, :te
 
 
 Full code
-=========
+---------
 
 .. code-block:: python
 

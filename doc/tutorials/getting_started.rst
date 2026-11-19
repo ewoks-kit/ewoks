@@ -98,7 +98,7 @@ recreated later:
 See the `Install and execute a workflow tutorial <./install.html>`_.
 
 Learn More
-==========
+----------
 
 .. note::
 
