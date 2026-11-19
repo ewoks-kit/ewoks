@@ -8,6 +8,7 @@ ewoks from the internet.
 """
 
 import os
+import re
 import shlex
 import shutil
 import subprocess
@@ -239,7 +240,7 @@ def test_argument_error(script, workflow, bootstrap_dir, arguments, error):
     result = _run(script, [str(workflow), *arguments], bootstrap_dir)
 
     assert result.returncode != 0
-    assert error in result.stderr
+    assert error in _error_text(result.stderr)
 
 
 def test_manager_not_installed(script, workflow, no_managers_env, bootstrap_dir):
@@ -390,6 +391,12 @@ def _pip_venv_arguments() -> List[str]:
         "--package-manager-command",
         sys.executable,
     ]
+
+
+def _error_text(stderr: str) -> str:
+    """Error message without the colors and the line wrapping of PowerShell."""
+    stderr = re.sub(r"\x1b\[[0-9;]*m", "", stderr)
+    return " ".join(stderr.replace("|", " ").split())
 
 
 def _printed_command(result: "subprocess.CompletedProcess[str]") -> str:
