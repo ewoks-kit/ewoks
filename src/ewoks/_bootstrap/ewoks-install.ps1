@@ -662,7 +662,16 @@ function Install-BootstrapRequirements([hashtable]$state) {
     Write-Info "install $(Format-Arguments $requirements) in $($state.Location)"
     try {
         if ($state.Manager -eq "uv") {
-            Invoke-Native ($state.Command + @("pip", "install", "--quiet", "--upgrade", "--python", $python) + $requirements)
+            # uv before 0.12.0 rejects a pre-release that only a dependency requires
+            # (astral-sh/uv#19993). '--prerelease=allow' allows pre-releases of all packages.
+            $prerelease = @()
+            if ($requirements -match "\d[ab]\d|\drc\d|\d\.dev\d") {
+                $uvVersion = Get-NativeOutput ($state.Command + @("--version"))
+                if ($uvVersion -match "^uv 0\.(\d+)\." -and [int]$Matches[1] -lt 12) {
+                    $prerelease = @("--prerelease=allow")
+                }
+            }
+            Invoke-Native ($state.Command + @("pip", "install", "--quiet", "--upgrade") + $prerelease + @("--python", $python) + $requirements)
         } else {
             Invoke-Native (@($python, "-m", "pip", "install", "--quiet", "--disable-pip-version-check", "--upgrade") + $requirements)
         }
