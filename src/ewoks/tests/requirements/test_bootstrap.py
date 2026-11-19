@@ -195,6 +195,21 @@ def test_installed_manager_with_spaces(
     assert shlex.split(manager_command) == [str(uv)]
 
 
+@pytest.mark.parametrize("after_workflow", [False, True])
+def test_help(script, workflow, bootstrap_dir, bootstrap_python, after_workflow):
+    """The help after the workflow is the help of `ewoks install`."""
+    arguments = [str(workflow), *_pip_venv_arguments()]
+    if after_workflow:
+        arguments.append("--help")
+    else:
+        arguments.insert(0, "--help")
+
+    result = _run(script, arguments, bootstrap_dir)
+
+    assert result.returncode == 0
+    assert ("--env-root" in result.stdout) == after_workflow
+
+
 def test_relative_workflow(
     script, workflow, bootstrap_dir, bootstrap_python, failing_install
 ):

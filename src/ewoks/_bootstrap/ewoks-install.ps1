@@ -51,7 +51,8 @@ Options of this script:
                            A flag without a value. Install the package manager
                            in DIR/package-managers when it is not installed.
                            Requires --package-manager-name.
-  -h, --help               Show this help.
+  -h, --help               Show this help. After WORKFLOW: show the help of
+                           'ewoks install'.
 
 Options of this script and of 'ewoks install':
   --package-manager-name NAME
@@ -398,6 +399,11 @@ function Read-Arguments([object[]]$arguments) {
         $arg = [string]$arguments[$i]
         $i++
         if ($arg -in @("-h", "--help")) {
+            # After the workflow it is the help of `ewoks install`
+            if ($state.Workflow) {
+                $state.Forwarded += $arg
+                continue
+            }
             $state.Help = $true
             return $state
         } elseif ($arg -eq "--install-package-manager") {
