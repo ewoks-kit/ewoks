@@ -14,26 +14,29 @@ There are two sides to this
 * the *re-producer* receives the :term:`workflow`, recreates the environment and executes the
   :term:`workflow` in it.
 
-Both sides use a :term:`package manager`. The walk-throughs below do the same thing with each
-of the supported ones
+Both sides use a :term:`package manager`. They do not need the same one: the requirements
+contain the installed python packages, which any :term:`package manager` can install. See
+:ref:`this how-to guide <requirements>` to select a :term:`package manager`.
 
 .. toctree::
     :maxdepth: 1
+    :caption: Walk-through per package manager
 
     install/pip_venv
     install/uv
     install/poetry
     install/conda
     install/pixi
+
+.. toctree::
+    :maxdepth: 1
+    :caption: More
+
     install/bootstrap
     install/troubleshooting
 
-The producer and the re-producer do not need the same :term:`package manager`: the
-requirements contain the installed python packages, which any :term:`package manager` can
-install. See :ref:`this how-to guide <requirements>` to select a :term:`package manager`.
-
-Store the requirements
-----------------------
+Producer side
+-------------
 
 ``ewoks convert`` saves the packages installed in the current python environment as the
 ``requirements`` of the destination :term:`workflow`. The ``requirements`` field of the
@@ -68,9 +71,13 @@ Store the requirements
   ``pyproject.toml`` and a lock file, and store nothing when there are none. Without
   ``files``, ``distributions`` describe the environment.
 
-Create the environment
-----------------------
+Use ``--exclude-requirements`` to store nothing.
 
+Re-producer side
+----------------
+
+Install the environment
++++++++++++++++++++++++
 ``ewoks install`` creates a python environment for the :term:`workflow`. It prints the python
 interpreter of the environment it created, the command to execute the :term:`workflow` in it
 and the command to remove it again. These commands work from any terminal and directory
@@ -86,12 +93,15 @@ Without ``--yes`` you are asked to confirm after the packages have been listed. 
 walk-throughs use ``--env-root`` to create the environment in the working directory. Without
 it the environment is created where the :term:`package manager` creates named environments.
 
+Install without ewoks
++++++++++++++++++++++
+
 ``ewoks install`` needs a python environment with :term:`ewoks`. See
 :ref:`this page <install_bootstrap>` to create the environment of a :term:`workflow` with
 nothing but a :term:`package manager`.
 
 Execute the workflow
---------------------
+++++++++++++++++++++
 
 ``--env`` executes the :term:`workflow` with the python interpreter of that environment
 instead of the current one. This works because the requirements contain ``ewoks`` itself: it
@@ -101,7 +111,7 @@ not, add ``--with-ewoks`` to ``ewoks install`` to install it. The versions comin
 warning lists the versions that changed.
 
 Remove the environment
-----------------------
+++++++++++++++++++++++
 
 The environment is a normal directory, so removing it is enough. This is the command that
 ``ewoks install`` prints when it creates the environment.
