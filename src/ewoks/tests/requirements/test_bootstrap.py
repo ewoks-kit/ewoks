@@ -268,7 +268,7 @@ def test_install_conda_in_directory_with_spaces(
 
     assert result.returncode != 0
     assert "Miniforge cannot be installed in a directory with spaces" in result.stderr
-    assert "install conda in" not in result.stderr
+    assert "Install conda in" not in result.stderr
 
 
 @pytest.mark.package_manager_install
@@ -299,7 +299,7 @@ def test_install_manager(
         timeout=1800,
     )
 
-    assert f"install {manager} in" in result.stderr
+    assert f"Install {manager} in" in result.stderr
     manager_dir = bootstrap_dir / "package-managers" / manager
     command = _printed_command(result)
     if sys.platform == "win32":
@@ -310,7 +310,7 @@ def test_install_manager(
 
     result = _run(script, arguments, bootstrap_dir, env=no_managers_env)
 
-    assert f"install {manager} in" not in result.stderr
+    assert f"Install {manager} in" not in result.stderr
     assert _printed_command(result) == command
 
 
@@ -326,7 +326,7 @@ def test_requirements_of_any_format(
         bootstrap_dir,
     )
 
-    assert "install ewoks" not in result.stderr
+    assert "Install ewoks" not in result.stderr
     assert str(bootstrap_python) in _printed_command(result)
 
 
@@ -387,7 +387,7 @@ def _pip_venv_arguments() -> List[str]:
 
 def _printed_command(result: "subprocess.CompletedProcess[str]") -> str:
     """`ewoks install` command that a script printed before running it."""
-    prefix = "ewoks-install: run "
+    prefix = "ewoks-install: Run "
     for line in result.stderr.splitlines():
         if line.startswith(prefix):
             return line[len(prefix) :]

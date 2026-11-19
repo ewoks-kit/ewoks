@@ -65,7 +65,7 @@ say() {
 }
 
 die() {
-    say "error: $*"
+    say "Error: $*"
     exit 1
 }
 
@@ -101,7 +101,7 @@ find_python() {
     if [ -n "$1" ] && command -v "python$1" >/dev/null 2>&1; then
         printf 'python%s' "$1"
     elif command -v python3 >/dev/null 2>&1; then
-        [ -z "$1" ] || say "warning: python$1 of the workflow is not found: using python3"
+        [ -z "$1" ] || say "Warning: python$1 of the workflow is not found: using python3"
         printf 'python3'
     else
         die "no python interpreter found (see --package-manager-name uv --install-package-manager)"
@@ -237,7 +237,7 @@ install_manager() {
             *" "*) die "Miniforge cannot be installed in a directory with spaces: $2 (see --bootstrap-dir)" ;;
         esac
     fi
-    say "install $1 in $2"
+    say "Install $1 in $2"
     rm -rf "$2"
     mkdir -p "$(dirname "$2")"
     # Removed by `on_exit` when the installation fails.
@@ -396,14 +396,14 @@ read_workflow_requirements() {
     pinned=$(requirement_items "$workflow" bootstrap.distributions | sed '/^$/d' | LC_ALL=C sort)
     latest=""
     if ! pins ewoks; then
-        say "the workflow does not provide the ewoks version: using the latest one"
+        say "The workflow does not provide the ewoks version: using the latest one"
         latest=ewoks
     fi
     case $workflow in
         *.ows)
             if ! pins ewoksorange; then
                 # Workflows saved before ewoks recorded the engine
-                say "the workflow does not provide its engine: using the latest ewoksorange"
+                say "The workflow does not provide its engine: using the latest ewoksorange"
                 latest="$latest ewoksorange"
             fi
             ;;
@@ -478,7 +478,7 @@ create_bootstrap_environment() {
         return
     fi
 
-    say "create the bootstrap environment $location"
+    say "Create the bootstrap environment $location"
     # A previous attempt failed
     rm -rf "$location"
     mkdir -p "$location"
@@ -525,7 +525,7 @@ install_bootstrap_requirements() {
         return
     fi
 
-    say "install $requirements in $location"
+    say "Install $requirements in $location"
     if [ "$manager" = uv ]; then
         eval "run_manager pip install --quiet --upgrade --python \"\$python\" $requirements" >&2 ||
             die "cannot install $requirements (see --bootstrap-requirement)"
@@ -538,7 +538,7 @@ install_bootstrap_requirements() {
 # Print and run `ewoks install` in the bootstrap environment
 run_ewoks_install() {
     eval "set -- \"\$python\" -m ewoks install $forwarded"
-    say "run $(quote_all "$@")"
+    say "Run $(quote_all "$@")"
 
     # Printed by `ewoks install` before its summary
     EWOKS_INSTALL_SUMMARY_HEADER=$(
@@ -561,9 +561,9 @@ on_exit() {
     [ -z "$installer_dir" ] || rm -rf "$installer_dir"
     # Not after an interruption
     if [ "$status" != 0 ] && [ "$status" -lt 128 ] && [ "$explain_failure" = 1 ]; then
-        say "the bootstrap failed. To install without this script:"
-        say "  1. create a python${python_version:+ $python_version} environment and run in it: pip install $requirements"
-        say "  2. run in that environment: python -m ewoks install $forwarded"
+        say "The bootstrap failed. To install the workflow without the bootstrap script:"
+        say "  1. Create a python${python_version:+ $python_version} environment and run in it: pip install $requirements"
+        say "  2. Run in that environment: python -m ewoks install $forwarded"
     fi
     exit "$status"
 }
