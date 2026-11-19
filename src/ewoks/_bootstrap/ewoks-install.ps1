@@ -1,4 +1,4 @@
-# Install the python environment of an ewoks workflow with nothing but a package
+# Install the python environment of an ewoks workflow with only a package
 # manager. For example
 #
 #   & ([scriptblock]::Create((irm https://ewoks.readthedocs.io/en/stable/ewoks-install.ps1))) demo.json --package-manager-name uv

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Install the python environment of an ewoks workflow with nothing but a package
+# Install the python environment of an ewoks workflow with only a package
 # manager. For example
 #
 #   curl -LsSf https://ewoks.readthedocs.io/en/stable/ewoks-install.sh | sh -s -- demo.json --package-manager-name uv
