@@ -541,7 +541,7 @@ function Initialize-Manager([hashtable]$state) {
         }
         Install-Manager $manager $managerDir
         if (-not (Test-Path -LiteralPath $executable -PathType Leaf)) {
-            throw "cannot install $manager in $managerDir"
+            throw "the $manager installer did not create $executable"
         }
     }
     $state.Command = @($executable)
