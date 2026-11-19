@@ -38,7 +38,7 @@ Install uv
 Producer side
 -------------
 
-A :term:`workflow` with requirements comes from one of three sources.
+A :term:`workflow` with requirements comes from one of two sources.
 
 Download the demo workflow
 ++++++++++++++++++++++++++
@@ -65,12 +65,15 @@ Download the demo :term:`workflow` of this documentation
 
             irm |docs_url|/demo.json -OutFile demo.json
 
-Generate the demo workflow
-++++++++++++++++++++++++++
+Use your own workflow
++++++++++++++++++++++
 
-Create a uv project, add :term:`ewoks` to it and store a :term:`workflow` with the
-packages of its environment as its ``requirements``. The ``pyproject.toml`` and ``uv.lock``
-of the project are stored as well.
+Create a uv project, add :term:`ewoks` and ``mytasks`` to it and store your :term:`workflow`
+with the packages of its environment as its ``requirements``. The ``pyproject.toml`` and
+``uv.lock`` of the project are stored as well.
+
+* ``mytasks``: the packages that provide the :term:`tasks <Task>` of your :term:`workflow`.
+* ``myworkflow.json``: your :term:`workflow`. See :doc:`how to create a workflow <../create_workflow>`.
 
 .. tabs::
 
@@ -79,35 +82,24 @@ of the project are stored as well.
         .. code-block:: bash
 
             uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
-            uv run --project ewoks_producer ewoks convert demo demo.json --test
+            uv add --project ewoks_producer ewoks mytasks
+            uv run --project ewoks_producer ewoks convert myworkflow.json myworkflow_requirements.json
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
             uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
-            uv run --project ewoks_producer ewoks convert demo demo.json --test
+            uv add --project ewoks_producer ewoks mytasks
+            uv run --project ewoks_producer ewoks convert myworkflow.json myworkflow_requirements.json
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
             uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
-            uv run --project ewoks_producer ewoks convert demo demo.json --test
-
-Generate your own workflow
-++++++++++++++++++++++++++
-
-Install the packages that provide the :term:`tasks <Task>` of your :term:`workflow` instead of
-``ewoks``, and :doc:`create <../create_workflow>` ``myworkflow.json`` with them.
-Then store its requirements
-
-.. code-block:: bash
-
-    ewoks convert myworkflow.json myworkflow_requirements.json
+            uv add --project ewoks_producer ewoks mytasks
+            uv run --project ewoks_producer ewoks convert myworkflow.json myworkflow_requirements.json
 
 Re-producer side
 ----------------

@@ -46,7 +46,7 @@ Install pixi
 Producer side
 -------------
 
-A :term:`workflow` with requirements comes from one of three sources.
+A :term:`workflow` with requirements comes from one of two sources.
 
 Download the demo workflow
 ++++++++++++++++++++++++++
@@ -73,11 +73,14 @@ Download the demo :term:`workflow` of this documentation
 
             irm |docs_url|/demo.json -OutFile demo.json
 
-Generate the demo workflow
-++++++++++++++++++++++++++
+Use your own workflow
++++++++++++++++++++++
 
-Create a workspace, install :term:`ewoks` in it and store a :term:`workflow` with the packages
-of that workspace as its ``requirements``
+Create a workspace, install :term:`ewoks` and ``mytasks`` in it and store your :term:`workflow`
+with the packages of that workspace as its ``requirements``
+
+* ``mytasks``: the packages that provide the :term:`tasks <Task>` of your :term:`workflow`.
+* ``myworkflow.json``: your :term:`workflow`. See :doc:`how to create a workflow <../create_workflow>`.
 
 .. tabs::
 
@@ -87,8 +90,8 @@ of that workspace as its ``requirements``
 
             pixi init ewoks_producer
             pixi add --manifest-path ewoks_producer/pixi.toml python pip
-            pixi add --manifest-path ewoks_producer/pixi.toml --pypi ewoks
-            pixi run --manifest-path ewoks_producer/pixi.toml ewoks convert demo demo.json --test
+            pixi add --manifest-path ewoks_producer/pixi.toml --pypi ewoks mytasks
+            pixi run --manifest-path ewoks_producer/pixi.toml ewoks convert myworkflow.json myworkflow_requirements.json
 
     .. group-tab:: macOS
 
@@ -96,8 +99,8 @@ of that workspace as its ``requirements``
 
             pixi init ewoks_producer
             pixi add --manifest-path ewoks_producer/pixi.toml python pip
-            pixi add --manifest-path ewoks_producer/pixi.toml --pypi ewoks
-            pixi run --manifest-path ewoks_producer/pixi.toml ewoks convert demo demo.json --test
+            pixi add --manifest-path ewoks_producer/pixi.toml --pypi ewoks mytasks
+            pixi run --manifest-path ewoks_producer/pixi.toml ewoks convert myworkflow.json myworkflow_requirements.json
 
     .. group-tab:: Windows
 
@@ -105,19 +108,8 @@ of that workspace as its ``requirements``
 
             pixi init ewoks_producer
             pixi add --manifest-path ewoks_producer\pixi.toml python pip
-            pixi add --manifest-path ewoks_producer\pixi.toml --pypi ewoks
-            pixi run --manifest-path ewoks_producer\pixi.toml ewoks convert demo demo.json --test
-
-Generate your own workflow
-++++++++++++++++++++++++++
-
-Install the packages that provide the :term:`tasks <Task>` of your :term:`workflow` instead of
-``ewoks``, and :doc:`create <../create_workflow>` ``myworkflow.json`` with them.
-Then store its requirements
-
-.. code-block:: bash
-
-    ewoks convert myworkflow.json myworkflow_requirements.json
+            pixi add --manifest-path ewoks_producer\pixi.toml --pypi ewoks mytasks
+            pixi run --manifest-path ewoks_producer\pixi.toml ewoks convert myworkflow.json myworkflow_requirements.json
 
 Re-producer side
 ----------------

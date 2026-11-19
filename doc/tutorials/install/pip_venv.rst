@@ -9,7 +9,7 @@ there is no other :term:`package manager` to install.
 Producer side
 -------------
 
-A :term:`workflow` with requirements comes from one of three sources.
+A :term:`workflow` with requirements comes from one of two sources.
 
 Download the demo workflow
 ++++++++++++++++++++++++++
@@ -36,11 +36,14 @@ Download the demo :term:`workflow` of this documentation
 
             irm |docs_url|/demo.json -OutFile demo.json
 
-Generate the demo workflow
-++++++++++++++++++++++++++
+Use your own workflow
++++++++++++++++++++++
 
-Create an environment, install :term:`ewoks` in it and store a :term:`workflow` with the
-packages of that environment as its ``requirements``.
+Create an environment, install :term:`ewoks` and ``mytasks`` in it and store your
+:term:`workflow` with the packages of that environment as its ``requirements``.
+
+* ``mytasks``: the packages that provide the :term:`tasks <Task>` of your :term:`workflow`.
+* ``myworkflow.json``: your :term:`workflow`. See :doc:`how to create a workflow <../create_workflow>`.
 
 .. tabs::
 
@@ -50,8 +53,8 @@ packages of that environment as its ``requirements``.
 
             python3 -m venv ewoks_producer
             source ewoks_producer/bin/activate
-            pip install ewoks
-            ewoks convert demo demo.json --test
+            pip install ewoks mytasks
+            ewoks convert myworkflow.json myworkflow_requirements.json
             deactivate
 
     .. group-tab:: macOS
@@ -60,8 +63,8 @@ packages of that environment as its ``requirements``.
 
             python3 -m venv ewoks_producer
             source ewoks_producer/bin/activate
-            pip install ewoks
-            ewoks convert demo demo.json --test
+            pip install ewoks mytasks
+            ewoks convert myworkflow.json myworkflow_requirements.json
             deactivate
 
     .. group-tab:: Windows
@@ -70,20 +73,9 @@ packages of that environment as its ``requirements``.
 
             py -m venv ewoks_producer
             ewoks_producer\Scripts\Activate.ps1
-            pip install ewoks
-            ewoks convert demo demo.json --test
+            pip install ewoks mytasks
+            ewoks convert myworkflow.json myworkflow_requirements.json
             deactivate
-
-Generate your own workflow
-++++++++++++++++++++++++++
-
-Install the packages that provide the :term:`tasks <Task>` of your :term:`workflow` instead of
-``ewoks``, and :doc:`create <../create_workflow>` ``myworkflow.json`` with them.
-Then store its requirements
-
-.. code-block:: bash
-
-    ewoks convert myworkflow.json myworkflow_requirements.json
 
 Re-producer side
 ----------------
