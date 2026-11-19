@@ -14,6 +14,10 @@ The workflow cannot be installed
 Environment creation can fail when the Python packages listed in the requirements cannot
 be installed in the target environment. For example:
 
+.. raw:: html
+
+    <details><summary>Show the causes</summary>
+
 * A Python package requires a system package, compiler, or other native build dependency
   that is not available on the target machine.
 * A package contains compiled code that is not compatible with the target operating system,
@@ -28,6 +32,10 @@ be installed in the target environment. For example:
   target system and one or more packages are platform-specific.
 * A package depends on external system libraries or runtime components that are not provided
   by the Python package itself.
+
+.. raw:: html
+
+    </details>
 
 The stored requirements can therefore make the Python environment reproducible,
 but they cannot guarantee that the environment can be recreated on every machine.
