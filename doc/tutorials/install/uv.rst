@@ -38,44 +38,12 @@ Install uv
 Producer side
 -------------
 
-Create a uv project, add :term:`ewoks` to it and store a :term:`workflow` with the
-packages of its environment as its ``requirements``. The ``pyproject.toml`` and ``uv.lock``
-of the project are stored as well.
+A :term:`workflow` with requirements comes from one of two sources.
 
-.. tabs::
+Download the demo workflow
+++++++++++++++++++++++++++
 
-    .. group-tab:: Linux
-
-        .. code-block:: bash
-
-            uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
-            uv run --project ewoks_producer ewoks convert demo demo.json --test
-
-    .. group-tab:: macOS
-
-        .. code-block:: bash
-
-            uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
-            uv run --project ewoks_producer ewoks convert demo demo.json --test
-
-    .. group-tab:: Windows
-
-        .. code-block:: powershell
-
-            uv init ewoks_producer
-            uv add --project ewoks_producer ewoks
-            uv run --project ewoks_producer ewoks convert demo demo.json --test
-
-Install any package that provides :term:`tasks <Task>` instead of
-``ewoks`` for a real :term:`workflow`.
-
-Re-producer side
-----------------
-
-Without the producer side, download the demo :term:`workflow` of this documentation, which
-only requires :term:`ewoks`
+Download the demo :term:`workflow` of this documentation
 
 .. tabs::
 
@@ -96,6 +64,45 @@ only requires :term:`ewoks`
         .. code-block:: powershell
 
             irm |docs_url|/demo.json -OutFile demo.json
+
+Use your own workflow
++++++++++++++++++++++
+
+Create a uv project, add :term:`ewoks` and ``mytasks`` to it and store your :term:`workflow`
+with the packages of its environment as its ``requirements``. The ``pyproject.toml`` and
+``uv.lock`` of the project are stored as well.
+
+* ``mytasks``: the packages that provide the :term:`tasks <Task>` of your :term:`workflow`.
+* ``myworkflow.json``: your :term:`workflow`. See :doc:`how to create a workflow <../create_workflow>`.
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            uv init ewoks_producer
+            uv add --project ewoks_producer ewoks mytasks
+            uv run --project ewoks_producer ewoks convert myworkflow.json myworkflow_requirements.json
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            uv init ewoks_producer
+            uv add --project ewoks_producer ewoks mytasks
+            uv run --project ewoks_producer ewoks convert myworkflow.json myworkflow_requirements.json
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            uv init ewoks_producer
+            uv add --project ewoks_producer ewoks mytasks
+            uv run --project ewoks_producer ewoks convert myworkflow.json myworkflow_requirements.json
+
+Re-producer side
+----------------
 
 Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 

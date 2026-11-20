@@ -39,48 +39,12 @@ Install poetry
 Producer side
 -------------
 
-Create a project, install :term:`ewoks` in it and store a :term:`workflow` with the packages
-of that project as its ``requirements``. The environment is created inside the project, so
-that its ``pyproject.toml`` and ``poetry.lock`` are stored as well.
+A :term:`workflow` with requirements comes from one of two sources.
 
-.. tabs::
+Download the demo workflow
+++++++++++++++++++++++++++
 
-    .. group-tab:: Linux
-
-        .. code-block:: bash
-
-            poetry new ewoks_producer
-            poetry -C ewoks_producer config virtualenvs.in-project true --local
-            poetry -C ewoks_producer add ewoks
-            poetry -C ewoks_producer run ewoks convert demo "$PWD/demo.json" --test
-
-    .. group-tab:: macOS
-
-        .. code-block:: bash
-
-            poetry new ewoks_producer
-            poetry -C ewoks_producer config virtualenvs.in-project true --local
-            poetry -C ewoks_producer add ewoks
-            poetry -C ewoks_producer run ewoks convert demo "$PWD/demo.json" --test
-
-    .. group-tab:: Windows
-
-        .. code-block:: powershell
-
-            poetry new ewoks_producer
-            poetry -C ewoks_producer config virtualenvs.in-project true --local
-            poetry -C ewoks_producer add ewoks
-            poetry -C ewoks_producer run ewoks convert demo "$PWD\demo.json" --test
-
-Install any package that provides :term:`tasks <Task>` instead of
-``ewoks`` for a real :term:`workflow`. Poetry 2 resolves the arguments of ``poetry run``
-relative to the project directory, so the workflow paths are absolute.
-
-Re-producer side
-----------------
-
-Without the producer side, download the demo :term:`workflow` of this documentation, which
-only requires :term:`ewoks`
+Download the demo :term:`workflow` of this documentation
 
 .. tabs::
 
@@ -101,6 +65,48 @@ only requires :term:`ewoks`
         .. code-block:: powershell
 
             irm |docs_url|/demo.json -OutFile demo.json
+
+Use your own workflow
++++++++++++++++++++++
+
+Create a project, install :term:`ewoks` and ``mytasks`` in it and store your :term:`workflow`
+with the packages of that project as its ``requirements``. The environment is created inside
+the project, so that its ``pyproject.toml`` and ``poetry.lock`` are stored as well.
+
+* ``mytasks``: the packages that provide the :term:`tasks <Task>` of your :term:`workflow`.
+* ``myworkflow.json``: your :term:`workflow`. See :doc:`how to create a workflow <../create_workflow>`.
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            poetry new ewoks_producer
+            poetry -C ewoks_producer config virtualenvs.in-project true --local
+            poetry -C ewoks_producer add ewoks mytasks
+            poetry -C ewoks_producer run ewoks convert "$PWD/myworkflow.json" "$PWD/myworkflow_requirements.json"
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            poetry new ewoks_producer
+            poetry -C ewoks_producer config virtualenvs.in-project true --local
+            poetry -C ewoks_producer add ewoks mytasks
+            poetry -C ewoks_producer run ewoks convert "$PWD/myworkflow.json" "$PWD/myworkflow_requirements.json"
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            poetry new ewoks_producer
+            poetry -C ewoks_producer config virtualenvs.in-project true --local
+            poetry -C ewoks_producer add ewoks mytasks
+            poetry -C ewoks_producer run ewoks convert "$PWD\myworkflow.json" "$PWD\myworkflow_requirements.json"
+
+Re-producer side
+----------------
 
 Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 

@@ -45,52 +45,12 @@ with the conda-forge channel
 Producer side
 -------------
 
-Create an environment, install :term:`ewoks` in it and store a :term:`workflow` with the
-packages of that environment as its ``requirements``
+A :term:`workflow` with requirements comes from one of two sources.
 
-.. tabs::
+Download the demo workflow
+++++++++++++++++++++++++++
 
-    .. group-tab:: Linux
-
-        .. code-block:: bash
-
-            conda create --yes --prefix ewoks_producer python pip
-            conda activate ./ewoks_producer
-            pip install ewoks
-            ewoks convert demo demo.json --test
-            conda deactivate
-
-    .. group-tab:: macOS
-
-        .. code-block:: bash
-
-            conda create --yes --prefix ewoks_producer python pip
-            conda activate ./ewoks_producer
-            pip install ewoks
-            ewoks convert demo demo.json --test
-            conda deactivate
-
-    .. group-tab:: Windows
-
-        .. code-block:: powershell
-
-            conda create --yes --prefix ewoks_producer python pip
-            conda activate .\ewoks_producer
-            pip install ewoks
-            ewoks convert demo demo.json --test
-            conda deactivate
-
-Install any package that provides :term:`tasks <Task>` instead of
-``ewoks`` for a real :term:`workflow`. Conda stores the packages it installed
-itself and the ones installed with ``pip``: the ``pip`` section of the
-``environment.yml`` file in the ``requirements`` is the conda way of expressing
-packages of the python package index.
-
-Re-producer side
-----------------
-
-Without the producer side, download the demo :term:`workflow` of this documentation, which
-only requires :term:`ewoks`
+Download the demo :term:`workflow` of this documentation
 
 .. tabs::
 
@@ -111,6 +71,50 @@ only requires :term:`ewoks`
         .. code-block:: powershell
 
             irm |docs_url|/demo.json -OutFile demo.json
+
+Use your own workflow
++++++++++++++++++++++
+
+Create an environment, install :term:`ewoks` and ``mytasks`` in it and store your
+:term:`workflow` with the packages of that environment as its ``requirements``
+
+* ``mytasks``: the packages that provide the :term:`tasks <Task>` of your :term:`workflow`.
+* ``myworkflow.json``: your :term:`workflow`. See :doc:`how to create a workflow <../create_workflow>`.
+
+.. tabs::
+
+    .. group-tab:: Linux
+
+        .. code-block:: bash
+
+            conda create --yes --prefix ewoks_producer python pip
+            conda activate ./ewoks_producer
+            pip install ewoks mytasks
+            ewoks convert myworkflow.json myworkflow_requirements.json
+            conda deactivate
+
+    .. group-tab:: macOS
+
+        .. code-block:: bash
+
+            conda create --yes --prefix ewoks_producer python pip
+            conda activate ./ewoks_producer
+            pip install ewoks mytasks
+            ewoks convert myworkflow.json myworkflow_requirements.json
+            conda deactivate
+
+    .. group-tab:: Windows
+
+        .. code-block:: powershell
+
+            conda create --yes --prefix ewoks_producer python pip
+            conda activate .\ewoks_producer
+            pip install ewoks mytasks
+            ewoks convert myworkflow.json myworkflow_requirements.json
+            conda deactivate
+
+Re-producer side
+----------------
 
 Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
 
