@@ -14,11 +14,14 @@ There are two sides to this
 * the *re-producer* receives the :term:`workflow`, recreates the environment and executes the
   :term:`workflow` in it.
 
-Both sides use a :term:`package manager`. The walk-throughs below do the same thing with each
-of the supported ones
+Both sides use a :term:`package manager`. They do not need the same one: the requirements
+contain the installed python packages, which any :term:`package manager` can install. See
+:ref:`the how-to guide on reproducing a workflow environment <requirements>` to select a
+:term:`package manager`.
 
 .. toctree::
     :maxdepth: 1
+    :caption: Walk-through per package manager
 
     install/pip_venv
     install/uv
@@ -26,12 +29,15 @@ of the supported ones
     install/conda
     install/pixi
 
-The producer and the re-producer do not need the same :term:`package manager`: the
-requirements contain the installed python packages, which any :term:`package manager` can
-install. See :ref:`this how-to guide <requirements>` to select a :term:`package manager`.
+.. toctree::
+    :maxdepth: 1
+    :caption: More
 
-Store the requirements
-----------------------
+    install/bootstrap
+    install/troubleshooting
+
+Producer side
+-------------
 
 ``ewoks convert`` saves the packages installed in the current python environment as the
 ``requirements`` of the destination :term:`workflow`. The ``requirements`` field of the
@@ -52,9 +58,13 @@ Store the requirements
   ``pyproject.toml`` and a lock file, and store nothing when there are none. Without
   ``files``, ``distributions`` describe the environment.
 
-Create the environment
-----------------------
+Use ``--exclude-requirements`` to store nothing.
 
+Re-producer side
+----------------
+
+Install the environment
++++++++++++++++++++++++
 ``ewoks install`` creates a python environment for the :term:`workflow`. It prints the python
 interpreter of the environment it created, the command to execute the :term:`workflow` in it
 and the command to remove it again. These commands work from any terminal and directory
@@ -70,112 +80,15 @@ Without ``--yes`` you are asked to confirm after the packages have been listed. 
 walk-throughs use ``--env-root`` to create the environment in the working directory. Without
 it the environment is created where the :term:`package manager` creates named environments.
 
-.. _install_bootstrap:
+Install without ewoks
++++++++++++++++++++++
 
-Create the environment without ewoks
-++++++++++++++++++++++++++++++++++++
-
-``ewoks install`` needs a Python environment with :term:`ewoks`. The ``ewoks-install`` script
-only needs a :term:`package manager`: it installs the ``bootstrap`` packages of the
-requirements, :term:`ewoks` and the engine that saved the :term:`workflow`, in a bootstrap
-environment and runs ``ewoks install`` from there. All
-arguments are passed to ``ewoks install``, except for the options of the script itself
-
-.. tabs::
-
-    .. group-tab:: Linux
-
-        .. code-block:: bash
-
-            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
-
-    .. group-tab:: macOS
-
-        .. code-block:: bash
-
-            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
-
-    .. group-tab:: Windows
-
-        .. code-block:: powershell
-
-            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json
-
-Without a :term:`workflow` at hand, try it with the demo :term:`workflow` of this
-documentation, which only requires :term:`ewoks`
-
-.. tabs::
-
-    .. group-tab:: Linux
-
-        .. code-block:: bash
-
-            curl -LsSfO |docs_url|/demo.json
-            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
-
-    .. group-tab:: macOS
-
-        .. code-block:: bash
-
-            curl -LsSfO |docs_url|/demo.json
-            curl -LsSf |docs_url|/ewoks-install.sh | sh -s -- demo.json
-
-    .. group-tab:: Windows
-
-        .. code-block:: powershell
-
-            irm |docs_url|/demo.json -OutFile demo.json
-            & ([scriptblock]::Create((irm |docs_url|/ewoks-install.ps1))) demo.json
-
-Alternatively, download the script first, for example to read it before running it
-
-.. tabs::
-
-    .. group-tab:: Linux
-
-        .. code-block:: bash
-
-            curl -LsSf -o ewoks-install.sh |docs_url|/ewoks-install.sh
-            sh ewoks-install.sh demo.json
-
-    .. group-tab:: macOS
-
-        .. code-block:: bash
-
-            curl -LsSf -o ewoks-install.sh |docs_url|/ewoks-install.sh
-            sh ewoks-install.sh demo.json
-
-    .. group-tab:: Windows
-
-        .. code-block:: powershell
-
-            irm |docs_url|/ewoks-install.ps1 -OutFile ewoks-install.ps1
-            powershell -ExecutionPolicy Bypass -File ewoks-install.ps1 demo.json
-
-* ``--package-manager-name`` and ``--package-manager-command`` select the
-  :term:`package manager` that creates the bootstrap environment. Without them it is the first
-  one that is available of uv, pixi, conda, poetry and pip-venv.
-* ``--bootstrap-requirement`` installs a package in the bootstrap environment instead of the
-  ``bootstrap`` packages of the requirements, for example
-  ``--bootstrap-requirement "ewoks>=7"``. Repeat it to install an engine as well, for example
-  ``--bootstrap-requirement ewoks --bootstrap-requirement ewoksorange``. The latest version of
-  :term:`ewoks` is installed when the requirements do not provide one.
-* ``--bootstrap-dir`` is the directory of the bootstrap environments.
-* ``--install-package-manager`` installs the :term:`package manager` of
-  ``--package-manager-name`` in the bootstrap directory when it is not installed. Conda
-  cannot be installed in a directory with spaces.
-
-The script keeps the bootstrap environment in ``~/.ewoks/bootstrap`` and uses it again when
-it installs another :term:`workflow` whose requirements were generated by the same version of
-:term:`ewoks`. The bootstrap environment only runs ``ewoks install``:
-it is not the environment of the :term:`workflow`. The script prints the ``ewoks install``
-command before it runs it. Before the environment of the
-:term:`workflow`, the script prints the python interpreter of the bootstrap environment, the
-command to run ``ewoks install`` again and the command to remove the bootstrap environment. When the script fails to create the bootstrap
-environment, it prints how to install without it.
+``ewoks install`` needs a python environment with :term:`ewoks`. See
+:ref:`Install without ewoks <install_bootstrap>` to create the environment of a
+:term:`workflow` when only a :term:`package manager` is installed.
 
 Execute the workflow
---------------------
+++++++++++++++++++++
 
 ``--env`` executes the :term:`workflow` with the python interpreter of that environment
 instead of the current one. This works because the requirements contain ``ewoks`` itself: it
@@ -185,7 +98,7 @@ not, add ``--with-ewoks`` to ``ewoks install`` to install it. The versions comin
 warning lists the versions that changed.
 
 Remove the environment
-----------------------
+++++++++++++++++++++++
 
 The environment is a normal directory, so removing it is enough. This is the command that
 ``ewoks install`` prints when it creates the environment.
@@ -193,53 +106,5 @@ The environment is a normal directory, so removing it is enough. This is the com
 Limitations and caveats
 -----------------------
 
-Recreating a workflow environment does not guarantee that the workflow can be executed.
-The requirements stored in a workflow describe the Python environment, but a workflow can
-also depend on system software, external resources, configuration, or files that are not
-captured by the requirements.
-
-The workflow cannot be installed
-++++++++++++++++++++++++++++++++
-
-Environment creation can fail when the Python packages listed in the requirements cannot
-be installed in the target environment. For example:
-
-* A Python package requires a system package, compiler, or other native build dependency
-  that is not available on the target machine.
-* A package contains compiled code that is not compatible with the target operating system,
-  CPU architecture, or Python version.
-* A required package is no longer available from the configured package indexes, or requires
-  access to a private package repository.
-* A package has dependencies that cannot be resolved together with the required package versions.
-* The Python version required by a package is not available on the target machine.
-* Installing a package requires network access, credentials, a license, or another resource
-  that is not available.
-* The workflow was created on an operating system or architecture that is different from the
-  target system and one or more packages are platform-specific.
-* A package depends on external system libraries or runtime components that are not provided
-  by the Python package itself.
-
-The stored requirements can therefore make the Python environment reproducible,
-but they cannot guarantee that the environment can be recreated on every machine.
-
-The workflow can be installed but cannot be executed
-++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-A successfully recreated Python environment only guarantees that the Python dependencies
-can be installed. Execution can still fail because a task depends on resources or configuration
-outside that environment. For example:
-
-* A task depends on files, directories, executables, or data that exist on the
-  original machine but were not transferred to the target.
-* A task relies on environment variables, credentials, secrets, or a specific
-  filesystem layout that are not stored in the workflow.
-* A task requires access to an external service, database, hardware device, or
-  non-deterministic state (such as the current date or remote data) that is
-  unavailable or differs on the target.
-* A task uses operating-system features, commands, or external software —
-  including packages imported or installed at runtime — that are not captured
-  by the Python environment.
-
-In these cases, `ewoks install` can successfully recreate the Python environment, while `ewoks execute`
-can still fail. The requirements should therefore be considered a description of the Python environment,
-rather than a complete description of everything required to execute a workflow.
+Recreating the environment does not guarantee that the :term:`workflow` can be installed or
+executed. See :ref:`Limitations and caveats <install_troubleshooting>`.
