@@ -482,6 +482,8 @@ create_bootstrap_environment() {
     case $manager in
         pip-venv)
             [ -n "$cmd" ] || cmd=$(find_python "$python_version")
+            run_manager -c 'import ensurepip, venv' 2>/dev/null ||
+                die "$cmd cannot create virtual environments: install the venv module of python (python3-venv on Debian and Ubuntu) or use another package manager (see --package-manager-name)"
             env_python_version=$(python_major_minor run_manager)
             ;;
         poetry)

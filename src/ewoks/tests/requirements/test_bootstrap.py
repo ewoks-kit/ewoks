@@ -226,6 +226,30 @@ def test_relative_workflow(
     assert f"-m ewoks install {workflow}" in command
 
 
+def test_python_without_venv(script, workflow, bootstrap_dir, tmp_path):
+    """pip-venv needs a python interpreter that can create virtual environments."""
+    if sys.platform == "win32":
+        pytest.skip("the fake python is a POSIX shell script")
+    python = tmp_path / "python"
+    python.write_text(
+        '#!/bin/sh\ncase "$*" in *ensurepip*) exit 1 ;; esac\n'
+        f'exec "{sys.executable}" "$@"\n'
+    )
+    python.chmod(0o755)
+    arguments = [
+        str(workflow),
+        "--package-manager-name",
+        "pip-venv",
+        "--package-manager-command",
+        str(python),
+    ]
+
+    result = _run(script, arguments, bootstrap_dir)
+
+    assert result.returncode != 0
+    assert "cannot create virtual environments" in result.stderr
+
+
 def test_no_workflow(script, bootstrap_dir):
     result = _run(script, ["--test", "demo"], bootstrap_dir)
 
