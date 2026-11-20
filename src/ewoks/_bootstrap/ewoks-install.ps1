@@ -167,18 +167,18 @@ function Find-Python([string]$majorMinor) {
                 if ($LASTEXITCODE -eq 0) {
                     return @("py", "-$majorMinor")
                 }
-                Write-Info "warning: python $majorMinor of the workflow is not found: using py -3"
+                Write-Info "Warning: python $majorMinor of the workflow is not found: using py -3"
             }
             return @("py", "-3")
         }
     } elseif ($majorMinor -and (Test-Command "python$majorMinor")) {
         return @("python$majorMinor")
     } elseif (Test-Command "python3") {
-        if ($majorMinor) { Write-Info "warning: python$majorMinor of the workflow is not found: using python3" }
+        if ($majorMinor) { Write-Info "Warning: python$majorMinor of the workflow is not found: using python3" }
         return @("python3")
     }
     if (Test-Command "python") {
-        if ($majorMinor) { Write-Info "warning: python $majorMinor of the workflow is not found: using python" }
+        if ($majorMinor) { Write-Info "Warning: python $majorMinor of the workflow is not found: using python" }
         return @("python")
     }
     throw "no python interpreter found (see --package-manager-name uv --install-package-manager)"
@@ -311,7 +311,7 @@ function Install-Manager([string]$manager, [string]$directory) {
     if ($manager -eq "conda" -and $directory.Contains(" ")) {
         throw "Miniforge cannot be installed in a directory with spaces: $directory (see --bootstrap-dir)"
     }
-    Write-Info "install $manager in $directory"
+    Write-Info "Install $manager in $directory"
     if (Test-Path -LiteralPath $directory) {
         Remove-Item -LiteralPath $directory -Recurse -Force
     }
@@ -516,12 +516,12 @@ function Read-WorkflowRequirements([hashtable]$state) {
     $pinned = Get-RequirementItems $content "bootstrap.distributions"
     $latest = @()
     if (-not $pinned.ContainsKey("ewoks")) {
-        Write-Info "the workflow does not provide the ewoks version: using the latest one"
+        Write-Info "The workflow does not provide the ewoks version: using the latest one"
         $latest += "ewoks"
     }
     if ($state.Workflow.EndsWith(".ows") -and -not $pinned.ContainsKey("ewoksorange")) {
         # Workflows saved before ewoks recorded the engine
-        Write-Info "the workflow does not provide its engine: using the latest ewoksorange"
+        Write-Info "The workflow does not provide its engine: using the latest ewoksorange"
         $latest += "ewoksorange"
     }
 
@@ -616,7 +616,7 @@ function New-BootstrapEnvironment([hashtable]$state) {
         return
     }
 
-    Write-Info "create the bootstrap environment $location"
+    Write-Info "Create the bootstrap environment $location"
     # A previous attempt failed
     if (Test-Path -LiteralPath $location) {
         Remove-Item -LiteralPath $location -Recurse -Force
@@ -676,7 +676,7 @@ function Install-BootstrapRequirements([hashtable]$state) {
     }
 
     $requirements = $state.Requirements
-    Write-Info "install $(Format-Arguments $requirements) in $($state.Location)"
+    Write-Info "Install $(Format-Arguments $requirements) in $($state.Location)"
     try {
         if ($state.Manager -eq "uv") {
             # uv before 0.12.0 rejects a pre-release that only a dependency requires
@@ -701,7 +701,7 @@ function Install-BootstrapRequirements([hashtable]$state) {
 function Invoke-EwoksInstallCommand([hashtable]$state) {
     $install = @("-m", "ewoks", "install") + $state.Forwarded
     $command = "& " + (Format-Arguments (@($state.Python) + $install))
-    Write-Info "run $command"
+    Write-Info "Run $command"
     # Printed by `ewoks install` before its summary
     $header = @(
         "Bootstrap environment"
@@ -724,9 +724,9 @@ function Invoke-EwoksInstallCommand([hashtable]$state) {
 function Write-ManualRoute([hashtable]$state) {
     $python = "python"
     if ($state.PythonVersion) { $python = "python $($state.PythonVersion)" }
-    Write-Info "the bootstrap failed. To install without this script:"
-    Write-Info "  1. create a $python environment and run in it: pip install $(Format-Arguments $state.Requirements)"
-    Write-Info "  2. run in that environment: python -m ewoks install $(Format-Arguments $state.Forwarded)"
+    Write-Info "The bootstrap failed. To install the workflow without the bootstrap script:"
+    Write-Info "  1. Create a $python environment and run in it: pip install $(Format-Arguments $state.Requirements)"
+    Write-Info "  2. Run in that environment: python -m ewoks install $(Format-Arguments $state.Forwarded)"
 }
 
 function Invoke-EwoksInstall([object[]]$arguments) {
