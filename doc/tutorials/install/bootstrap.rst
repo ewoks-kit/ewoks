@@ -107,7 +107,7 @@ Options of the script:
         ``DIR/package-managers`` when it is not installed, and pass its path to
         ``ewoks install``. Requires ``--package-manager-name``.
     * - ``-h``, ``--help``
-      - Show the help of the script.
+      - Show the help of the script. After ``WORKFLOW``: show the help of ``ewoks install``.
 
 Options of the script and of ``ewoks install``:
 
