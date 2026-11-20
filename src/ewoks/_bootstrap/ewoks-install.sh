@@ -468,7 +468,7 @@ ensure_manager() {
         [ "$install_package_manager" = 1 ] ||
             die "$manager is not installed (see --install-package-manager)"
         install_manager "$manager" "$manager_dir"
-        [ -x "$executable" ] || die "cannot install $manager in $manager_dir"
+        [ -x "$executable" ] || die "the $manager installer did not create $executable"
     fi
     cmd=$(quote "$executable")
     forwarded="$forwarded --package-manager-command $(quote "$cmd")"
