@@ -195,6 +195,7 @@ def command_install(
 ) -> Optional[Literal[0, 1]]:
     cli_install_utils.parse_install_arguments(cli_args, shell=shell)
     header = os.environ.get(_SUMMARY_HEADER_VARIABLE)
+    return_code = 0
     for workflow, source in zip(cli_args.workflows, cli_args.graphs):
         try:
             environment = install_graph(
@@ -212,8 +213,10 @@ def command_install(
         except (CalledProcessError, RuntimeError, ValueError):
             traceback.print_exc()
             summary = [f"Install failed for {workflow}"]
+            return_code = 1
         except AbortException:
             summary = [f"Install aborted for {workflow}"]
+            return_code = 1
         else:
             summary = _install_summary(workflow, environment, cli_args.in_place)
         if header:
@@ -221,7 +224,7 @@ def command_install(
             header = None
         print("\n".join(summary))
     if shell:
-        return 0
+        return return_code
     return None
 
 
