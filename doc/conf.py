@@ -57,6 +57,7 @@ html_logo = "_static/logo.png"
 html_static_path = ["_static"]
 html_template_path = ["_templates"]
 html_css_files = ["custom.css"]
+html_js_files = ["theme_sync.js"]
 
 html_theme_options = {
     "icon_links": [
