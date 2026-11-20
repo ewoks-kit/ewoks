@@ -96,7 +96,7 @@ This is the output you should get
 .. note::
 
     :term:`Ewoks` developers rarely design :term:`workflows <Workflow>` by hand like this but instead use graphical interfaces to produce
-    the dictionary (usually stored in JSON). See :ref:`this page about the Ewoks graphical interfaces <gui>`.
+    the dictionary (usually stored in JSON). See :ref:`Use Ewoks graphical interfaces <gui>`.
 
 .. note::
 

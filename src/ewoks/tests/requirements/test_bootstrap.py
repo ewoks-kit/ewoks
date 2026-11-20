@@ -1,4 +1,4 @@
-"""Tests of the scripts that run `ewoks install` with nothing but a package manager.
+"""Tests of the scripts that run `ewoks install` with only a package manager.
 
 The workflows are saved by `ewoks convert`. A fake bootstrap environment is
 prepared in advance so the scripts do not install anything: its python interpreter

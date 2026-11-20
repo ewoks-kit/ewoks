@@ -6,7 +6,7 @@ Reproduce a workflow environment
 A :term:`workflow` stores the python environment it was created in as the ``requirements``
 field of its ``graph`` field. ``ewoks install`` recreates that environment and
 ``ewoks execute --env`` runs the :term:`workflow` in it. See
-:ref:`this tutorial <install_tutorial>` for a step-by-step example.
+:ref:`Install and execute a workflow <install_tutorial>` for a step-by-step example.
 
 What is stored
 --------------
