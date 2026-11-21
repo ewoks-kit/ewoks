@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `ewoks.task_utils.TaskExecutor` to execute one task.
+- CLI: add `--task` to use a task identifier as workflow.
+
 ## [7.0.0rc2] - 2026-11-16
 
 ### Added

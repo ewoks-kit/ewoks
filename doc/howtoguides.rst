@@ -15,6 +15,7 @@ Getting started
     howtoguides/inspect_workflows
     howtoguides/gui
     howtoguides/python
+    howtoguides/execute_task
     howtoguides/requirements
     howtoguides/engines
 
