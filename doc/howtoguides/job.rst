@@ -47,7 +47,7 @@ Submit a :term:`workflow` from the command line, possible from another machine
 
 .. code-block:: bash
 
-    ewoks submit empty --test
+    ewoksjob submit empty --test
 
 Submit a :term:`workflow` in *BLISS*
 ------------------------------------
@@ -62,7 +62,7 @@ Submit a :term:`workflow` as usual
 
 .. code-block:: bash
 
-    BEACON_HOST=hostname:25000 ewoks submit empty --test
+    BEACON_HOST=hostname:25000 ewoksjob submit empty --test
 
 The environment variables are needed for communication between :term:`worker` and client via the message broker.
 

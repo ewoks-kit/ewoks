@@ -24,6 +24,7 @@ from ewokscore.graph import TaskGraph
 from ewokscore.graph.inputs import graph_inputs_as_table
 from ewokscore.graph.schema.model import EwoksGraph
 from ewokscore.requirements.environment import Environment
+from ewoksutils.deprecation_utils import deprecated
 from pydantic import ValidationError
 from tabulate import tabulate
 
@@ -129,6 +130,7 @@ def _upload_context(upload_parameters: Optional[dict]) -> Generator[None, None, 
     client.store_processed_data(**upload_parameters)
 
 
+@deprecated("ewoks.submit_graph is deprecated. Use ewoksjob.bindings.submit_graph.")
 def submit_graph(
     graph,
     _celery_options: Optional[dict] = None,
