@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Deprecated
+
+- `ewoks.submit_graph`: use `ewoksjob.bindings.submit_graph`.
+- `ewoks submit` and `ewoks cancel`: use `ewoksjob submit` and `ewoksjob cancel`.
+
 ## [7.0.0rc2] - 2026-11-16
 
 ### Added

@@ -1,9 +1,11 @@
+import logging
 import os
 import re
 import shlex
 import subprocess
 import sys
 import traceback
+import warnings
 from argparse import ArgumentDefaultsHelpFormatter
 from argparse import ArgumentParser
 from argparse import Namespace
@@ -22,7 +24,6 @@ from ewoksutils.cli_utils import cli_execute_utils
 from ewoksutils.cli_utils import cli_submit_utils
 from ewoksutils.cli_utils.cli_argparse import add_to_parser
 
-from .bindings import _load_graph
 from .bindings import convert_graph
 from .bindings import execute_graph
 from .bindings import install_graph
@@ -43,6 +44,9 @@ except ImportError:
     _command_cancel = None
 
 
+logger = logging.getLogger(__name__)
+
+
 def create_argument_parser(shell: bool = False) -> ArgumentParser:
     parser = ArgumentParser(
         description="Extensible WOrKflow System CLI",
@@ -58,12 +62,12 @@ def create_argument_parser(shell: bool = False) -> ArgumentParser:
     )
     submit = subparsers.add_parser(
         "submit",
-        help="Schedule a workflow execution",
+        help="DEPRECATED: use 'ewoksjob submit'. Schedule a workflow execution",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
     cancel = subparsers.add_parser(
         "cancel",
-        help="Abort a scheduled workflow execution",
+        help="DEPRECATED: use 'ewoksjob cancel'. Abort a scheduled workflow execution",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
     convert = subparsers.add_parser(
@@ -147,15 +151,23 @@ def command_execute(
 def command_submit(
     cli_args: Namespace, shell: bool = False
 ) -> Union[List[dict], Literal[0, 1]]:
+    _warn_deprecated_command("submit")
     if _command_submit is None:
         raise RuntimeError("requires the 'ewoksjob>=1.3' package")
-    return _command_submit(cli_args, _convert_graph=_load_graph, shell=shell)
+    return _command_submit(cli_args, shell=shell)
 
 
 def command_cancel(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0, 1]]:
+    _warn_deprecated_command("cancel")
     if _command_cancel is None:
         raise RuntimeError("requires the 'ewoksjob>=1.3' package")
     return _command_cancel(cli_args, shell)
+
+
+def _warn_deprecated_command(command: str) -> None:
+    message = f"'ewoks {command}' is deprecated. Use 'ewoksjob {command}'."
+    warnings.warn(message, DeprecationWarning, stacklevel=3)
+    logger.warning(message)
 
 
 def command_convert(

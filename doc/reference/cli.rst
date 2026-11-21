@@ -96,6 +96,9 @@ ewoks submit
     :prog: ewoks
     :path: submit
 
+    .. deprecated:: 7.0
+        Use ``ewoksjob submit``.
+
     Execute a :term:`workflow` remotely, in a :term:`worker`.
     
     Very similar to ``ewoks execute`` except the execution does not run in this environment (client) but in a remote one (:term:`worker`).
