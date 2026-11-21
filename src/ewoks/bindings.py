@@ -146,17 +146,10 @@ def submit_graph(
         raise RuntimeError("requires the 'ewoksjob' package")
     return _submit_graph(
         graph,
-        _convert_graph=_load_graph,
         _celery_options=_celery_options,
         resolve_graph_remotely=resolve_graph_remotely,
         load_options=load_options,
         **options,
-    )
-
-
-def _load_graph(graph, load_options: Optional[dict] = None) -> dict:
-    return convert_graph(
-        graph, None, load_options=load_options, save_requirements=False
     )
 
 

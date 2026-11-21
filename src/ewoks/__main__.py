@@ -24,7 +24,6 @@ from ewoksutils.cli_utils import cli_execute_utils
 from ewoksutils.cli_utils import cli_submit_utils
 from ewoksutils.cli_utils.cli_argparse import add_to_parser
 
-from .bindings import _load_graph
 from .bindings import convert_graph
 from .bindings import execute_graph
 from .bindings import install_graph
@@ -155,7 +154,7 @@ def command_submit(
     _warn_deprecated_command("submit")
     if _command_submit is None:
         raise RuntimeError("requires the 'ewoksjob>=1.3' package")
-    return _command_submit(cli_args, _convert_graph=_load_graph, shell=shell)
+    return _command_submit(cli_args, shell=shell)
 
 
 def command_cancel(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0, 1]]:
