@@ -110,7 +110,7 @@ environment is removed.
 
 The environment of a :term:`workflow` is a directory. For pip-venv and conda it is a python
 environment, for uv and poetry it is a project with the environment in ``.venv`` and for pixi
-it is a workspace with the environment in ``.pixi/envs/default``. ``ewoks execute --env`` takes
+it is a workspace with the environment in ``.pixi/envs/<name>``. ``ewoks execute --env`` takes
 that directory, not the python interpreter inside it.
 
 Limitations
@@ -125,8 +125,6 @@ Limitations
 * uv and poetry only find the project files when the environment is the ``.venv`` directory of
   the project. poetry creates its environments elsewhere unless
   ``poetry config virtualenvs.in-project true`` is set.
-* pixi stores the workspace files for any environment of the workspace, but ``ewoks install``
-  always installs the ``default`` environment.
 * The stored lock file is not compared with the installed python packages: packages that were
   added or removed after locking are not reflected in the stored files.
 * A lock file is only read by a :term:`package manager` that understands its format version, so
