@@ -91,7 +91,7 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
             python3 -m venv ewoks_reproducer
             source ewoks_reproducer/bin/activate
             pip install ewoks
-            ewoks install demo.json --yes --env-root ewoks_envs
+            ewoks install demo.json --yes --env-root /tmp/ewoks_envs
 
     .. group-tab:: macOS
 
@@ -100,7 +100,7 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
             python3 -m venv ewoks_reproducer
             source ewoks_reproducer/bin/activate
             pip install ewoks
-            ewoks install demo.json --yes --env-root ewoks_envs
+            ewoks install demo.json --yes --env-root /tmp/ewoks_envs
 
     .. group-tab:: Windows
 
@@ -109,9 +109,9 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
             py -m venv ewoks_reproducer
             ewoks_reproducer\Scripts\Activate.ps1
             pip install ewoks
-            ewoks install demo.json --yes --env-root ewoks_envs
+            ewoks install demo.json --yes --env-root "$env:TEMP\ewoks_envs"
 
-The environment of the :term:`workflow` is a virtual environment in ``ewoks_envs/demo``.
+The environment of the :term:`workflow` is a virtual environment in ``/tmp/ewoks_envs/demo`` (``$env:TEMP\ewoks_envs\demo`` on Windows).
 
 Alternatively, the :ref:`ewoks-install script <install_bootstrap>` recreates the
 environment without an environment with :term:`ewoks`
@@ -148,19 +148,19 @@ Execute the workflow
 
         .. code-block:: bash
 
-            ewoks execute --env ewoks_envs/demo demo.json --outputs=all
+            ewoks execute --env /tmp/ewoks_envs/demo demo.json --outputs=all
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            ewoks execute --env ewoks_envs/demo demo.json --outputs=all
+            ewoks execute --env /tmp/ewoks_envs/demo demo.json --outputs=all
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            ewoks execute --env ewoks_envs\demo demo.json --outputs=all
+            ewoks execute --env "$env:TEMP\ewoks_envs\demo" demo.json --outputs=all
 
 Clean up
 --------
@@ -172,18 +172,18 @@ Clean up
         .. code-block:: bash
 
             deactivate
-            rm -rf ewoks_producer ewoks_reproducer ewoks_envs demo.json
+            rm -rf ewoks_producer ewoks_reproducer /tmp/ewoks_envs demo.json
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
             deactivate
-            rm -rf ewoks_producer ewoks_reproducer ewoks_envs demo.json
+            rm -rf ewoks_producer ewoks_reproducer /tmp/ewoks_envs demo.json
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
             deactivate
-            Remove-Item -Recurse -Force ewoks_producer, ewoks_reproducer, ewoks_envs, demo.json
+            Remove-Item -Recurse -Force ewoks_producer, ewoks_reproducer, "$env:TEMP\ewoks_envs", demo.json
