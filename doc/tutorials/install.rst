@@ -68,7 +68,7 @@ Install with ewoks
 
 .. code-block:: bash
 
-    ewoks install demo.json --yes --env-root ~/ewoks_envs
+    ewoks install demo.json --yes --env-root /tmp/ewoks_envs
 
 It prints the python interpreter of the environment it created, the command to execute the
 :term:`workflow` in it and the command to remove it again. These commands work from any
@@ -77,13 +77,12 @@ terminal and directory
 .. code-block:: text
 
     Installed requirements for demo.json
-      Python : /home/user/ewoks_envs/demo/bin/python
-      Execute: /home/user/ewoks_envs/demo/bin/python -m ewoks execute /home/user/demo.json
-      Remove : rm -rf /home/user/ewoks_envs/demo
+      Python : /tmp/ewoks_envs/demo/bin/python
+      Execute: /tmp/ewoks_envs/demo/bin/python -m ewoks execute /home/user/demo.json
+      Remove : rm -rf /tmp/ewoks_envs/demo
 
 Without ``--yes``, ``ewoks install`` asks you to confirm after it has listed the packages.
-The walk-throughs use ``ewoks install --env-root`` to create the environment in the working
-directory. Without it, ``ewoks install`` creates the environment where the
+``--env-root`` creates the environment in the given directory. Without it, ``ewoks install`` creates the environment where the
 :term:`package manager` creates named environments.
 
 ``ewoks execute --env`` needs :term:`ewoks` in the environment. The requirements contain it
@@ -107,7 +106,7 @@ environment that ``ewoks install`` created, instead of the current one
 
 .. code-block:: bash
 
-    ewoks execute --env ~/ewoks_envs/demo demo.json --outputs=all
+    ewoks execute --env /tmp/ewoks_envs/demo demo.json --outputs=all
 
 Remove the environment
 ++++++++++++++++++++++

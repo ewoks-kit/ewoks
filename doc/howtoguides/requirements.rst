@@ -77,7 +77,7 @@ Choose the environment
 .. code-block:: bash
 
     # a root directory of your choice instead of the one of the package manager
-    ewoks install demo.json --yes --env-root /tmp/envs
+    ewoks install demo.json --yes --env-root /tmp/ewoks_envs
 
     # a name of your choice instead of the workflow identifier
     ewoks install demo.json --yes --env-name demo-env

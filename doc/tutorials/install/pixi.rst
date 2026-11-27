@@ -125,7 +125,7 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
             pixi init ewoks_reproducer
             pixi add --manifest-path ewoks_reproducer/pixi.toml python pip
             pixi add --manifest-path ewoks_reproducer/pixi.toml --pypi ewoks
-            pixi run --manifest-path ewoks_reproducer/pixi.toml ewoks install demo.json --yes --env-root ewoks_envs
+            pixi run --manifest-path ewoks_reproducer/pixi.toml ewoks install demo.json --yes --env-root /tmp/ewoks_envs
 
     .. group-tab:: macOS
 
@@ -134,7 +134,7 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
             pixi init ewoks_reproducer
             pixi add --manifest-path ewoks_reproducer/pixi.toml python pip
             pixi add --manifest-path ewoks_reproducer/pixi.toml --pypi ewoks
-            pixi run --manifest-path ewoks_reproducer/pixi.toml ewoks install demo.json --yes --env-root ewoks_envs
+            pixi run --manifest-path ewoks_reproducer/pixi.toml ewoks install demo.json --yes --env-root /tmp/ewoks_envs
 
     .. group-tab:: Windows
 
@@ -143,9 +143,9 @@ Only ``ewoks`` itself is needed to recreate the environment of ``demo.json``
             pixi init ewoks_reproducer
             pixi add --manifest-path ewoks_reproducer\pixi.toml python pip
             pixi add --manifest-path ewoks_reproducer\pixi.toml --pypi ewoks
-            pixi run --manifest-path ewoks_reproducer\pixi.toml ewoks install demo.json --yes --env-root ewoks_envs
+            pixi run --manifest-path ewoks_reproducer\pixi.toml ewoks install demo.json --yes --env-root "$env:TEMP\ewoks_envs"
 
-The environment of the :term:`workflow` is a pixi workspace in ``ewoks_envs/demo`` with the
+The environment of the :term:`workflow` is a pixi workspace in ``/tmp/ewoks_envs/demo`` (``$env:TEMP\ewoks_envs\demo`` on Windows) with the
 environment in its ``.pixi/envs/default`` directory.
 
 Alternatively, the :ref:`ewoks-install script <install_bootstrap>` recreates the
@@ -183,19 +183,19 @@ Execute the workflow
 
         .. code-block:: bash
 
-            pixi run --manifest-path ewoks_reproducer/pixi.toml ewoks execute --env ewoks_envs/demo demo.json --outputs=all
+            pixi run --manifest-path ewoks_reproducer/pixi.toml ewoks execute --env /tmp/ewoks_envs/demo demo.json --outputs=all
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            pixi run --manifest-path ewoks_reproducer/pixi.toml ewoks execute --env ewoks_envs/demo demo.json --outputs=all
+            pixi run --manifest-path ewoks_reproducer/pixi.toml ewoks execute --env /tmp/ewoks_envs/demo demo.json --outputs=all
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            pixi run --manifest-path ewoks_reproducer\pixi.toml ewoks execute --env ewoks_envs\demo demo.json --outputs=all
+            pixi run --manifest-path ewoks_reproducer\pixi.toml ewoks execute --env "$env:TEMP\ewoks_envs\demo" demo.json --outputs=all
 
 Clean up
 --------
@@ -206,16 +206,16 @@ Clean up
 
         .. code-block:: bash
 
-            rm -rf ewoks_producer ewoks_reproducer ewoks_envs demo.json
+            rm -rf ewoks_producer ewoks_reproducer /tmp/ewoks_envs demo.json
 
     .. group-tab:: macOS
 
         .. code-block:: bash
 
-            rm -rf ewoks_producer ewoks_reproducer ewoks_envs demo.json
+            rm -rf ewoks_producer ewoks_reproducer /tmp/ewoks_envs demo.json
 
     .. group-tab:: Windows
 
         .. code-block:: powershell
 
-            Remove-Item -Recurse -Force ewoks_producer, ewoks_reproducer, ewoks_envs, demo.json
+            Remove-Item -Recurse -Force ewoks_producer, ewoks_reproducer, "$env:TEMP\ewoks_envs", demo.json
