@@ -24,12 +24,14 @@ from ewoksutils.cli_utils.cli_argparse import add_to_parser
 
 from .bindings import _load_graph
 from .bindings import convert_graph
+from .bindings import draw_graph
 from .bindings import execute_graph
 from .bindings import install_graph
 from .bindings import lint_graph
 from .bindings import show_graph
 from .cli_utils import cli_arguments
 from .cli_utils import cli_convert_utils
+from .cli_utils import cli_draw_utils
 from .cli_utils import cli_install_utils
 from .cli_utils import cli_lint_utils
 from .cli_utils import cli_show_utils
@@ -86,6 +88,11 @@ def create_argument_parser(shell: bool = False) -> ArgumentParser:
         help="Check that a workflow follows the Ewoks specification",
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
+    draw = subparsers.add_parser(
+        "draw",
+        help="Draw a workflow as an SVG image",
+        formatter_class=ArgumentDefaultsHelpFormatter,
+    )
     add_to_parser(
         execute,
         cli_execute_utils.execute_arguments(shell=shell)
@@ -97,6 +104,7 @@ def create_argument_parser(shell: bool = False) -> ArgumentParser:
     add_to_parser(install, cli_install_utils.install_arguments(shell=shell))
     add_to_parser(show, cli_show_utils.show_arguments(shell=shell))
     add_to_parser(lint, cli_lint_utils.lint_arguments(shell=shell))
+    add_to_parser(draw, cli_draw_utils.draw_arguments(shell=shell))
     return parser
 
 
@@ -338,6 +346,18 @@ def command_lint(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0
     return None
 
 
+def command_draw(cli_args: Namespace, shell: bool = False) -> Optional[Literal[0, 1]]:
+    cli_draw_utils.parse_draw_arguments(cli_args, shell=shell)
+    for workflow, graph, destination in zip(
+        cli_args.workflows, cli_args.graphs, cli_args.destinations
+    ):
+        draw_graph(graph, destination, **cli_args.draw_options)
+        print(f"Drew {workflow} -> {destination}")
+    if shell:
+        return 0
+    return None
+
+
 def command_default(
     cli_args: Namespace, shell: bool = False
 ) -> Optional[Literal[0, 1]]:
@@ -370,6 +390,8 @@ def main(argv=None, shell: bool = True) -> Union[Any, Literal[0, 1]]:
         return command_show(cli_args, shell=shell)
     elif cli_args.command == "lint":
         return command_lint(cli_args, shell=shell)
+    elif cli_args.command == "draw":
+        return command_draw(cli_args, shell=shell)
     else:
         parser.print_help()
         return command_default(cli_args, shell=shell)

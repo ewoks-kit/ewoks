@@ -35,12 +35,14 @@ ppf = ["ewoksppf >=3,<4"]
 orange = ["ewoksorange >=6.0.0rc6,<7"]
 esrf-data-portal = ["pyicat-plus"]
 notebooks = ["ewokscore[notebooks]"]
+draw = ["ewoksdraw >=1,<2"]
 test = [
     "ewoksutils[test]",
     "ewoks[dask]",
     "ewoks[ppf]",
     "ewoks[orange]",
     "ewoks[esrf-data-portal]",
+    "ewoks[draw]",
     "pytest >=7",
     "testbook",
     "ipykernel",
@@ -50,7 +52,7 @@ test = [
 ]
 dev = [
     "ewoks[test]",
-    "ruff>=0.16.0"
+    "ruff>=0.16.0",
 ]
 doc = [
     "ewoks[test]",
@@ -95,7 +97,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "src/ewoks/tests/*.py" = [
-    "S101"  # allow asserts
+    "S101", # allow asserts
 ]
 
 [tool.ruff.lint.isort]

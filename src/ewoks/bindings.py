@@ -390,6 +390,25 @@ def lint_graph(
         print(f"Workflow {original_source or ''} linted without errors!")
 
 
+def draw_graph(
+    source: Any,
+    destination: Union[str, Path],
+    inputs: Optional[List[dict]] = None,
+    load_options: Optional[dict] = None,
+) -> None:
+    """Draw a workflow as an SVG image (requires the `ewoksdraw` package)."""
+    try:
+        from ewoksdraw import graph_to_svg
+    except ImportError as e:
+        raise RuntimeError(
+            "requires the 'ewoksdraw' package (pip install ewoks[draw])"
+        ) from e
+    if load_options is None:
+        load_options = dict()
+    graph = load_graph(source, inputs=inputs, **load_options)
+    graph_to_svg(graph, destination)
+
+
 def _table_format() -> str:
     """Return the fancy table format if the terminal can show it, else the ASCII one."""
     try:
